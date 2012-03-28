@@ -391,7 +391,9 @@ $(PRODNAME): $(PRODNAME_OBJS) $(PRODNAME_RESS) $(PROD_DEPLIBS)
 	$(DEBUGCMD) $(LINK.cpp)
 ifdef XRTHOME 
 	@echo Patching for XRT-License...
-	@$(XRTHOME)/bin/xrt_auth $(PRODNAME)
+	@scp -q $(PRODNAME) $(XRT_HOST):/tmp/dm2k
+	@ssh $(XRT_HOST) $(XRTHOME)/bin/xrt_auth /tmp/dm2k
+	@scp -q $(XRT_HOST):/tmp/dm2k $(PRODNAME)
 	@echo done.
 endif
 

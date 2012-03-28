@@ -47,3 +47,4 @@ dl_INC=$(X11_INC)
 dl_DIR=/usr/lib
 XRT_INC=$(XRTHOME)/include
 XRT_DIR=$(XRTHOME)/lib
+XRT_HOST=aragon
