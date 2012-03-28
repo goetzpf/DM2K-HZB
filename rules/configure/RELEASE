@@ -8,4 +8,8 @@
 # each time EPICS_BASE, SNCSEQ, or any other external
 # module defined in the RELEASE file is rebuilt.
 
-EPICS_BASE=/opt/Epics/R3.14.12/base/3-14-12-0-0
+ifeq ($(HOST),jalon)
+EPICS_BASE=/opt/Epics/R3.14.12/base/3-14-12-2-2
+else
+EPICS_BASE=/opt/Epics/R3.14.12/base/3-14-12-2-0
+endif
