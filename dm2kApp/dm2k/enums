@@ -1,0 +1,154 @@
+DlTraversalMode TRAVERSAL_MODE
+	DL_EXECUTE	"execute"
+	DL_EDIT		"edit"
+
+LabelType LABEL_TYPE
+	LABEL_NONE	"none"
+	OUTLINE		"outline"
+	LIMITS		"limits"
+	CHANNEL		"channel"
+
+ColorMode COLOR_MODE
+	STATIC		"static"
+	ALARM		"alarm"
+	DISCRETE	"discrete"
+
+VisibilityMode VISIBILITY_MODE
+	V_STATIC	"static"
+	IF_NOT_ZERO	"if not zero"
+	IF_ZERO		"if zero"
+
+Direction DIRECTION
+	UP		"up"
+	RIGHT		"right"
+	DOWN		"down"
+	LEFT		"left"
+
+EdgeStyle EDGE_STYLE
+	SOLID		"solid"
+	DASH		"dash"
+
+FillStyle FILL_STYLE
+	F_SOLID		"solid"
+	F_OUTLINE	"outline"
+
+TextFormat TEXT_FORMAT
+	DECIMAL		"decimal"
+	EXPONENTIAL	"exponential"
+	ENGR_NOTATION	"engr. notation"
+	COMPACT		"compact"
+	TRUNCATED	"truncated"
+	HEXADECIMAL	"hexadecimal"
+	OCTAL		"octal"
+	STRING		"string"
+
+TextAlign TEXT_ALIGN
+	HORIZ_LEFT	"horiz. left"
+	HORIZ_CENTER	"horiz. centered"
+	HORIZ_RIGHT	"horiz. right"
+	VERT_TOP	"vert. top"
+	VERT_BOTTOM	"vert. bottom"
+	VERT_CENTER	"vert. centered"
+
+Stacking STACKING
+	COLUMN		"column"
+	ROW		"row"
+	ROW_COLUMN	"row column"
+
+FillMode FILL_MODE
+	FROM_EDGE	"from edge"
+	FROM_CENTER	"from center"
+
+TimeUnits TIME_UNIT
+	MILLISECONDS	"milli-second"
+	SECONDS		"second"
+	MINUTES		"minute"
+
+CartesianPlotStyle CARTESIAN_PLOT_STYLE
+	POINT_PLOT	"point"
+	LINE_PLOT	"line"
+	PURELINE_PLOT	"line only"
+	FILL_UNDER_PLOT	"fill-under"
+
+EraseOldest ERASE_OLDEST
+	ERASE_OLDEST_OFF	"plot n pts & stop"
+	ERASE_OLDEST_ON		"plot last n pts"
+
+ImageType IMAGE_TYPE
+	NO_IMAGE	"no image"
+	GIF_IMAGE	"gif"
+	TIFF_IMAGE	"tiff"
+
+CartesianPlotAxisStyle CARTESIAN_PLOT_AXIS_STYLE
+	LINEAR_AXIS	"linear"
+	LOG10_AXIS	"log10"
+	TIME_AXIS	"time"
+
+CartesianPlotRangeStyle CARTESIAN_PLOT_RANGE_STYLE
+	CHANNEL_RANGE		"from channel"
+	USER_SPECIFIED_RANGE	"user-specified"
+	AUTO_SCALE_RANGE	"auto-scale"
+
+eraseMode_t ERASE_MODE
+	ERASE_IF_NOT_ZERO	"if not zero"
+	ERASE_IF_ZERO		"if zero"
+
+relatedDisplayMode_t RD_MODE
+	ADD_NEW_DISPLAY	"create new display"
+	REPLACE_DISPLAY	"replace display"
+
+relatedDisplayVisual_t RD_VISUAL
+	RD_MENU	       "menu"
+	RD_ROW_OF_BTN  "a row of buttons"
+	RD_COL_OF_BTN  "a column of buttons"
+	RD_HIDDEN_BTN  "invisible"
+
+CartesianPlotTimeFormat_t CP_TIME_FORMAT
+	HHMMSS		"hh:mm:ss"
+	HHMM		"hh:mm"
+	HH00		"hh:00"
+	MMMDDYYYY	"MMM DD YYYY"
+	MMMDD		"MMM DD"
+	MMDDHH00	"MMM DD hh:00"
+	WDHH00		"wd hh:00"
+
+MessageButtonType BUTTON_TYPE
+	PUSH_BUTTON		"Push Button"
+	TOGGLE_BUTTON		"Toggle Button"
+	PUSH_CLOSE_BUTTON	"Push and Exit Button"
+
+DisplayType DISPLAY_TYPE
+	NORMAL_DISPLAY	"Normal Display"
+	MODAL_DIALOG	"Modal Dialog"
+	MODELESS_DIALOG	"Modeless Dialog"
+
+ShowAlarmLimits SHOW_ALARM_LIMITS_TYPE
+	SHOW_ALARM_LIMITS_OFF	"off"
+	SHOW_ALARM_LIMITS_ON	"on"
+
+ShowScale SHOW_SCALE_TYPE
+	SHOW_SCALE_OFF		"off"
+	SHOW_SCALE_ON		"on"
+
+ScaleType SCALE_TYPE
+	LINEAR_SCALE	"linear"
+	LOG_SCALE	"logarithm"
+
+ShowBar SHOW_BAR
+	BAR_ONLY_NO	"normal"
+	BAR_ONLY_YES	"bar only"
+
+FitType	FIT_TYPE
+	FIT_YES	"yes"
+	FIT_NO	"no"
+
+Alignment ALIGNMENT
+	ALIGNMENT_NW	"NorthWest"
+	ALIGNMENT_N	"North"
+	ALIGNMENT_NE	"NorthEast"
+	ALIGNMENT_W	"West"
+	ALIGNMENT_C	"Center"
+	ALIGNMENT_E	"East"
+	ALIGNMENT_SW	"SouthWest"
+	ALIGNMENT_S	"South"
+	ALIGNMENT_SE	"SouthEast"

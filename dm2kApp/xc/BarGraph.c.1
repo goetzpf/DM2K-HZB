@@ -1,0 +1,1324 @@
+/*************************************************************************
+ * Program: BarGraph.c                                                   *
+ * Author : Paul D. Johnston, Mark Anderson, DMW Software.               *
+ * Mods   : 1.0 Original                                                 *
+ *          ?       - Integration with DM2K.                             *
+ *          June 94 - Added bar graph fill from center.                  *
+ *************************************************************************/
+#include <stdio.h>
+#include <X11/Xlib.h>
+#include <X11/StringDefs.h>
+#include <X11/IntrinsicP.h>
+
+#include "Xc.h"
+#include "Control.h"
+#include "Value.h"
+#include "BarGraphP.h"
+#include "cvtFast.h"
+#include "scale.h"
+
+#ifndef MIN
+# define  MIN(a,b)    (((a) < (b)) ? (a) :  (b))
+#endif
+#ifndef MAX
+# define  MAX(a,b)    (((a) > (b)) ? (a) :  (b))
+#endif
+
+#define LONG_SEGMENT  5
+#define SHORT_SEGMENT 3
+#define WIDTH_RATIO   (0.6)
+#define MARKER_SIZE   8
+#define SEGMENTS_AREA(width) \
+    ((width < MIN_BG_WIDTH) ? 0 : (width/100 + 1)*LONG_SEGMENT) -
+#define MARKER_AREA(width) \
+    ((width < MIN_BG_WIDTH) ? 0 : (width/100 + 1)*MARKER_SIZE);
+
+/****** Macro redefinition for offset. */
+#define offset(field) XtOffset(BarGraphWidget, field)
+
+/****** Declare widget methods */
+static void ClassInitialize();
+static void Initialize();
+static void Redisplay();
+static void Destroy();
+static void Resize();
+static XtGeometryResult QueryGeometry();
+static Boolean SetValues();
+
+/* Declare functions and variables private to this widget */
+static void Update_value();
+static void Draw_display();
+static void Get_value();
+static void Print_bounds();
+static void Print_segment();
+static void Draw_segments();
+static TickDescription * AutoSegment();
+static float GetDimentionValue();
+
+/* Define the widget's resource list */
+static XtResource resources[] = {
+  {
+    XcNorient,
+    XcCOrient,
+    XcROrient,
+    sizeof(XcOrient),
+    offset(barGraph.orient),
+    XtRString,
+    "vertical"
+  },
+  {
+    XcNfillmod,
+    XcCFillmod,
+    XcRFillmod,
+    sizeof(XcFillmod),
+    offset(barGraph.fillmod),
+    XtRString,
+    "from edge"
+  },
+  {
+    XcNbarForeground,
+    XtCColor,
+    XtRPixel,
+    sizeof(Pixel),
+    offset(barGraph.bar_foreground),
+    XtRString,
+    XtDefaultForeground
+  },
+  {
+    XcNbarBackground,
+    XtCColor,
+    XtRPixel,
+    sizeof(Pixel),
+    offset(barGraph.bar_background),
+    XtRString,
+    XtDefaultBackground
+  },
+  {
+    XcNscaleColor,
+    XtCColor,
+    XtRPixel,
+    sizeof(Pixel),
+    offset(barGraph.scale_pixel),
+    XtRString,
+    XtDefaultForeground
+  },
+  {
+    XcNscaleSegments,
+    XcCScaleSegments,
+    XtRInt,
+    sizeof(int),
+    offset(barGraph.num_segments),
+    XtRImmediate,
+    (XtPointer)7
+  },
+  {
+    XcNvalueVisible,
+    XtCBoolean,
+    XtRBoolean,
+    sizeof(Boolean),
+    offset(barGraph.value_visible),
+    XtRString,
+    "True"
+  },
+  {
+    XcNinterval,
+    XcCInterval,
+    XtRInt,
+    sizeof(int),
+    offset(barGraph.interval),
+    XtRImmediate,
+    (XtPointer)0
+  },
+  {
+    XcNupdateCallback,
+    XtCCallback,
+    XtRCallback,
+    sizeof(XtPointer),
+    offset(barGraph.update_callback),
+    XtRCallback,
+    NULL
+  },
+  {
+    XcNautoSegment,
+    XtCBoolean,
+    XtRBoolean,
+    sizeof(Boolean),
+    offset(barGraph.auto_segment),
+    XtRString,
+    "True"
+  },
+  {
+    XcNscaleFontList, 
+    XcCScaleFontList, 
+    XtRPointer,
+    sizeof(XFontStruct **),
+    offset(barGraph.scale_fonts), 
+    XtRImmediate,
+    (XtPointer)0
+  },
+  {
+    XcNscaleFontListNum,
+    XcCScaleFontListNum,
+    XtRInt,
+    sizeof(int),
+    offset(barGraph.scale_fonts_num), 
+    XtRImmediate,
+    (XtPointer)0
+  },
+  {
+    XcNbarOnly,
+    XcCBarOnly,
+    XtRBoolean,
+    sizeof(Boolean),
+    offset(barGraph.show_bar_only),
+    XtRString,
+    "False"
+  },
+  {
+    XcNmarkers, 
+    XcCMarkers, 
+    XtRPointer,
+    sizeof(double *),
+    offset(barGraph.markers), 
+    XtRImmediate,
+    (XtPointer)0
+  },
+  {
+    XcNmarkersColors, 
+    XcCMarkersColors, 
+    XtRPointer,
+    sizeof(Pixel *),
+    offset(barGraph.markers_colors), 
+    XtRImmediate,
+    (XtPointer)0
+  },
+  {
+    XcNmarkersNum,
+    XcCMarkersNum,
+    XtRInt,
+    sizeof(int),
+    offset(barGraph.markers_num), 
+    XtRImmediate,
+    (XtPointer)0
+  },
+};
+
+/* Widget Class Record initialization */
+BarGraphClassRec barGraphClassRec = {
+  {
+  /* core_class part */
+    (WidgetClass) &valueClassRec,		/* superclass */
+    "BarGraph",					/* class_name */
+    sizeof(BarGraphRec),			/* widget_size */
+    ClassInitialize,				/* class_initialize */
+    NULL,					/* class_part_initialize */
+    FALSE,					/* class_inited */
+    Initialize,					/* initialize */
+    NULL,					/* initialize_hook */
+    XtInheritRealize,				/* realize */
+    NULL,					/* actions */
+    0,						/* num_actions */
+    resources,					/* resources */
+    XtNumber(resources),			/* num_resources */
+    NULLQUARK,					/* xrm_class */
+    TRUE,					/* compress_motion */
+    TRUE,					/* compress_exposure */
+    TRUE,					/* compress_enterleave */
+    TRUE,					/* visible_interest */
+    Destroy,					/* destroy */
+    Resize,					/* resize */
+    Redisplay,					/* expose */
+    SetValues,					/* set_values */
+    NULL,					/* set_values_hook */
+    XtInheritSetValuesAlmost,			/* set_values_almost */
+    NULL,					/* get_values_hook */
+    NULL,					/* accept_focus */
+    XtVersion,					/* version */
+    NULL,					/* callback_private */
+    NULL,					/* tm_table */
+    QueryGeometry,				/* query_geometry */
+    NULL,					/* display_accelerator */
+    NULL,					/* extension */
+  }, 
+/****** Control class part, value class part, barGraph class part */
+  { 0, }, { 0, }, { 0, }
+};
+
+WidgetClass xcBarGraphWidgetClass = (WidgetClass)&barGraphClassRec;
+
+static void ClassInitialize() {
+/*************************************************************************
+ * ClassInitialize: This method initializes the BarGraph widget class.   *
+ *   It registers resource value converter functions with Xt.            *
+ *************************************************************************/
+   XtAddConverter(XtRString, XcROrient, CvtStringToOrient, NULL, 0);
+}
+
+static void Initialize(request, new)
+/*************************************************************************
+ * Initialize: This is the initialize method for the BarGraph widget.    *
+ *   It validates user-modifiable instance resources and initializes     *
+ *   private widget variables and structures.  This function also        *
+ *   creates any server resources (i.e., GCs, fonts, Pixmaps, etc.) used *
+ *   by this widget.  This method is called by Xt when the application   *
+ *   calls XtCreateWidget().                                             *
+ *************************************************************************/
+  BarGraphWidget request, new; {
+    Display *display = XtDisplay(new);
+    DPRINTF(("BarGraph: executing Initialize...\n"));
+
+/****** Validate public instance variable settings.
+        Check orientation resource setting. */
+    if ((new->barGraph.orient != XcVert) && (new->barGraph.orient != XcHoriz)){
+      XtWarning("BarGraph: invalid orientation setting");
+      new->barGraph.orient = XcVert;
+    }
+
+/****** Check the interval resource setting. */
+    if (new->barGraph.interval >0) {
+      new->barGraph.interval_id = 
+	XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)new),
+          new->barGraph.interval, Get_value, new);
+   }
+
+/****** Check the scaleSegments resource setting. */
+   if (new->barGraph.num_segments < MIN_SCALE_SEGS) {
+      XtWarning("BarGraph: invalid number of scale segments");
+      new->barGraph.num_segments = MIN_SCALE_SEGS;
+   }
+   else if (new->barGraph.num_segments > MAX_SCALE_SEGS) {
+      XtWarning("BarGraph: invalid number of scale segments");
+      new->barGraph.num_segments = MAX_SCALE_SEGS;
+   }
+   
+/****** Check the valueVisible resource setting. */
+   if ((new->barGraph.value_visible != True) &&
+     (new->barGraph.value_visible != False)) {
+      XtWarning("BarGraph: invalid valueVisible setting");
+      new->barGraph.value_visible = True;
+   }
+
+/****** Check the autoSegment resource setting. */
+   if ((new->barGraph.auto_segment != True) &&
+     (new->barGraph.auto_segment != False)) {
+      XtWarning("BarGraph: invalid autoSegment setting");
+      new->barGraph.auto_segment = True;
+   }
+
+/* Initialize the BarGraph width and height. */
+   if (new->core.width < MIN_BG_WIDTH) new->core.width = MIN_BG_WIDTH; 
+   if (new->core.height < MIN_BG_HEIGHT) new->core.height = MIN_BG_HEIGHT; 
+
+
+/* Markers local copy */
+   if (new->barGraph.markers_num > 0) {
+     double * dataCopy = (double*) calloc (new->barGraph.markers_num, sizeof(double));
+     Pixel  * colorCopy = (Pixel*) calloc (new->barGraph.markers_num, sizeof(Pixel));
+     register int i;
+
+     if (dataCopy == NULL || colorCopy == NULL) {
+       if (dataCopy != NULL) free((char*) dataCopy);
+       if (colorCopy != NULL) free((char*) colorCopy);
+
+       new->barGraph.markers = NULL;
+       new->barGraph.markers_colors = NULL;
+       new->barGraph.markers_num = 0;
+     }
+     else {
+       for (i = 0; i < new->barGraph.markers_num; i++) {
+	 dataCopy[i]  = new->barGraph.markers[i];
+	 colorCopy[i] = new->barGraph.markers_colors[i];
+       }
+
+       new->barGraph.markers_colors = colorCopy;
+       new->barGraph.markers        = dataCopy;
+     }
+   }
+
+/* Set the initial geometry of the BarGraph elements. */
+   Resize(new);
+
+DPRINTF(("BarGraph: done Initialize\n"));
+}
+
+static void Redisplay(w, event)
+/*************************************************************************
+ * Redisplay : This function is the BarGraph's Expose method.  It redraws*
+ *   the BarGraph's 3D rectangle background, Value Box, label, Bar       *
+ *   indicator, and the Scale.  All drawing takes place within the       *
+ *   widget's window (no need for an off-screen pixmap).                 *
+ *************************************************************************/
+  BarGraphWidget w;
+  XExposeEvent *event; {
+    int j;
+    char upper[30], lower[30];
+
+/****** Check to see whether or not the widget's window is mapped */
+    if (!XtIsRealized((Widget)w) || !w->core.visible) return;
+    DPRINTF(("BarGraph: executing Redisplay\n"));
+
+/****** Draw the 3D rectangle background for the BarGraph
+    XSetClipMask(XtDisplay(w), w->control.gc, None);
+    Rect3d(w, XtDisplay(w), XtWindow(w), w->control.gc,
+		0, 0, w->core.width, w->core.height, RAISED); */
+
+/****** Draw the Label string */
+    XSetClipRectangles(XtDisplay(w), w->control.gc, 0, 0, 
+      &(w->barGraph.face), 1, Unsorted); 
+
+    XSetForeground(XtDisplay(w), w->control.gc, w->control.label_pixel);
+    XDrawString(XtDisplay(w), XtWindow(w), w->control.gc,
+      w->barGraph.lbl.x, w->barGraph.lbl.y, 
+      w->control.label, strlen(w->control.label));
+
+/****** Draw the Scale */
+   if (w->barGraph.num_segments > 0) {
+     XSetForeground(XtDisplay(w), w->control.gc, w->barGraph.scale_pixel);
+     XDrawLine(XtDisplay(w), XtWindow(w), w->control.gc,
+       w->barGraph.scale_line.x1, w->barGraph.scale_line.y1,
+       w->barGraph.scale_line.x2, w->barGraph.scale_line.y2);
+
+/****** Draw the max and min value segments */
+     if (w->barGraph.orient == XcVert) {
+     } else {
+       XDrawLine(XtDisplay(w), XtWindow(w), w->control.gc,
+         w->barGraph.scale_line.x1, 
+         w->barGraph.scale_line.y1 - w->barGraph.seg_length, 
+         w->barGraph.scale_line.x1, w->barGraph.scale_line.y1);
+       XDrawLine(XtDisplay(w), XtWindow(w), w->control.gc,
+         w->barGraph.scale_line.x2, 
+         w->barGraph.scale_line.y2 - w->barGraph.seg_length, 
+         w->barGraph.scale_line.x2, w->barGraph.scale_line.y2);
+     }
+
+/****** Now draw the rest of the Scale segments */
+     for (j = 0; j < w->barGraph.num_segments; j++) {
+       if (w->barGraph.orient == XcVert)
+	 XDrawLine(XtDisplay(w), XtWindow(w), w->control.gc,
+		   w->barGraph.segs[j].x, w->barGraph.segs[j].y,
+		   w->barGraph.scale_line.x1, w->barGraph.segs[j].y);
+       else
+	 XDrawLine(XtDisplay(w), XtWindow(w), w->control.gc,
+		   w->barGraph.segs[j].x, w->barGraph.segs[j].y,
+		   w->barGraph.segs[j].x, w->barGraph.scale_line.y1);
+      }
+
+/****** Draw markers indicators */
+     if (w->barGraph.markers_num > 0) {
+       int       mx;
+       int       my;
+       XGCValues values;
+       XtGCMask  mask; 
+       GC        gc = (GC)0; 
+
+       if (w->barGraph.orient == XcVert) {
+	 mx = w->barGraph.face.x + w->barGraph.face.width;
+	 my = w->barGraph.scale_line.y2;
+       } else {
+	 int mx = w->barGraph.scale_line.x1;
+	 int my = w->barGraph.face.y + w->barGraph.face.height;
+       }
+
+       for (j = 0; j < w->barGraph.markers_num; j++) {
+	 float dim = GetDimentionValue(w, w->barGraph.markers[j]);
+
+	 if (dim < 0.0)
+	   continue;
+
+	 if (gc == (GC)0) {
+	   values.graphics_exposures = False;
+	   values.background = w->control.background_pixel;
+	   values.line_width = 2;
+	   
+	   mask = GCBackground | GCGraphicsExposures | GCLineWidth; 
+	   
+	   gc = XCreateGC(XtDisplay(w), RootWindowOfScreen(XtScreen(w)), mask, &values);
+	 }
+
+	 XSetForeground(XtDisplay(w), gc, w->barGraph.markers_colors[j]);
+       
+	 if (w->barGraph.orient == XcVert) {
+	   XDrawLine(XtDisplay(w), XtWindow(w), gc,
+		     mx+1,             my - (int)dim,
+		     mx+MARKER_SIZE-1, my - (int)dim);
+	 } else {
+	   XDrawLine(XtDisplay(w), XtWindow(w), gc,
+		     mx + (int)dim,  my+1,
+		     mx + (int)dim , my+MARKER_SIZE-1);
+	 }
+       }
+
+       if (gc != (GC)0)
+	 XFreeGC(XtDisplay(w),gc);
+     }
+
+/****** Draw the max and min value string indicators */
+     Draw_segments(w);
+     Print_bounds(w, upper, lower);
+     XDrawString(XtDisplay(w), XtWindow(w), w->control.gc,
+		 w->barGraph.max_val.x, w->barGraph.max_val.y, 
+		 upper, strlen(upper)); 
+     XDrawString(XtDisplay(w), XtWindow(w), w->control.gc,
+		 w->barGraph.min_val.x, w->barGraph.min_val.y,
+		 lower, strlen(lower)); 
+   }
+
+
+/****** Draw the Bar indicator border */
+    Rect3d(w, XtDisplay(w), XtWindow(w), w->control.gc,
+      w->barGraph.bar.x - w->control.shade_depth, 
+      w->barGraph.bar.y - w->control.shade_depth,
+      w->barGraph.bar.width + (2 * w->control.shade_depth),  
+      w->barGraph.bar.height + (2 * w->control.shade_depth), DEPRESSED);
+
+/****** Draw the Value Box */
+     if (w->barGraph.value_visible == True)
+       Rect3d(w, XtDisplay(w), XtWindow(w), w->control.gc,
+         w->value.value_box.x - w->control.shade_depth, 
+         w->value.value_box.y - w->control.shade_depth,
+         w->value.value_box.width + (2 * w->control.shade_depth),  
+         w->value.value_box.height + (2 * w->control.shade_depth), DEPRESSED);
+
+/****** Draw the new values of Bar indicator and the value string */
+     Draw_display(w, XtDisplay(w), XtWindow(w), w->control.gc);
+     DPRINTF(("BarGraph: done Redisplay\n"));
+
+}
+
+/*******************************************************************
+ NAME:		SetValues.
+ DESCRIPTION:
+   This is the set_values method for this widget. It validates resource
+settings set with XtSetValues. If a resource is changed that would
+require re-drawing the widget, return True.
+
+*******************************************************************/
+static Boolean SetValues(cur, req, new)
+  BarGraphWidget cur, req, new; {
+    Boolean do_redisplay = False, do_resize = False;
+
+    DPRINTF(("BarGraph: executing SetValues\n"));
+
+   if (new->core.width < MIN_BG_WIDTH) {
+     new->core.width = MIN_BG_WIDTH; 
+     do_redisplay = True;
+   }
+
+   if (new->core.height < MIN_BG_HEIGHT) {
+     new->core.height = MIN_BG_HEIGHT; 
+     do_redisplay = True;
+   }
+
+/* Check widget color resource settings. */
+   if ((new->barGraph.bar_foreground != cur->barGraph.bar_foreground) ||
+	(new->barGraph.bar_background != cur->barGraph.bar_background) ||
+	(new->barGraph.scale_pixel != cur->barGraph.scale_pixel)) 
+      do_redisplay = True;
+
+/* Check orientation resource setting. */
+   if (new->barGraph.orient != cur->barGraph.orient)
+   {
+      do_redisplay = True;
+      if ((new->barGraph.orient != XcVert) && (new->barGraph.orient != XcHoriz))
+      {
+         XtWarning("BarGraph: invalid orientation setting");
+         new->barGraph.orient = XcVert;
+      }
+   }
+
+/* Check the interval resource setting. */
+   if (new->barGraph.interval != cur->barGraph.interval) 
+   {
+      if (cur->barGraph.interval > 0)
+	    XtRemoveTimeOut (cur->barGraph.interval_id);
+      if (new->barGraph.interval > 0)
+         new->barGraph.interval_id = 
+		XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)new),
+				new->barGraph.interval, Get_value, new);
+   }
+
+/* Keep the autoSegment resource unedited. */
+   new->barGraph.auto_segment = cur->barGraph.auto_segment;
+
+/* Check the scaleSegments resource setting. */
+   if ( ! new->barGraph.auto_segment &&
+	new->barGraph.num_segments != cur->barGraph.num_segments)
+   {
+      if (new->barGraph.num_segments < MIN_SCALE_SEGS)
+      {
+         XtWarning("BarGraph: invalid number of scale segments");
+         new->barGraph.num_segments = MIN_SCALE_SEGS;
+      }
+      else if (new->barGraph.num_segments > MAX_SCALE_SEGS)
+      {
+         XtWarning("BarGraph: invalid number of scale segments");
+         new->barGraph.num_segments = MAX_SCALE_SEGS;
+      }
+   }
+
+/* Check the valueVisible resource setting. */
+   if (new->barGraph.value_visible != cur->barGraph.value_visible)
+   {
+      do_redisplay = True;
+      if ((new->barGraph.value_visible != True) &&
+		(new->barGraph.value_visible != False))
+      {
+         XtWarning("BarGraph: invalid valueVisible setting");
+         new->barGraph.value_visible = True;
+      }
+   }
+
+
+/* Markers local copy */
+   if (cur->barGraph.markers_num == 0 && new->barGraph.markers_num != 0) {
+     double * dataCopy = (double*) calloc (new->barGraph.markers_num, sizeof(double));
+     Pixel  * colorCopy = (Pixel*) calloc (new->barGraph.markers_num, sizeof(Pixel));
+     register int i;
+
+     if (dataCopy == NULL || colorCopy == NULL) {
+       if (dataCopy != NULL) free((char*) dataCopy);
+       if (colorCopy != NULL) free((char*) colorCopy);
+
+       new->barGraph.markers        =  NULL;
+       new->barGraph.markers_colors = NULL;
+       new->barGraph.markers_num    = 0;
+     }
+     else {
+       for (i = 0 ; i < new->barGraph.markers_num; i++) {
+	 dataCopy[i]  = new->barGraph.markers[i];
+	 colorCopy[i] = new->barGraph.markers_colors[i];
+       }
+       
+       new->barGraph.markers_colors = colorCopy;
+       new->barGraph.markers        = dataCopy;
+     } 
+   }
+   else {
+     new->barGraph.markers_colors = cur->barGraph.markers_colors;
+     new->barGraph.markers        = cur->barGraph.markers;
+   }
+
+/* Check to see if the value has changed. */
+   if ((((new->value.datatype == XcLval) || (new->value.datatype == XcHval)) && 
+		(new->value.val.lval != cur->value.val.lval))
+      || ((new->value.datatype == XcFval) && 
+		(new->value.val.fval != cur->value.val.fval)))
+   {
+      do_redisplay = True;
+   }
+
+/* (MDA) want to force resizing if min/max changed  or decimals setting */
+   if (new->value.decimals != cur->value.decimals) do_resize = True;
+
+   if ( ((new->value.datatype == XcLval) || (new->value.datatype == XcHval)) &&
+        ( (new->value.lower_bound.lval != cur->value.lower_bound.lval) ||
+          (new->value.upper_bound.lval != cur->value.upper_bound.lval) ))
+   {
+      do_resize = True;
+   }
+   else if ( (new->value.datatype == XcFval) &&
+        ( (new->value.lower_bound.fval != cur->value.lower_bound.fval) ||
+          (new->value.upper_bound.fval != cur->value.upper_bound.fval) ))
+   {
+      do_resize = True;
+   }
+   if (do_resize) {
+     Resize(new);
+     do_redisplay = True;
+   }
+
+
+DPRINTF(("BarGraph: done SetValues\n"));
+   return do_redisplay;
+
+}  /* end of SetValues */
+
+static void Resize(w)
+/*************************************************************************
+ * Resize: This is the resize method of the BarGraph widget. It re-sizes *
+ *   the BarGraph's graphics based on the new width and height of the    *
+ *   widget's window.                                                    *
+ *************************************************************************/
+  BarGraphWidget w; {
+
+    int j, max_val_width, min_val_width, max_width;
+    int seg_spacing, font_center, font_height;
+    char upper[30], lower[30];
+    Boolean displayValue, displayLabel;
+
+    DPRINTF(("BarGraph: executing Resize\n"));
+
+/****** For numbers, usually safe to ignore descent to save space */
+    font_height = (w->control.font)->ascent;
+
+/* Set the widgets new width and height. */
+    w->barGraph.face.x = w->barGraph.face.y = w->control.shade_depth;
+    w->barGraph.face.width = w->core.width - (2*w->control.shade_depth);
+    w->barGraph.face.height = w->core.height - (2*w->control.shade_depth);
+
+/* Calculate min/max string attributes */
+   Print_bounds(w, upper, lower);
+   max_val_width = XTextWidth(w->control.font, upper, strlen(upper));
+   min_val_width = XTextWidth(w->control.font, lower, strlen(lower));
+
+   max_val_width += LONG_SEGMENT;
+   min_val_width += LONG_SEGMENT;
+
+   max_width = MAX(min_val_width,max_val_width) + 2*w->control.shade_depth;
+
+   if (w->barGraph.num_segments == 0)
+     max_width = w->barGraph.face.width - 2*w->control.shade_depth;
+   
+
+/* Let's take in account a space for markers */
+   if (w->barGraph.markers_num > 0) {
+     if (w->barGraph.orient == XcVert) 
+       w->barGraph.face.width -= MARKER_SIZE;
+     else
+       w->barGraph.face.height -= MARKER_SIZE;
+   }
+
+/* Establish the new Value Box geometry. */
+   if (w->barGraph.value_visible == True) {
+     displayValue = True;
+     if (w->barGraph.orient == XcVert) {
+      w->value.value_box.x = w->core.width/2 - max_width/2;
+      w->value.value_box.y = w->core.height - font_height - 3*w->control.shade_depth;
+      w->value.value_box.width = max_width;
+      w->value.value_box.height = font_height;
+     } else {
+      w->value.value_box.x = w->core.width/2 - max_width/2;
+      w->value.value_box.y = w->core.height - font_height - 2*w->control.shade_depth - 2;
+      w->value.value_box.width = max_width;
+      w->value.value_box.height = font_height;
+     }
+
+/* Set the position of the displayed value within the Value Box. */
+     Position_val(w);
+
+   } else {
+
+      displayValue = False;
+      w->value.value_box.x = 0;
+      w->value.value_box.y = w->core.height - 2*w->control.shade_depth;
+      w->value.value_box.width = 0;
+      w->value.value_box.height = 0;   
+   }
+
+
+/* Set the new label location. */
+   
+   if (strlen(w->control.label) > 1 ||
+       		(strlen(w->control.label) == 1 && w->control.label[0] != ' '))
+   {
+	displayLabel = True;
+	w->barGraph.lbl.x = (short)((w->core.width/2) -
+		(XTextWidth(w->control.font, w->control.label, 
+			strlen(w->control.label))/2)); 
+	w->barGraph.lbl.y = (short)(w->barGraph.face.y +
+			w->control.font->ascent + 1);
+   }
+   else
+   {
+	displayLabel = False;
+	w->barGraph.lbl.x = w->barGraph.face.x;
+	w->barGraph.lbl.y = w->barGraph.face.y;
+   }   
+
+
+/* Resize the Bar indicator */
+    if (w->barGraph.orient == XcVert) {
+      w->barGraph.bar.x = (short)(w->barGraph.face.x + 
+	      (w->barGraph.num_segments > 0 ? max_width + (w->barGraph.face.width/32) : 0) + 
+				  2*w->control.shade_depth);
+
+      w->barGraph.bar.y = (short)(w->barGraph.lbl.y + w->control.font->descent
+        + 1*w->control.shade_depth) + font_height/2;
+
+      w->barGraph.bar.width = (unsigned short) MAX(0,
+        (int)(w->barGraph.face.width - w->barGraph.bar.x - w->control.shade_depth));
+
+      w->barGraph.bar.height = (unsigned short)
+	(w->value.value_box.y - w->barGraph.bar.y - (displayValue == True 
+	? font_height - w->control.font->descent : 2*w->control.shade_depth)
+	 - font_height/2);
+    }
+    else {
+      w->barGraph.bar.x = w->barGraph.face.x +
+			(short)(w->barGraph.face.width/16) +
+				w->control.shade_depth;
+      w->barGraph.bar.y = w->barGraph.lbl.y
+			+ (w->barGraph.num_segments > 0 ?
+				font_height/2 +
+				w->barGraph.face.height/(unsigned short)8 + 1 :
+				0)
+			+ 2*w->control.shade_depth;
+      w->barGraph.bar.width = (short)((9*(int)w->barGraph.face.width)/10) -
+					2*w->control.shade_depth;
+      w->barGraph.bar.height = MAX(1,w->value.value_box.y - w->barGraph.bar.y 
+			- (displayValue == True ? font_height : 0)
+			- w->control.shade_depth);
+   }
+
+
+/* Resize the Scale line. */
+   if (w->barGraph.orient == XcVert)
+   {
+      w->barGraph.scale_line.x1 = w->barGraph.bar.x - w->control.shade_depth -
+					(w->barGraph.face.width/32);
+      w->barGraph.scale_line.y1 = w->barGraph.bar.y;
+      w->barGraph.scale_line.x2 = w->barGraph.scale_line.x1;
+      w->barGraph.scale_line.y2 = w->barGraph.bar.y + w->barGraph.bar.height;
+   }
+   else
+   {
+      w->barGraph.scale_line.x1 = w->barGraph.bar.x;
+      w->barGraph.scale_line.y1 = w->barGraph.bar.y - w->control.shade_depth -
+					(w->barGraph.face.height/32);
+      w->barGraph.scale_line.x2 = w->barGraph.bar.x + w->barGraph.bar.width;
+      w->barGraph.scale_line.y2 = w->barGraph.scale_line.y1;
+   }
+
+/* Calculate he number of segments */
+   w->barGraph.segmDesc = AutoSegment(w);
+   w->barGraph.num_segments = w->barGraph.segmDesc ? w->barGraph.segmDesc->ticks : 0;
+
+/* Now, resize Scale line segments */
+   if (w->barGraph.num_segments > 0)
+   {
+      if (w->barGraph.orient == XcVert)
+      {
+	if (w->barGraph.segmDesc != NULL)
+	{
+	  float ratio = (float)w->barGraph.bar.height / 
+	    (float)(w->barGraph.segmDesc->ticks-1);
+
+	  for (j = 0; j < w->barGraph.segmDesc->ticks; j++)
+	  {
+	    int segmLength;
+
+	    if (j % w->barGraph.segmDesc->ticksForLabel == 0)
+	      segmLength = LONG_SEGMENT * ((w->barGraph.face.width/100) + 1);
+	    else
+	      segmLength = SHORT_SEGMENT * ((w->barGraph.face.width/100) + 1);
+
+	    w->barGraph.segs[j].x = w->barGraph.scale_line.x1 - segmLength;
+
+	    w->barGraph.segs[j].y = w->barGraph.scale_line.y1 +
+	      (int)((float)j * ratio);
+	  }
+	}
+	else 
+	{
+	  w->barGraph.seg_length = (w->barGraph.face.width/16);
+	  seg_spacing = (w->barGraph.bar.height / 
+			 (unsigned short)(w->barGraph.num_segments + 1));
+	  for (j = 0; j < w->barGraph.num_segments; j++)
+	  {
+	    w->barGraph.segs[j].x = w->barGraph.scale_line.x1 - w->barGraph.seg_length;
+	    w->barGraph.segs[j].y = w->barGraph.scale_line.y1 + ((j+1) * seg_spacing);
+         }
+	}
+      }
+      else
+      {
+         w->barGraph.seg_length = (w->barGraph.face.height/16);
+         seg_spacing = (w->barGraph.bar.width / 
+			(unsigned short)(w->barGraph.num_segments + 1));
+         for (j = 0; j < w->barGraph.num_segments; j++)
+         {
+	    w->barGraph.segs[j].x = w->barGraph.scale_line.x1 + ((j+1) * seg_spacing);
+	    w->barGraph.segs[j].y = w->barGraph.scale_line.y1 - w->barGraph.seg_length;
+         }
+      }
+   }
+
+/* Set the position of the max and min value strings */
+   if (w->barGraph.orient == XcVert)
+   {
+      font_center = ((w->control.font->ascent + 
+		      w->control.font->descent)/2) - w->control.font->descent;
+      w->barGraph.max_val.x = MAX(w->control.shade_depth,
+			      w->barGraph.scale_line.x2 - (max_val_width) - LONG_SEGMENT);
+
+      w->barGraph.max_val.y = w->barGraph.scale_line.y1 + font_center;
+
+      w->barGraph.min_val.x = MAX(w->control.shade_depth,
+			      w->barGraph.scale_line.x2 - (min_val_width) - LONG_SEGMENT);
+      w->barGraph.min_val.y = w->barGraph.scale_line.y2 + font_center;
+   }
+   else
+   {
+      w->barGraph.max_val.x = 
+	MIN( (int)(w->barGraph.face.width + w->control.shade_depth - max_val_width),
+	     (w->barGraph.scale_line.x2 - (max_val_width/2)));
+
+      w->barGraph.max_val.y = w->barGraph.min_val.y =
+      		w->barGraph.scale_line.y1 - w->barGraph.seg_length - 1 - LONG_SEGMENT;
+      w->barGraph.min_val.x = MAX(w->control.shade_depth,
+			w->barGraph.scale_line.x1 - (min_val_width/2));
+   }
+
+
+   DPRINTF(("BarGraph: done Resize\n"));
+}
+
+
+/*******************************************************************
+ NAME:		QueryGeometry.		
+ DESCRIPTION:
+   This function is the widget's query_geometry method.  It simply
+checks the proposed size and returns the appropriate value based on
+the proposed size.  If the proposed size is greater than the maximum
+appropriate size for this widget, QueryGeometry returns the recommended
+size.
+*******************************************************************/
+
+static XtGeometryResult QueryGeometry(w, proposed, answer)
+  BarGraphWidget w;
+  XtWidgetGeometry *proposed, *answer; {
+
+/****** Set the request mode mask for the returned answer. */
+   answer->request_mode = CWWidth | CWHeight;
+
+/****** Set the recommended size. */
+   answer->width = (w->core.width > MAX_BG_WIDTH)
+	? MAX_BG_WIDTH : w->core.width;
+   answer->height = (w->core.height > MAX_BG_HEIGHT)
+	? MAX_BG_HEIGHT : w->core.height;
+
+/* 
+ * Check the proposed dimensions. If the proposed size is larger than
+ * appropriate, return the recommended size.
+ */
+   if (((proposed->request_mode & (CWWidth | CWHeight)) == (CWWidth | CWHeight))
+	&& proposed->width == answer->width 
+	&& proposed->height == answer->height)
+      return XtGeometryYes;
+   else if (answer->width == w->core.width && answer->height == w->core.height)
+      return XtGeometryNo;
+   else
+      return XtGeometryAlmost;
+
+}  /* end of QueryGeometry */
+
+/*******************************************************************
+ NAME:		Destroy.
+ DESCRIPTION:
+   This function is the widget's destroy method.  It simply releases
+any server resources acquired during the life of the widget.
+
+*******************************************************************/
+static void Destroy(w)
+  BarGraphWidget w; 
+{
+  if (w->barGraph.interval > 0) 
+    XtRemoveTimeOut (w->barGraph.interval_id);
+  
+  if (w->barGraph.markers_colors) {
+    free((char*)w->barGraph.markers_colors);
+    w->barGraph.markers_colors = NULL;
+  }
+
+  if (w->barGraph.markers) {
+    free((char*)w->barGraph.markers);
+    w->barGraph.markers = NULL;
+  }
+}
+
+/*******************************************************************
+ NAME:		Get_value.		
+ DESCRIPTION:
+   This function is the time out procedure called at XcNinterval 
+intervals.  It calls the application registered callback function to
+get the latest value and updates the BarGraph display accordingly.
+
+*******************************************************************/
+static void Get_value(client_data, id)
+XtPointer client_data;
+XtIntervalId *id; {
+    static XcCallData call_data;
+    BarGraphWidget w = (BarGraphWidget)client_data;
+   
+/****** Get the new value by calling the application's callback if it exists */
+   if (w->barGraph.update_callback == NULL) return;
+
+/****** Re-register this TimeOut procedure for the next interval */
+   if (w->barGraph.interval > 0)
+      w->barGraph.interval_id = 
+        XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)w),
+        w->barGraph.interval, Get_value, client_data);
+
+/* Set the widget's current value and datatype before calling the callback */
+   call_data.dtype = w->value.datatype;
+   call_data.decimals = w->value.decimals;
+   if ((w->value.datatype == XcLval) || (w->value.datatype == XcHval))  
+      call_data.value.lval = w->value.val.lval;
+   else if (w->value.datatype == XcFval)
+      call_data.value.fval = w->value.val.fval;
+   XtCallCallbacks((Widget)w, XcNupdateCallback, &call_data);
+
+/****** Update the new value, update the BarGraph display */
+   if ((w->value.datatype == XcLval) || (w->value.datatype == XcHval))  
+	w->value.val.lval = call_data.value.lval;
+   else if (w->value.datatype == XcFval)
+	w->value.val.fval = call_data.value.fval;
+
+   if (XtIsRealized((Widget)w))
+      Draw_display(w, XtDisplay(w), XtWindow(w), w->control.gc);
+}
+
+void XcBGUpdateValue(_w, value)
+/*************************************************************************
+ * Xc Bar Graph Update Value:  This convenience function is called by the*
+ *   application in order to update the value (a little quicker than     *
+ *   using XtSetArg/XtSetValue).  The application passes the new value   *
+ *   to be updated with.                                                 *
+ *************************************************************************/
+  Widget _w;
+  XcVType *value; {
+
+    BarGraphWidget w = (BarGraphWidget) _w;
+    
+    if (!w->core.visible) return;
+
+/****** Update the new value, then update the BarGraph display. */
+   if (value != NULL) {
+      if ((w->value.datatype == XcLval) || (w->value.datatype == XcHval))  
+	 w->value.val.lval = value->lval;
+      else if (w->value.datatype == XcFval)
+	 w->value.val.fval = value->fval;
+
+      if (XtIsRealized((Widget)w))
+         Draw_display(w, XtDisplay(w), XtWindow(w), w->control.gc);
+   }
+}
+
+
+
+/*******************************************************************
+ NAME:		XcBGUpdateBarForeground.		
+ DESCRIPTION:
+   This convenience function is called by the application in order to
+update the value (a little quicker than using XtSetArg/XtSetValue).
+The application passes the new value to be updated with.
+
+*******************************************************************/
+
+void XcBGUpdateBarForeground(_w, pixel)
+Widget _w;
+unsigned long pixel; {
+
+  BarGraphWidget w = (BarGraphWidget)_w;
+
+/* Local variables */
+    if (!w->core.visible) return;
+    
+/* Update the new value, then update the BarGraph display. */
+   if (w->barGraph.bar_foreground != pixel) {
+      w->barGraph.bar_foreground = pixel;
+      if (XtIsRealized((Widget)w))
+         Draw_display(w, XtDisplay(w), XtWindow(w), w->control.gc);
+   }
+}
+
+static TickDescription * AutoSegment(w)
+     BarGraphWidget w;
+{
+  TickDescription * tick;
+  Boolean           linear;
+  int               fontSize;
+  int               lPos, hPos;
+  double            lVal, hVal;
+
+  if ((w->value.datatype == XcLval) || (w->value.datatype == XcHval)) {
+    lVal = (double)w->value.lower_bound.lval;
+    hVal = (double)w->value.upper_bound.lval;
+  }
+  else if (w->value.datatype == XcFval) {
+    lVal = (double)w->value.lower_bound.fval;
+    hVal = (double)w->value.upper_bound.fval;
+  }
+
+  if (w->barGraph.orient == XcVert)
+    lPos = (float)(w->barGraph.bar.height);
+  else 
+    lPos = (float)(w->barGraph.bar.width);
+
+  hPos = 0;
+
+  return GetTickDescription(linear = True, fontSize=10,
+			    lPos, hPos, lVal, hVal);
+}
+
+
+static void Draw_display( w, display, drawable, gc)
+/*************************************************************************
+ * Draw Display: This function redraws the Bar indicator and the value   *
+ *   string in the Value Box.                                            *
+ *************************************************************************/
+  BarGraphWidget w;
+  Display *display;
+  Drawable drawable;
+  GC gc; {
+    int  xy;
+    char *temp;
+    float dim, range;
+
+/****** Draw the Bar indicator, fill the Bar with its background color */
+    XSetForeground(display, gc, w->barGraph.bar_background); 
+    XFillRectangle(display, drawable, gc, 
+		   w->barGraph.bar.x, w->barGraph.bar.y, 
+		   w->barGraph.bar.width, w->barGraph.bar.height); 
+
+    if (w->barGraph.orient == XcVert) range = (float)(w->barGraph.bar.height);
+    else range = (float)(w->barGraph.bar.width);
+
+/****** Figure dim value */
+    if ((w->value.datatype == XcLval) || (w->value.datatype == XcHval))
+      dim = Correlate(((float)(w->value.val.lval)
+      - (float)(w->value.lower_bound.lval)),
+      ((float)(w->value.upper_bound.lval) - 
+      (float)(w->value.lower_bound.lval)), range);
+    else if (w->value.datatype == XcFval)
+      dim = Correlate((w->value.val.fval - w->value.lower_bound.fval),
+      (w->value.upper_bound.fval - w->value.lower_bound.fval), range);
+
+/****** Draw the bar */
+    if ((int)dim < 1) dim = 1;
+    XSetForeground(display, gc, w->barGraph.bar_foreground); 
+    if (w->barGraph.orient == XcVert) {
+      if (w->barGraph.fillmod == XcCenter) {
+        xy = w->barGraph.bar.height;
+        if (dim > (float)(xy/2)) XFillRectangle(display, drawable, gc, 
+          w->barGraph.bar.x, (w->barGraph.bar.y + xy - (int)dim), 
+          w->barGraph.bar.width, (int)(dim - (xy/2)));
+        else XFillRectangle(display, drawable, gc, 
+          w->barGraph.bar.x, (w->barGraph.bar.y + (int)(xy/2)), 
+          w->barGraph.bar.width, (int)((xy/2) - dim));
+      }
+      else 
+        XFillRectangle(display, drawable, gc, w->barGraph.bar.x,
+          (w->barGraph.bar.y + w->barGraph.bar.height - (int)dim),
+          w->barGraph.bar.width, (int)dim);
+    }
+    else {
+      if (w->barGraph.fillmod == XcCenter) {
+        xy = w->barGraph.bar.width;
+        if (dim > (float)(xy/2)) XFillRectangle(display, drawable, gc, 
+          (w->barGraph.bar.x + (int)(xy/2)), w->barGraph.bar.y,
+          (int)(dim - (xy/2)), w->barGraph.bar.height);
+        else XFillRectangle(display, drawable, gc, 
+          (w->barGraph.bar.x + (int)dim), w->barGraph.bar.y,
+          (int)((xy/2) - dim), w->barGraph.bar.height);
+       }
+       else XFillRectangle(display, drawable, gc, w->barGraph.bar.x,
+         w->barGraph.bar.y, (int)dim, w->barGraph.bar.height);
+    }
+
+/****** If the value string is supposed to be displayed, draw it */
+    if (w->barGraph.value_visible == True) {
+/****** Clear the Value Box by re-filling it with its background color. */
+      XSetForeground(display, gc, w->value.value_bg_pixel); 
+      XFillRectangle(display, drawable, gc,
+  	w->value.value_box.x, w->value.value_box.y, 
+  	w->value.value_box.width, w->value.value_box.height); 
+
+/****** Now draw the value string in its foreground color, clipped by the
+        Value Box.  */
+      XSetForeground(display, gc, w->value.value_fg_pixel); 
+      XSetClipRectangles(display, gc, 0, 0, 
+  	&(w->value.value_box), 1, Unsorted); 
+
+      temp = Print_value(w->value.datatype, &w->value.val, w->value.decimals);
+
+      Position_val(w);
+
+      XDrawString(display, drawable, gc,
+    	w->value.vp.x, w->value.vp.y, temp, strlen(temp)); 
+    }
+
+/****** Reset the clip_mask to no clipping */
+    XSetClipMask(display, gc, None);
+
+}
+
+/*******************************************************************
+ NAME:		Print_bounds.		
+ DESCRIPTION:
+   This is a utility function used by the Redisplay and Resize methods to
+print the upper and lower bound values as strings for displaying and resizing
+purposes.
+
+*******************************************************************/
+
+static void Print_bounds(w, upper, lower)
+BarGraphWidget w;
+char *upper, *lower;
+{
+
+   if (w->value.datatype == XcLval)
+   {
+      cvtLongToString(w->value.upper_bound.lval, upper);
+      cvtLongToString(w->value.lower_bound.lval, lower);
+   }
+   else if (w->value.datatype == XcHval)
+   {
+      cvtLongToHexString(w->value.upper_bound.lval, upper);
+      cvtLongToHexString(w->value.lower_bound.lval, lower);
+   }
+   else if (w->value.datatype == XcFval)
+   {
+      cvtFloatToString(w->value.upper_bound.fval, upper,
+                                (unsigned short)w->value.decimals);
+      cvtFloatToString(w->value.lower_bound.fval, lower,
+                                (unsigned short)w->value.decimals);
+   }
+
+}
+
+static void Print_segment(value, type, decimals, string)
+     void    * value;
+     XcDType   type;
+     int       decimals;
+     char    * string;
+{
+  if (string == NULL || value == NULL) {
+    if (string != NULL)
+      *string = '\0';
+    return;
+  }
+
+  if (type == XcLval)
+  {
+    cvtLongToString(*(long*)value, string);
+  }
+  else if (type == XcHval)
+  {
+    cvtLongToHexString(*(long*)value, string);
+  }
+  else if (type == XcFval)
+  {
+    cvtFloatToString(*(float*)value, string, decimals);
+  }
+}
+
+static void Draw_segments(w)
+     BarGraphWidget w;
+{
+  XSegment segments[MAX_SCALE_SEGS];
+  int      segmentsNum = 0;
+  int      j;
+  register BarGraphPart * bar = & w->barGraph;
+  XFontStruct * font = w->control.font;
+  int      font_center = ((font->ascent + font->descent)/2) - font->descent;
+
+  if (bar->num_segments < 1)
+    return;
+
+    if (bar->orient == XcVert)
+    {
+      if (bar->segmDesc != NULL)
+      {
+	float ratio = (float)bar->bar.height / 
+	  (float)(bar->segmDesc->ticks-1);
+
+	segmentsNum = bar->segmDesc->ticks;
+
+	for (j = 0; j < segmentsNum; j++)
+	{
+	  int segmLength;
+
+	  if (j % bar->segmDesc->ticksForLabel == 0)
+	    segmLength = LONG_SEGMENT * ((bar->face.width/100) + 1);
+	  else
+	    segmLength = SHORT_SEGMENT * ((bar->face.width/100) + 1);
+
+	  segments[j].x1 = bar->scale_line.x1 - segmLength;
+	  segments[j].y1 = bar->scale_line.y1 + (int)((float)j * ratio);
+	  segments[j].x2 = bar->scale_line.x1;
+	  segments[j].y2 = segments[j].y1;
+	}
+      }
+      else 
+      {
+	int seg_spacing;
+
+	bar->seg_length = (bar->face.width/16);
+	seg_spacing = (bar->bar.height / 
+		       (unsigned short)(bar->num_segments + 1));
+
+	for (j = 0; j < bar->num_segments; j++)
+	{
+	  segments[j].x1 = bar->scale_line.x1 - bar->seg_length;
+	  segments[j].y1 = bar->scale_line.y1 + ((j+1) * seg_spacing);
+	  segments[j].x2 = bar->scale_line.x1;
+	  segments[j].y2 = segments[j].y1;
+	}
+      }
+    }
+    else
+    {
+      int seg_spacing;
+      bar->seg_length = (bar->face.height/16);
+      seg_spacing = (bar->bar.width / 
+		     (unsigned short)(bar->num_segments + 1));
+      for (j = 0; j < bar->num_segments; j++)
+      {
+	segments[j].x1 = bar->scale_line.x1 + ((j+1) * seg_spacing);
+	segments[j].y1 = bar->scale_line.y1 - bar->seg_length;
+	segments[j].x2 = segments[j].x1;
+	segments[j].y2 = bar->scale_line.y1;
+      }
+    }
+ 
+  XDrawSegments(XtDisplay(w), XtWindow(w), w->control.gc,
+		segments, segmentsNum);
+
+#if 0
+  for (j = 0; j < segmentsNum; j++)
+  {
+    char * test = "10";
+
+    if (j % bar->segmDesc->ticksForLabel == 0) 
+      XDrawString(XtDisplay(w), XtWindow(w), w->control.gc,
+		  bar->min_val.x, segments[j].y1+font_center,
+		  test, strlen(test)); 
+  }
+#endif
+  XFlush(XtDisplay(w));
+}
+
+static float GetDimentionValue(w, data)
+     BarGraphWidget w;
+     double         data;
+{
+  register ValuePart    * val = & w->value;
+  float                   dim;
+  float                   range;
+
+  if (w->barGraph.orient == XcVert)
+    range = (float)(w->barGraph.bar.height);
+  else
+    range = (float)(w->barGraph.bar.width);
+  
+/****** Figure dim value */
+  if ((val->datatype == XcLval) || (val->datatype == XcHval)) 
+  {
+    if (data > (double)(val->upper_bound.lval))
+      return (float)-1.0;
+
+    dim = Correlate(((float)(data) - (float)(val->lower_bound.lval)),
+		    ((float)(val->upper_bound.lval) - (float)(val->lower_bound.lval)), 
+		    range);
+  } 
+  else if (val->datatype == XcFval) 
+  {
+    if (data > (double)(val->upper_bound.fval))
+      return (float)-1.0;
+    
+    dim = Correlate(((float)(data) - val->lower_bound.fval),
+		    (val->upper_bound.fval - val->lower_bound.fval), range);
+  }
+  return dim;
+}

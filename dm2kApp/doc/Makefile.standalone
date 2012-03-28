@@ -1,0 +1,188 @@
+# Simple Makefile Without all EPICS STUFF for dm2k cdev
+#
+# Need gnu make 
+
+COMMON_FLAGS = -DDM2K_CDEV -DXRT_VERSION=2 -DXRT_TYPE_PLOT=1 -DXRT_TYPE_BAR=2 \
+	-DUSE_XRT -DXRT_DOCSTR="\"Jpt Jefferson Lab Plotting Toolkit\"" \
+	 -DMOTIF -DUNIX -g -I$(CDEV)/include \
+	-I. -I./graphX -I./dm2k -I./xc -I./jpt \
+	-DDM2K_HELP_PATH="\"http://www.aps.anl.gov/asd/controls/epics/EpicsDocumentation/ExtensionsManuals/MEDM\""
+
+COMMON_LIBS = -L$(CDEVLIB) -lcdev -lm
+#COMMON_LIBS = $(CDEVLIB)/libcdev.a $(CDEVLIB)/libcaService.a \
+#	-L$(EPICSLIB) -lca -lAs -lCom -lm 
+
+# Compiler for several OS
+
+# solaris
+CXX = CC
+CC  = cc
+CXXFLAGS = $(COMMON_FLAGS) -I/usr/openwin/include -I/usr/dt/include
+CFLAGS = $(CXXFLAGS)
+LIBS = -R/usr/openwin/lib:/usr/dt/lib:$(CDEVLIB) \
+	-lXm -lXmu -lXext -lXt -lX11 \
+	$(COMMON_LIBS) -lsocket -lnsl -lgen
+
+# linux
+#CXX = gcc
+#CC  = gcc
+#CXXFLAGS =$(COMMON_FLAGS) -I/usr/X11/include -fno-for-scope
+#CFLAGS =  $(COMMON_FLAGS) -I/usr/X11/include
+#LIBS = -Xlinker -rpath $(CDEVLIB) -L/usr/X11/lib \
+#	-lXm -lXmu -lXext -lXt -lX11 \
+#	$(COMMON_LIBS) -ldl
+
+#hpux
+#CXX = CC +a1
+#CC  = cc
+#CXXFLAGS =$(COMMON_FLAGS) -D_HPUX_SOURCE -DHP_UX -I/usr/include/X11R5 -I/usr/include/Motif1.2 -I$(HOME)/local/Xmu/include
+#CFLAGS = -Aa $(CXXFLAGS) 
+#LIBS = -L/usr/lib/X11R5 -L/usr/lib/Motif1.2 -L$(HOME)/local/Xmu/lib \
+#	-lXm -lXmu -lXext -lXt -lX11 $(COMMON_LIBS)
+
+OBJS = 	BarGraph.o \
+	Caption.o \
+	Clip.o \
+	Control.o \
+	Indicator.o \
+	Matrix.o \
+	Byte.o\
+	Meter.o \
+	Value.o \
+	scale.o \
+	xc_utils.o \
+	AtConverters.o \
+	AxisCore.o \
+	DataHandle.o \
+	Plot.o \
+	Plotter1.o \
+	PlotterZoom.o \
+	Scale.o \
+	Text.o \
+	Text2.o \
+	XYAxis.o \
+	XYLinePlot.o \
+	XYPlot.o \
+	strcasecmp.o \
+	algorithms.o \
+	graph.o \
+	graph3d.o \
+	graphInteraction.o \
+	seql.o \
+	seqlInteraction.o \
+	strip.o \
+	surface.o \
+	surfaceInternals.o \
+	graphx_utils.o \
+	dsimple.o \
+	pUtils.o \
+	ps_utils.o \
+	utilPrint.o \
+	xwd.o \
+	xwd2ps.o \
+	actions.o \
+	amDialog.o \
+	browserHelp.o \
+	callbacks.o \
+	channelPalette.o \
+	colorPalette.o \
+	display.o \
+	dmInit.o \
+	eventHandlers.o \
+	faceplateBase.o \
+	faceplateGUI.o \
+	faceplateGUICallback.o \
+	faceplateDm2k.o \
+	getArchiveData.o \
+	help.o \
+	help_protocol.o \
+	dm2k.o \
+	dm2kArc.o \
+	dm2kBar.o \
+	dm2kByte.o \
+	dm2kCartesianPlot.o \
+	dm2kChoiceButtons.o \
+	dm2kCommon.o \
+	dm2kComposite.o \
+	dm2kControl.o \
+	dm2kDynSymbol.o \
+	dm2kImage.o \
+	dm2kIndicator.o \
+	dm2kMenu.o \
+	dm2kMessageButton.o \
+	dm2kMeter.o \
+	dm2kMonitor.o \
+	dm2kOval.o \
+	dm2kPixmap.o \
+	dm2kPolygon.o \
+	dm2kPolyline.o \
+	dm2kRectangle.o \
+	dm2kRelatedDisplay.o \
+	dm2kShellCommand.o \
+	dm2kStripChart.o \
+	dm2kText.o \
+	dm2kTextEntry.o \
+	dm2kTextUpdate.o \
+	dm2kValuator.o \
+	dm2kWidget.o \
+	objectPalette.o \
+	productDescription.o \
+	resourcePalette.o \
+	shared.o \
+	updateMonitors.o \
+	xgif.o \
+	clipbd.o \
+	dm2k_utils.o \
+	dm2kCdev.o \
+	dm2kCdevUtils.o	
+
+
+all: buildenums dm2k_cdev
+
+buildenums:
+	cd ./dm2k; ./makeEnums.pl <enums >enums.h; cd ..
+
+dm2k_cdev: $(OBJS)
+	rm -f $@
+	$(CXX) -o $@ $(OBJS) $(LIBS)
+
+clean:
+	rm -f *.o *~ core dm2k_cdev
+
+graphx_utils.o: graphX/utils.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c graphX/utils.c -o $@
+
+xc_utils.o:  xc/utils.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c xc/utils.c -o $@
+
+dm2k_utils.o: dm2k/utils.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c dm2k/utils.c -o $@
+
+
+%.o : dm2k/%.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o : graphX/%.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o : xc/%.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o : graphX/printUtils/%.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o : jpt/%.c
+	rm -f $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+%.o : dm2k/%.cc
+	rm -f $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@

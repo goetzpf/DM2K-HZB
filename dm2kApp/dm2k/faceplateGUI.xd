@@ -1,0 +1,1590 @@
+module 'FaceplateGUI'
+version = 43;
+applicationName = 'FaceplateGUI';
+sourceDirectory = '/import/epixF/u0/mks/romsky/dm2k/dm2k.2.4.9/';
+generateNameC = * 'faceplateGUI.c';
+generateNameCMainProgram = 'faceplate.c';
+generateNameStubs = 'faceplateGUICallback.c';
+generateNameExterns = 'faceplateGUI.h';
+generateNameResDB = 'faceplate.res';
+generateNameCPixmaps = 'faceplate_pixmaps.h';
+generateCHeaderFile = 'faceplateGUI.h';
+generateNameMakefile = 'Makefile';
+generateMask = 65544;
+useMask = 1;
+ansiC = 1;
+generateNewMakefile = 1;
+generateMakeTemplate = 0;
+useCPixmaps = 0;
+useUILPixmaps = 0;
+useCHeaders = 1;
+useCUILHeaders = 0;
+CPPFlavour = 0;
+useCPPHeaders = 0;
+useCPPHeadersMFCWindows = 0;
+useCPPHeadersMFCMotif = 0;
+object 'wFaceplateDlgShell' : XmDialogShell {
+	arguments {
+	lastGenName = 'wFaceplateDlgShell';
+	createPreludeStatus = 2;
+	preInstantiation = 'void create_shell5 (Widget parent)
+';
+	XmNallowShellResize = true;
+	XmNtitle = 'newFaceplate.mfp';
+	XmNlabelFontList =  * font('-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*');
+	XmNbuttonFontList =  * font('-*-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*');
+	XmNtextFontList =  * font('-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*');
+	XmNsecondary = 1;
+	};
+	callbacks {
+	XmNcreateCallback = '
+cbFaceplateDlg( FP_CREATE_DLG )
+';
+	XmNdestroyCallback = '
+cbFaceplateDlg( FP_DESTROY_DLG )
+';
+	};
+object 'wFaceplateDlg' : XmForm {
+	arguments {
+	lastGenName = 'wFaceplateDlg';
+	XmNautoUnmanage = false;
+	};
+object '3' : XmMenuBar {
+	arguments {
+	lastGenName = 'menuBar3';
+	};
+object '13' : XmCascadeButton {
+	arguments {
+	lastGenName = 'cascade13';
+	XmNx = 5;
+	XmNy = 5;
+	XmNlabelString = 'File ';
+	};
+object '3' : XmPulldownMenu {
+	arguments {
+	lastGenName = 'menu3';
+	};
+object 'wFileNew' : XmCascadeButton {
+	arguments {
+	lastGenName = 'wFileNew';
+	XmNlabelString = 'New ';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFile( FP_FILE_NEW )
+';
+	};
+};
+object 'wFileOpen' : XmCascadeButton {
+	arguments {
+	lastGenName = 'wFileOpen';
+	XmNlabelString = 'Open ';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFile( FP_FILE_OPEN )
+';
+	};
+};
+object '14' : XmSeparator {
+	arguments {
+	lastGenName = 'separator14';
+	};
+};
+object 'wFileSave' : XmCascadeButton {
+	arguments {
+	lastGenName = 'wFileSave';
+	XmNlabelString = 'Save ';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFile( FP_FILE_SAVE )
+';
+	};
+};
+object 'wFileSaveAs' : XmCascadeButton {
+	arguments {
+	lastGenName = 'wFileSaveAs';
+	XmNlabelString = 'Save As ...';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFile( FP_FILE_SAVEAS )
+';
+	};
+};
+object '15' : XmSeparator {
+	arguments {
+	lastGenName = 'separator15';
+	};
+};
+object 'wFileClose' : XmCascadeButton {
+	arguments {
+	lastGenName = 'wFileClose';
+	XmNlabelString = 'Close';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFile( FP_FILE_CLOSE )
+';
+	};
+};
+};
+};
+};
+object '1' : XmPanedWindow {
+	arguments {
+	lastGenName = 'panedWindow1';
+	};
+object '15' : XmFrame {
+	arguments {
+	lastGenName = 'frame15';
+	};
+object '41' : XmForm {
+	arguments {
+	lastGenName = 'form41';
+	};
+object '84' : XmLabel {
+	arguments {
+	lastGenName = 'label84';
+	XmNlabelString = 'Title:';
+	XmNalignment = 2;
+	};
+};
+object '4' : XmScrolledText {
+	arguments {
+	lastGenName = 'scrolledText4';
+	XmNheight =  * 64;
+	};
+object '29' : XmScrollBar {
+	arguments {
+	name = 'HorScrollBar';
+	lastGenName = 'scrollbar29';
+	};
+};
+object '30' : XmScrollBar {
+	arguments {
+	name = 'VertScrollBar';
+	lastGenName = 'scrollbar30';
+	};
+};
+object 'wComments' : XmText {
+	arguments {
+	lastGenName = 'wComments';
+	XmNeditMode = 0;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbGroupAttributes( FP_GROUP_ATTR_COMMENTS )
+';
+	};
+};
+};
+object '85' : XmLabel {
+	arguments {
+	lastGenName = 'label85';
+	XmNlabelString = 'Comments:';
+	XmNalignment = 2;
+	};
+};
+object 'wTitle' : XmTextField {
+	arguments {
+	lastGenName = 'wTitle';
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbGroupAttributes( FP_GROUP_ATTR_TITLE )
+';
+	};
+};
+object '86' : XmLabel {
+	arguments {
+	lastGenName = 'label86';
+	XmNlabelString = 'Notes:';
+	XmNalignment = 2;
+	};
+};
+object 'wNotes' : XmTextField {
+	arguments {
+	lastGenName = 'wNotes';
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbGroupAttributes( FP_GROUP_ATTR_NOTES )
+';
+	};
+};
+object '42' : XmForm {
+	arguments {
+	lastGenName = 'form42';
+	};
+object '1' : XmSeparator {
+	arguments {
+	lastGenName = 'separator1';
+	};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 1 0 2;
+	XmNleftAttachment = 1 0 2;
+	XmNbottomAttachment = 1 0 2;
+	XmNtopAttachment = 1 0 2;
+    };
+    };
+};
+object '43' : XmForm {
+	arguments {
+	lastGenName = 'form43';
+	};
+object '87' : XmLabel {
+	arguments {
+	lastGenName = 'label87';
+	XmNlabelString = 'x:';
+	};
+};
+object 'wX' : XmTextField {
+	arguments {
+	lastGenName = 'wX';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbGroupAttributes( FP_GROUP_ATTR_X )
+';
+	};
+};
+object 'wY' : XmTextField {
+	arguments {
+	lastGenName = 'wY';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbGroupAttributes( FP_GROUP_ATTR_Y )
+';
+	};
+};
+object '88' : XmLabel {
+	arguments {
+	lastGenName = 'label88';
+	XmNlabelString = 'width:';
+	};
+};
+object 'wHeight' : XmTextField {
+	arguments {
+	lastGenName = 'wHeight';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbGroupAttributes( FP_GROUP_ATTR_HEIGHT )
+';
+	};
+};
+object '89' : XmLabel {
+	arguments {
+	lastGenName = 'label89';
+	XmNlabelString = 'height:';
+	};
+};
+object 'wWidth' : XmTextField {
+	arguments {
+	lastGenName = 'wWidth';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbGroupAttributes( FP_GROUP_ATTR_WIDTH )
+';
+	};
+};
+object '90' : XmLabel {
+	arguments {
+	lastGenName = 'label90';
+	XmNlabelString = 'y:';
+	};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 1 0 8;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 1 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 8 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 3 24;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 0;
+	XmNleftAttachment = 3 6 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 -1;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 7 8;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 4 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 2 8;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    };
+};
+object '91' : XmLabel {
+	arguments {
+	lastGenName = 'label91';
+	XmNlabelString = 'Location:';
+	XmNalignment = 2;
+	};
+};
+object '3' : XmRadioBox {
+	arguments {
+	lastGenName = 'radioBox3';
+	XmNorientation = 2;
+	};
+object 'wInPixelTGL' : XmToggleButton GADGET {
+	arguments {
+	lastGenName = 'wInPixelTGL';
+	generateResName = true;
+	XmNx = 3;
+	XmNy = 3;
+	XmNshadowThickness =  * 0;
+	XmNlabelString = 'in pixel';
+	XmNfontList = font('-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*');
+	XmNset = true;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplateCoordinates( FP_INPIXEL )
+';
+	};
+};
+object 'wFractionBaseTGL' : XmToggleButton GADGET {
+	arguments {
+	lastGenName = 'wFractionBaseTGL';
+	generateResName = true;
+	XmNx = 105;
+	XmNy = 3;
+	XmNshadowThickness = 0;
+	XmNlabelString = 'fraction base';
+	XmNfontList = font('-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*');
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplateCoordinates( FP_FRACTIONBASE )
+';
+	};
+};
+};
+object '2' : XmLabel {
+	arguments {
+	lastGenName = 'label2';
+	XmNlabelString = 'Faceplate
+coordinates';
+	XmNalignment = 2;
+	};
+};
+object 'wFractionBaseTXT' : XmTextField {
+	arguments {
+	lastGenName = 'wFractionBaseTXT';
+	generateResName = true;
+	XmNsensitive = false;
+	XmNcolumns = 3;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplateFraction( FP_FACEPLATE_FRACTION_TEXT )
+';
+	};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 3 4;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 4;
+	XmNleftAttachment = 5 0 12;
+	XmNbottomAttachment = 3 7 2;
+	XmNtopAttachment = 3 6 4;
+    };
+    attachment {
+	XmNrightAttachment = 3 2;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 4 2;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 4;
+	XmNleftAttachment = 5 0 12;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 3 6;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0 37;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 4;
+	XmNleftAttachment = 5 0 12;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 3 4 4;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 2;
+	XmNleftAttachment = 1 0 2;
+	XmNbottomAttachment = 3 8 2;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 5 0 12;
+	XmNbottomAttachment = 3 12 2;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 3 8;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 4 8;
+	XmNtopAttachment = 4 8;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 5 0 12;
+	XmNbottomAttachment = 1 0 2;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 3 10 0;
+	XmNleftAttachment = 1 0 0;
+	XmNbottomAttachment = 4 10 0;
+	XmNtopAttachment = 4 10 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 10 4;
+	XmNbottomAttachment = 1 0 2;
+	XmNtopAttachment = 1 0 196;
+    };
+    };
+};
+object '92' : XmLabel {
+	arguments {
+	lastGenName = 'label92';
+	XmNchildType = 2;
+	XmNlabelString = 'Group attributes';
+	};
+};
+};
+object '16' : XmFrame {
+	arguments {
+	lastGenName = 'frame16';
+	XmNmarginHeight = 4;
+	XmNmarginWidth = 4;
+	};
+object '44' : XmForm {
+	arguments {
+	lastGenName = 'form44';
+	};
+object '8' : XmScrolledWindow {
+	arguments {
+	lastGenName = 'scrolledWin8';
+	XmNscrollingPolicy = 0;
+	};
+object '31' : XmScrollBar {
+	arguments {
+	name = 'HorScrollBar';
+	lastGenName = 'scrollbar31';
+	};
+};
+object '32' : XmScrollBar {
+	arguments {
+	name = 'VertScrollBar';
+	lastGenName = 'scrollbar32';
+	};
+};
+object 'wGroupForm' : XmForm {
+	arguments {
+	lastGenName = 'wGroupForm';
+	};
+object 'wGroupRowColumn' : XmRadioBox {
+	arguments {
+	lastGenName = 'wGroupRowColumn';
+	XmNorientation = 2;
+	XmNpacking = 1;
+	};
+object '2' : XmToggleButton GADGET {
+	arguments {
+	lastGenName = 'toggle2';
+	XmNlabelString = 'faceplate1';
+	XmNfontList = font('-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*');
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbWholeGroup( FP_WHOLE_GROUP )
+';
+	};
+};
+object '3' : XmToggleButton GADGET {
+	arguments {
+	lastGenName = 'toggle3';
+	XmNlabelString = 'faceplate2';
+	XmNfontList = font('-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*');
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbWholeGroup( FP_WHOLE_GROUP )
+';
+	};
+};
+};
+    attachments {
+    attachment {
+	XmNleftAttachment = 1 0;
+	XmNtopAttachment = 1 0;
+    };
+    };
+};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 1 0;
+	XmNleftAttachment = 1 0 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    };
+};
+object '93' : XmLabel {
+	arguments {
+	lastGenName = 'label93';
+	XmNchildType = 2;
+	XmNlabelString = 'Whole group';
+	};
+};
+};
+object '17' : XmFrame {
+	arguments {
+	lastGenName = 'frame17';
+	};
+object '94' : XmLabel {
+	arguments {
+	lastGenName = 'label94';
+	XmNchildType = 2;
+	XmNlabelString = 'Faceplate';
+	};
+};
+object '46' : XmForm {
+	arguments {
+	lastGenName = 'form46';
+	XmNfractionBase = 10;
+	};
+object '95' : XmLabel {
+	arguments {
+	lastGenName = 'label95';
+	XmNlabelString = 'Select location as a cell from the grid..';
+	XmNalignment = 0;
+	};
+};
+object '14' : XmRowColumn {
+	arguments {
+	lastGenName = 'rowcol14';
+	XmNspacing = 0;
+	XmNmarginWidth = 1;
+	XmNmarginHeight = 2;
+	XmNorientation = 1;
+	};
+object '15' : XmRowColumn {
+	arguments {
+	lastGenName = 'rowcol15';
+	XmNnumColumns =  * 8;
+	XmNspacing = 0;
+	XmNmarginWidth = 0;
+	XmNmarginHeight = 0;
+	XmNorientation = 2;
+	XmNpacking = 1;
+	};
+object 'wCell00' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell00';
+	XmNlabelString = '0,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_00 )
+';
+	};
+};
+object 'wCell10' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell10';
+	XmNx = 30;
+	XmNy = 0;
+	XmNlabelString = '1,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_10 )
+';
+	};
+};
+object 'wCell20' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell20';
+	XmNlabelString = '2,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_20 )
+';
+	};
+};
+object 'wCell30' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell30';
+	XmNlabelString = '3,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_30 )
+';
+	};
+};
+object 'wCell40' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell40';
+	XmNlabelString = '4,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_40 )
+';
+	};
+};
+object 'wCell50' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell50';
+	XmNlabelString = '5,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_50 )
+';
+	};
+};
+object 'wCell60' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell60';
+	XmNlabelString = '6,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_60 )
+';
+	};
+};
+object 'wCell70' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell70';
+	XmNwidth = 63;
+	XmNheight = 25;
+	XmNlabelString = '7,0';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_70 )
+';
+	};
+};
+};
+object '16' : XmRowColumn {
+	arguments {
+	lastGenName = 'rowcol16';
+	XmNx = 1;
+	XmNy = 28;
+	XmNwidth = 267;
+	XmNheight = 34;
+	XmNspacing = 0;
+	XmNmarginWidth = 0;
+	XmNmarginHeight = 0;
+	XmNorientation = 2;
+	};
+object 'wCell01' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell01';
+	XmNlabelString = '0,1';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_01 )
+';
+	};
+};
+object 'wCell11' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell11';
+	XmNx = 30;
+	XmNy = 0;
+	XmNlabelString = '1,1';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_11 )
+';
+	};
+};
+object 'wCell21' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell21';
+	XmNlabelString = '2,1';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_21 )
+';
+	};
+};
+object 'wCell31' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell31';
+	XmNlabelString = '3,1';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_31 )
+';
+	};
+};
+object 'wCell41' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell41';
+	XmNlabelString = '4,1';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_41 )
+';
+	};
+};
+object 'wCell51' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell51';
+	XmNlabelString = '5,1';
+	};
+};
+object 'wCell61' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell61';
+	XmNlabelString = '6,1';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_61 )
+';
+	};
+};
+object 'wCell71' : XmPushButton {
+	arguments {
+	lastGenName = 'wCell71';
+	XmNwidth = 39;
+	XmNheight = 27;
+	XmNlabelString = '7,1';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateCell( FP_FACEPLATE_CELL_71 )
+';
+	};
+};
+};
+};
+object '96' : XmLabel {
+	arguments {
+	lastGenName = 'label96';
+	XmNlabelString = 'Selected:';
+	XmNfontList = font('-adobe-helvetica-medium-o-*-*-12-*-*-*-*-*-*-*');
+	};
+};
+object '47' : XmForm {
+	arguments {
+	lastGenName = 'form47';
+	};
+object '97' : XmLabel {
+	arguments {
+	lastGenName = 'label97';
+	XmNlabelString = 'x:';
+	};
+};
+object 'wFaceplateX' : XmTextField {
+	arguments {
+	lastGenName = 'wFaceplateX';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplatePosSize( FP_FACEPLATE_X )
+';
+	};
+};
+object '98' : XmLabel {
+	arguments {
+	lastGenName = 'label98';
+	XmNlabelString = 'y:';
+	};
+};
+object 'wFaceplateY' : XmTextField {
+	arguments {
+	lastGenName = 'wFaceplateY';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplatePosSize( FP_FACEPLATE_Y )
+';
+	};
+};
+object '99' : XmLabel {
+	arguments {
+	lastGenName = 'label99';
+	XmNlabelString = 'width:';
+	};
+};
+object 'wFaceplateHeigth' : XmTextField {
+	arguments {
+	lastGenName = 'wFaceplateHeigth';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplatePosSize( FP_FACEPLATE_HEIGHT )
+';
+	};
+};
+object '100' : XmLabel {
+	arguments {
+	lastGenName = 'label100';
+	XmNlabelString = 'height:';
+	};
+};
+object 'wFaceplateWidth' : XmTextField {
+	arguments {
+	lastGenName = 'wFaceplateWidth';
+	XmNcolumns = 5;
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplatePosSize( FP_FACEPLATE_WIDTH )
+';
+	};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 4 3 0;
+	XmNleftAttachment = 1 0;
+	XmNbottomAttachment = 3 3 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 1 0;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 1 0 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 5 0 50;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 4 2 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 3 2 0;
+    };
+    attachment {
+	XmNrightAttachment = 4 7 0;
+	XmNleftAttachment = 4 7 0;
+	XmNbottomAttachment = 3 7 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 0;
+	XmNleftAttachment = 3 7 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 3 8 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 4 4;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 3 2 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 0;
+	XmNleftAttachment = 3 5 0;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    };
+};
+object '48' : XmForm {
+	arguments {
+	lastGenName = 'form48';
+	};
+object '101' : XmLabel {
+	arguments {
+	lastGenName = 'label101';
+	XmNlabelString = 'adl file:';
+	XmNalignment = 2;
+	};
+};
+object 'wSelectedAdlFile' : XmTextField {
+	arguments {
+	name = 'selectAdlFileText';
+	lastGenName = 'wSelectedAdlFile';
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplateAdlFile( FP_FACEPLATE_ADL_FILE )
+';
+	};
+};
+object 'wFaceplateAdlFileBrowse' : XmPushButton {
+	arguments {
+	lastGenName = 'wFaceplateAdlFileBrowse';
+	XmNlabelString = 'browse..';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateAdlFile( FP_FACEPLATE_ADL_FILE_BROWSE )
+';
+	};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 1 0;
+    };
+    attachment {
+	XmNrightAttachment = 3 3 4;
+	XmNleftAttachment = 3 1 0;
+	XmNbottomAttachment = 1 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 4;
+	XmNleftAttachment = 0 0 0;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    };
+};
+object '102' : XmLabel {
+	arguments {
+	lastGenName = 'label102';
+	XmNlabelString = '..or type in the position and  the size.';
+	XmNalignment = 0;
+	};
+};
+object '18' : XmFrame {
+	arguments {
+	lastGenName = 'frame18';
+	};
+object '49' : XmForm {
+	arguments {
+	lastGenName = 'form49';
+	};
+object '9' : XmScrolledWindow {
+	arguments {
+	lastGenName = 'scrolledWin9';
+	XmNspacing = 0;
+	XmNscrollingPolicy = 0;
+	};
+object '33' : XmScrollBar {
+	arguments {
+	name = 'HorScrollBar';
+	lastGenName = 'scrollbar33';
+	};
+};
+object '34' : XmScrollBar {
+	arguments {
+	name = 'VertScrollBar';
+	lastGenName = 'scrollbar34';
+	};
+};
+object 'wFaceplateMacroRowColomn' : XmRowColumn {
+	arguments {
+	lastGenName = 'wFaceplateMacroRowColomn';
+	XmNmarginWidth = 1;
+	XmNmarginHeight = 1;
+	};
+object '50' : XmForm {
+	arguments {
+	lastGenName = 'form50';
+	};
+object '60' : XmTextField {
+	arguments {
+	lastGenName = 'text60';
+	XmNeditable = false;
+	};
+};
+object '61' : XmTextField {
+	arguments {
+	lastGenName = 'text61';
+	};
+	callbacks {
+	XmNvalueChangedCallback = '
+cbFaceplateMacro( FP_FACEPLATE_MACRO_PARAM )
+';
+	};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 5 0 35;
+	XmNleftAttachment = 1 0;
+	XmNbottomAttachment = 1 0;
+	XmNtopAttachment = 1 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0;
+	XmNleftAttachment = 3 1;
+	XmNbottomAttachment = 1 0;
+	XmNtopAttachment = 1 0;
+    };
+    };
+};
+};
+};
+object '103' : XmLabel {
+	arguments {
+	lastGenName = 'label103';
+	XmNlabelString = 'name:';
+	};
+};
+object '104' : XmLabel {
+	arguments {
+	lastGenName = 'label104';
+	XmNlabelString = 'parameter:';
+	};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 1 0;
+	XmNleftAttachment = 1 0;
+	XmNbottomAttachment = 1 0;
+	XmNtopAttachment = 3 2 4;
+    };
+    attachment {
+	XmNleftAttachment = 1 0 8;
+	XmNtopAttachment = 1 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 8;
+	XmNleftAttachment = 0 0 0;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0 0;
+    };
+    };
+};
+object '105' : XmLabel {
+	arguments {
+	lastGenName = 'label105';
+	XmNchildType = 2;
+	XmNlabelString = 'macro substitutions';
+	};
+};
+};
+object 'wSelectedCell' : XmLabel {
+	arguments {
+	was_selected = true;
+	lastGenName = 'wSelectedCell';
+	XmNlabelString = '(-,-)';
+	};
+};
+object '19' : XmSeparator {
+	arguments {
+	lastGenName = 'separator19';
+	};
+};
+object '20' : XmSeparator {
+	arguments {
+	lastGenName = 'separator20';
+	};
+};
+object '21' : XmSeparator {
+	arguments {
+	lastGenName = 'separator21';
+	};
+};
+object 'wAddNewFaceplate' : XmPushButton {
+	arguments {
+	lastGenName = 'wAddNewFaceplate';
+	XmNlabelString = 'add new faceplate';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateSubmit( FP_FACEPLATE_ADD_NEW )
+';
+	};
+};
+object 'wApplayChanges' : XmPushButton {
+	arguments {
+	lastGenName = 'wApplayChanges';
+	XmNlabelString = 'apply changes';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateSubmit( FP_FACEPLATE_APPLY )
+';
+	};
+};
+object 'wDeleteFaceplate' : XmPushButton {
+	arguments {
+	lastGenName = 'wDeleteFaceplate';
+	XmNlabelString = 'delete faceplate';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateSubmit( FP_FACEPLATE_DELETE )
+';
+	};
+};
+object '51' : XmForm {
+	arguments {
+	lastGenName = 'form51';
+	generateResName = true;
+	XmNheight = 8;
+	};
+    attachments {
+    };
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 3 7;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 1 0;
+    };
+    attachment {
+	XmNrightAttachment = 3 7;
+	XmNleftAttachment = 1 0 2;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 3 1;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 0 0 0;
+	XmNtopAttachment = 3 2 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 1 0 2;
+	XmNbottomAttachment = 3 10 2;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 0;
+	XmNleftAttachment = 1 0 0;
+	XmNbottomAttachment = 3 11 4;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 3 7;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 3 4 2;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 4;
+	XmNleftAttachment = 5 0 4;
+	XmNbottomAttachment = 3 5 2;
+	XmNtopAttachment = 1 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 0 0 0;
+	XmNleftAttachment = 3 3 0;
+	XmNbottomAttachment = 4 3 0;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 4 2 0;
+	XmNleftAttachment = 1 0 2;
+	XmNbottomAttachment = 3 6 2;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 4 2 2;
+	XmNleftAttachment = 1 0 2;
+	XmNbottomAttachment = 3 5 2;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 4;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 3 14 4;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 5 0 3;
+	XmNleftAttachment = 5 0 1;
+	XmNbottomAttachment = 1 0 4;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 5 0 6;
+	XmNleftAttachment = 5 0 4;
+	XmNbottomAttachment = 1 0 4;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 5 0 9;
+	XmNleftAttachment = 5 0 7;
+	XmNbottomAttachment = 1 0 4;
+	XmNtopAttachment = 0 0 0;
+    };
+    attachment {
+	XmNrightAttachment = 3 7 4;
+	XmNleftAttachment = 1 0 4;
+	XmNbottomAttachment = 3 9 0;
+	XmNtopAttachment = 3 3 4;
+    };
+    };
+};
+};
+};
+    attachments {
+    attachment {
+	XmNrightAttachment = 1 0;
+	XmNleftAttachment = 1 0;
+	XmNbottomAttachment = 2 0 -33;
+	XmNtopAttachment = 1 0;
+    };
+    attachment {
+	XmNrightAttachment = 1 0 0;
+	XmNleftAttachment = 1 0;
+	XmNbottomAttachment = 1 0 0;
+	XmNtopAttachment = 3 1 0;
+    };
+    };
+};
+};
+object 'adlSelectDlg' : XmDialogShell {
+	arguments {
+	name = 'adlSelectDlg';
+	lastGenName = 'adlSelectDlg';
+	createPreludeStatus = 2;
+	preInstantiation = 'void create_adlSelectDlg (Widget parent)
+';
+	XmNallowShellResize = true;
+	XmNtitle = 'Select Adl File';
+	};
+object '3' : XmNewFileSelectionBox {
+	arguments {
+	lastGenName = 'fileSelect3';
+	XmNdirMask = '/applic/graphic/*.adl';
+	XmNdirSpec = '/applic/graphic/';
+	XmNdirectory = '/applic/graphic/';
+	XmNpattern = '*.adl';
+	};
+object '28' : XmPushButton GADGET {
+	arguments {
+	name = 'Apply';
+	lastGenName = 'button28';
+	};
+};
+object '29' : XmPushButton GADGET {
+	arguments {
+	name = 'Cancel';
+	lastGenName = 'button29';
+	XmNlabelString = 'Cancel';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbAdlFileSelect( FP_ADL_FILE_SELECT_CANCEL )
+';
+	};
+};
+object '30' : XmPushButton GADGET {
+	arguments {
+	name = 'Help';
+	lastGenName = 'button30';
+	};
+};
+object '5' : XmScrolledList {
+	arguments {
+	lastGenName = 'scrolledList5';
+	};
+object '13' : XmScrollBar {
+	arguments {
+	name = 'HorScrollBar';
+	lastGenName = 'scrollbar13';
+	};
+};
+object '14' : XmScrollBar {
+	arguments {
+	name = 'VertScrollBar';
+	lastGenName = 'scrollbar14';
+	};
+};
+object '5' : XmList {
+	arguments {
+	name = 'ItemsList';
+	lastGenName = 'list5';
+	};
+};
+};
+object '26' : XmLabel GADGET {
+	arguments {
+	name = 'Items';
+	lastGenName = 'label26';
+	};
+};
+object '31' : XmPushButton GADGET {
+	arguments {
+	name = 'OK';
+	lastGenName = 'button31';
+	XmNlabelString = 'OK';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbAdlFileSelect( FP_ADL_FILE_SELECT_OK )
+';
+	};
+};
+object '27' : XmLabel GADGET {
+	arguments {
+	name = 'Selection';
+	lastGenName = 'label27';
+	};
+};
+object '6' : XmSeparator GADGET {
+	arguments {
+	name = 'Separator';
+	lastGenName = 'separator6';
+	};
+};
+object 'adlSelectDlgSelection' : XmTextField {
+	arguments {
+	name = 'Text';
+	lastGenName = 'adlSelectDlgSelection';
+	};
+};
+object '28' : XmLabel GADGET {
+	arguments {
+	name = 'FilterLabel';
+	lastGenName = 'label28';
+	};
+};
+object '19' : XmTextField {
+	arguments {
+	name = 'FilterText';
+	lastGenName = 'text19';
+	};
+};
+object '29' : XmLabel GADGET {
+	arguments {
+	name = 'Dir';
+	lastGenName = 'label29';
+	};
+};
+object '6' : XmScrolledList {
+	arguments {
+	lastGenName = 'scrolledList6';
+	};
+object '15' : XmScrollBar {
+	arguments {
+	name = 'HorScrollBar';
+	lastGenName = 'scrollbar15';
+	};
+};
+object '16' : XmScrollBar {
+	arguments {
+	name = 'VertScrollBar';
+	lastGenName = 'scrollbar16';
+	};
+};
+object '6' : XmList {
+	arguments {
+	name = 'DirList';
+	lastGenName = 'list6';
+	};
+};
+};
+};
+};
+object 'wSelectFaceplateShell' : XmDialogShell {
+	arguments {
+	lastGenName = 'wSelectFaceplateShell';
+	createPreludeStatus = 2;
+	preInstantiation = 'void create_shell2 (Widget parent)
+';
+	XmNallowShellResize = true;
+	XmNtitle = 'Select Faceplace File';
+	};
+object 'wSelectFaceplateDlg' : XmNewFileSelectionBox {
+	arguments {
+	lastGenName = 'wSelectFaceplateDlg';
+	XmNpattern = '*.mfp';
+	};
+object '24' : XmPushButton GADGET {
+	arguments {
+	name = 'Apply';
+	lastGenName = 'button24';
+	};
+};
+object '25' : XmPushButton GADGET {
+	arguments {
+	name = 'Cancel';
+	lastGenName = 'button25';
+	XmNlabelString = 'Cancel';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateFileSelect( FP_FILE_SELECT_CANCEL )
+';
+	};
+};
+object '26' : XmPushButton GADGET {
+	arguments {
+	name = 'Help';
+	lastGenName = 'button26';
+	generateResName = true;
+	XmNsensitive = false;
+	};
+};
+object '3' : XmScrolledList {
+	arguments {
+	lastGenName = 'scrolledList3';
+	};
+object '9' : XmScrollBar {
+	arguments {
+	name = 'HorScrollBar';
+	lastGenName = 'scrollbar9';
+	};
+};
+object '10' : XmScrollBar {
+	arguments {
+	name = 'VertScrollBar';
+	lastGenName = 'scrollbar10';
+	};
+};
+object '3' : XmList {
+	arguments {
+	name = 'ItemsList';
+	lastGenName = 'list3';
+	};
+};
+};
+object '22' : XmLabel GADGET {
+	arguments {
+	name = 'Items';
+	lastGenName = 'label22';
+	};
+};
+object '27' : XmPushButton GADGET {
+	arguments {
+	name = 'OK';
+	lastGenName = 'button27';
+	XmNlabelString = 'OK';
+	};
+	callbacks {
+	XmNactivateCallback = '
+cbFaceplateFileSelect( FP_FILE_SELECT_OK )
+';
+	};
+};
+object '23' : XmLabel GADGET {
+	arguments {
+	name = 'Selection';
+	lastGenName = 'label23';
+	};
+};
+object '5' : XmSeparator GADGET {
+	arguments {
+	name = 'Separator';
+	lastGenName = 'separator5';
+	};
+};
+object '6' : XmTextField {
+	arguments {
+	name = 'Text';
+	lastGenName = 'text6';
+	};
+};
+object '24' : XmLabel GADGET {
+	arguments {
+	name = 'FilterLabel';
+	lastGenName = 'label24';
+	};
+};
+object '13' : XmTextField {
+	arguments {
+	name = 'FilterText';
+	lastGenName = 'text13';
+	};
+};
+object '25' : XmLabel GADGET {
+	arguments {
+	name = 'Dir';
+	lastGenName = 'label25';
+	};
+};
+object '4' : XmScrolledList {
+	arguments {
+	lastGenName = 'scrolledList4';
+	};
+object '11' : XmScrollBar {
+	arguments {
+	name = 'HorScrollBar';
+	lastGenName = 'scrollbar11';
+	};
+};
+object '12' : XmScrollBar {
+	arguments {
+	name = 'VertScrollBar';
+	lastGenName = 'scrollbar12';
+	};
+};
+object '4' : XmList {
+	arguments {
+	name = 'DirList';
+	lastGenName = 'list4';
+	};
+};
+};
+};
+};
+end module;

@@ -1,0 +1,61 @@
+make depend on HP with HP-vendored C-compiler:
+
+   > make depends ANSI=GCC
+
+Builds with
+
+   * HP-vendored C-compiler
+   * Suns WorkShop Compilers
+   * gcc (2.7.2.3)			ANSI=GCC	usually more and better warnings...
+
+
+Builds on
+
+
+
+   * HP-UX
+
+   * Linux
+        builds and runs with lesstif, best results are aquired with lesstif >= 0.88.9        
+
+   * Solaris
+
+
+##### Variables to control building of dm2k
+### 
+### CDEV		if this variable is set, it should point to the
+###			installation directory of the cdev-distribution
+###   CDEVSHLIB		setting this variable is implied by setting
+###			CDEV. It should point to the directory where 
+###			the cdev-library is to be found.
+### 
+### XRTGRAPH		holds the directory of the XRT/graph installation.
+###			If this variable is set, dm2k is built with
+###			XRT/graph support instead of JPT.
+###
+### DM2K_HELP_PATH	Is the stem of the URL that holds the
+###			dm2k-documentation (default is
+###			http://help.bessy.de/Dm2k).
+###
+### STATIC_BUILD	controls whether to build dm2k statically or with
+### 			shared libraries. The default setting is somewhere
+### 			in your local/global config-directory.
+###
+### XPM_INC, XPM_LIB	The existence of teh variable XPM_INC forces
+###			compilation of dm2k with xpm-support. In this case,
+###			XPM_INC should point to the directory where the
+###			file xpm.h (or X11/xpm.h) is located while XPM_LIB
+###			points to the directory of the file libXpm.(a|sl|so)
+###
+### PURIFY		To debug dm2k with purify, set this variable to the
+###			command-name to prepend to the linker-call
+###			(e.g. "purify"). Setting PURIFY automatically sets
+###			STATIC_BUILD to YES!
+###
+### The name of the produced binary is constructed teh following way.
+###
+### 	+ The stem is always "dm2k"
+###	+ if dm2k is built with cdev-support, "_cdev" is appended
+###	+ if dm2k is built statically, ".static" is appended
+###	+ if dm2k is to be debugged with purify ".pure" is appended
+

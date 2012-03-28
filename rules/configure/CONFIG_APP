@@ -1,0 +1,23 @@
+# CONFIG_APP
+# do not add definitions to this file, use CONFIG instead
+
+include $(RULES)/configure/RELEASE
+-include $(RULES)/configure/RELEASE.$(EPICS_HOST_ARCH)
+-include $(RULES)/configure/RELEASE.Common.$(T_A)
+-include $(RULES)/configure/RELEASE.$(EPICS_HOST_ARCH).$(T_A)
+
+CONFIG=$(EPICS_BASE)/configure
+include $(CONFIG)/CONFIG
+
+INSTALL_LOCATION = $(TOP)
+ifdef INSTALL_LOCATION_APP
+INSTALL_LOCATION = $(INSTALL_LOCATION_APP)
+endif
+
+ifdef T_A
+-include $(RULES)/configure/O.$(T_A)/CONFIG_APP_INCLUDE
+endif
+
+ifdef T_A
+include $(COMMON_DIR)/created_vars.mk
+endif

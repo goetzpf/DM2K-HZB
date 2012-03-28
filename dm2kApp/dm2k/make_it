@@ -1,0 +1,76 @@
+#!/usr/bin/zsh
+# -*- shell-script -*-
+
+NEW_CDEV=YES
+module add epics
+
+DM2K_V=2.5.3
+
+cd /home/unix/birke/work/Applications/extensions/dm2k-${DM2K_V}
+
+make D="graphX graphX/printUtils xc libUnix jpt"
+cd dm2k
+
+STATIC=STATIC_BUILD=YES
+
+if [[ "$SYSTEM" == "HP-UX" ]]
+then
+  DM2K_A=hp700
+  unset LPATH SHLIB_PATH
+
+  bin=../../bin/$DM2K_A
+
+  # no cdev
+  make clean
+  eval make -j 3 CDEV=		; (cd  $bin; mv dm2k dm2k-$DM2K_V-$DM2K_A)
+  eval make -j 3 CDEV= $STATIC	; (cd  $bin; mv dm2k.static dm2k-$DM2K_V-$DM2K_A.static)
+
+  # cdev
+  make clean
+  eval make -j 3		; (cd  $bin; mv dm2k_cdev dm2k_cdev-$DM2K_V-$DM2K_A)
+#  eval make -j 3 $STATIC	; (cd  $bin; mv dm2k_cdev.static dm2k_cdev-$DM2K_V-$DM2K_A.static)
+
+  make clean
+  echo "##################################################################################"
+fi
+
+if [[ "$SYSTEM" == "SunOS" ]]
+then
+  DM2K_A=solaris
+  XPM="XPM_INC=/opt/SUNWspro/WS4.0/contrib/xpm/lib XPM_LIB=/opt/SUNWspro/WS4.0/user_widgets/obj"
+  bin=../../bin/$DM2K_A
+
+#  make clean
+  eval make $XPM CDEV=		; (cd  $bin; mv dm2k dm2k-$DM2K_V-$DM2K_A-Jpt)
+#  eval make $XPM CDEV= $STATIC	; (cd  $bin; mv dm2k.static dm2k-$DM2K_V-$DM2K_A-Jpt.static)
+
+  make clean
+  eval make $XPM		; (cd  $bin; mv dm2k_cdev dm2k_cdev-$DM2K_V-$DM2K_A-Jpt)
+#  eval make $XPM $STATIC	; (cd  $bin; mv dm2k_cdev.static dm2k_cdev-$DM2K_V-$DM2K_A-Jpt.static)
+
+  make clean
+  echo "##################################################################################"
+fi
+
+if [[ "$SYSTEM" == "Linux" ]]
+then
+  DM2K_A=Linux
+  STATIC="ACC_SFLAGS_YES=-static $STATIC"
+  bin=../../bin/$DM2K_A
+
+  make clean
+  eval make CDEV=		; (cd  $bin; mv dm2k dm2k-$DM2K_V-$DM2K_A-Jpt)
+  eval make CDEV= $STATIC	; (cd  $bin; mv dm2k.static dm2k-$DM2K_V-$DM2K_A-Jpt.static)
+
+  make clean
+  eval make			; (cd  $bin; mv dm2k_cdev dm2k_cdev-$DM2K_V-$DM2K_A-Jpt)
+  eval make $STATIC		; (cd  $bin; mv dm2k_cdev.static dm2k_cdev-$DM2K_V-$DM2K_A-Jpt.static)
+
+  make clean
+
+  ssh ocean `pwd`/$0:t
+
+  rsh fog `pwd`/$0:t
+
+  echo "##################################################################################"
+fi

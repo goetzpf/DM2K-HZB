@@ -1,0 +1,34 @@
+# something that (hopefully) doesn't occur in a variable name
+TAG := ---
+
+# default is to generate variable IOCS
+ifeq ($(strip $(filter IOCS,$(CREATED_VARS))),)
+CREATED_VARS += IOCS
+endif
+
+CREATEVARS_PATHS = $(INSTALL_BIN)
+
+ifneq ($(strip $(APP_DEPENDS)),)
+CREATEVARS_PATHS += $(APP_DEPENDS:%=$(TOP)/%)
+endif
+
+CREATEVARS_PATH = $(call $(list_to_searchpath),$(CREATEVARS_PATHS))
+
+# separate variables X for which there is a CREATEVAR_X specified...
+HAS_NO_CREATEVAR = $(patsubst %$(TAG),%,$(filter %$(TAG), $(foreach q, $(CREATED_VARS), $q$(TAG)$(firstword $(CREATEVAR_$q)))))
+
+# ...from those who have not
+HAS_CREATEVAR = $(filter-out $(HAS_NO_CREATEVAR), $(CREATED_VARS))
+
+# our default to create a variable X needs X_QUERY to be defined
+HAS_NO_QUERY = $(patsubst %$(TAG),%,$(foreach q, $(HAS_NO_CREATEVAR), $q$(TAG)$(firstword $($q_QUERY))))
+
+USE_DEFAULT_CREATEVAR = $(filter-out $(HAS_NO_QUERY), $(HAS_NO_CREATEVAR))
+
+ifdef T_A
+$(COMMON_DIR)/created_vars.mk:
+	@echo generating created_vars.mk
+	echo > $@
+	$(foreach q,$(USE_DEFAULT_CREATEVAR),x="$q+=`$(DB_REQUEST) -x $(CREATEVARS_DB_PROFILE) $($q_QUERY)`" && echo $$x >> $@ &&) true
+	PATH=$$PATH:$(CREATEVARS_PATH); $(foreach q,$(HAS_CREATEVAR),x="$q+=`$(CREATEVAR_$q)`" && echo $$x >> $@ &&) true
+endif

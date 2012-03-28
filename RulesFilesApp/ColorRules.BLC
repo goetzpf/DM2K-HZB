@@ -1,0 +1,112 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; This file contains color rule sets used in MEDM.
+; You can edit it to add new sets or replace existents.
+;
+; Format of the file:
+;  - any information started by ``;'' and up to the end of a line is considered
+;    as a commentary;
+;
+;  - each color rule set begins with keyword ``colorRule'' followed by
+;    the name of a color rule set, it MUST be one word without spaces 
+;    (set_Cryogenic, my-color-rule, 13891235%^&*=\);
+;
+;  - each entry in a color rule set has to be on one line and 
+;    to have three numbers:
+;    lowest, highest limits of a value, and an index of a color in a color map;
+;
+;  - a color rule set can have any amount of rules within itself
+;    (not just 16 as it was before);
+;
+;  - a color rule set finished by either a starting new rule set or by 
+;    the end of file;
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;  Standart colormap for MEDM is here.
+;
+;  Note:
+;       If You want to see a color on Your screen, please, start medm and open 
+;       Color Palette. Colors on the Color Palette are numerated by columns 
+;       from left to right. Within column it goes from up to down.
+;
+;
+;N      [red] [green] [blue]
+;
+;0	 255,   255,   255     white
+;1	 236,   236,   236
+;2	 218,   218,   218
+;3	 200,   200,   200
+;4	 187,   187,   187
+;5	 174,   174,   174
+;6	 158,   158,   158     gray from white to black
+;7	 145,   145,   145
+;8	 133,   133,   133
+;9	 120,   120,   120
+;10	 105,   105,   105
+;11	 90,    90,    90
+;12	 70,    70,    70
+;13	 45,    45,    45
+;14	 0,     0,     0      black
+;15	 0,     216,   0      green
+;16	 30,    187,   0
+;17	 51,    153,   0
+;18	 45,    127,   0
+;19	 33,    108,   0
+;20	 253,   0,     0      red
+;21	 222,   19,    9
+;22	 190,   25,    11
+;23	 160,   18,    7
+;24	 130,   4,     0 
+;25	 88,    147,   255    blue
+;26	 89,    126,   225
+;27	 75,    110,   199
+;28	 58,    94,    171
+;29	 39,    84,    141
+;30	 251,   243,   74     yellow
+;31	 249,   218,   60
+;32	 238,   182,   43
+;33	 225,   144,   21
+;34	 205,   97,    0
+;35	 255,   176,   255    violet
+;36	 214,   127,   226
+;37	 174,   78,    188
+;38	 139,   26,    150
+;39	 97,    10,    117
+;40	 164,   170,   255    blue
+;41	 135,   147,   226
+;42	 106,   115,   193
+;43	 77,    82,    164
+;44	 52,    51,    134
+;45	 199,   187,   109    brown
+;46	 183,   157,   92
+;47	 164,   126,   60
+;48	 125,   86,    39
+;49	 88,    52,    15
+;50	 153,   255,   255    light blue
+;51	 115,   223,   255
+;52	 78,    165,   249
+;53	 42,    99,    228
+;54	 10,    0,     184
+;55	 235,   241,   181    sand 
+;56	 212,   219,   157
+;57	 187,   193,   135
+;58	 166,   164,   98
+;59	 139,   130,   57
+;60	 115,   255,   107    light green
+;61	 82,    218,   59
+;62	 60,    180,   32
+;63	 40,    147,   21
+;64	 26,    115,   9
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+colorRule Severity
+	0	0	14
+	1	1	30
+	2	2	20
+	3	3	0
+
+colorRule EnergyRange
+	0	0	4
+	1	1	20
+	2	2	20
+	3	3	30

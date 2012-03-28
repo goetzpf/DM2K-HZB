@@ -1,0 +1,102 @@
+This is a beta release for dm2k_cdev which is a modified dm2k (dm2k-2.5.0a)
+using cdev (1.7) instead of using channel access library.
+
+1) Enhancements over dm2k:
+	
+	a) dm2k_cdev uses cdev instead of channel access as network 
+	communication layer. By doing so, it enables dm2k_cdev to display
+	and monitor data not only from channel access servers but also from
+	other network servers that have cdev interface.
+
+	b) A bug in stripChart related to X window timer is fixed.
+
+	c) A bug which is related to the limit on the open file descriptors
+	has been fixed.
+
+	d) dm2k_cdev supports more flexible data monitoring/controlling scheme.
+	In the existing dm2k, one can only specify channel name to monitor.
+	Now in addition to the above, one can  specify "device verb attribute"
+	to a display. For example: "cdev_ai0 get VAL" or "cdev_ai0 
+	monitorOn VAL". 
+
+2) How to install:
+
+	dm2k_cdev can be installed in two ways. 
+
+	1) You can unpack dm2k_cdev entirely in the epics distribution
+	under $EPICS/extensions/src. The take a look at a 
+	dm2k_cdev/dm2k/Makefile.Unix and make sure all flags are correct.
+	Then typing gmake will do it. The dm2k_cdev will be installed
+	in $EPICS/extesions/$(ARCH)/bin.
+
+	2) You can unpack dm2k_cdev anywhere. In the top directory there
+	is a _makef which is a Makefile for people without the whole EPICS
+	distribution. Take look at a _makef and choose a correct operating
+	system, and type make -f _makef. The dm2k_cdev will be installed
+	in the same directory. The _makef is a quick hack for now. 
+
+	Note: You may have to get EPICS license to run dm2k_cdev. 
+
+	3) Currently dm2k_cdev has been compiled and tested on hpux09,
+	hpux10, solaris-2.x and Linux-2.0.x
+
+3) How to use dm2k_cdev:
+
+	Complete documentation on dm2k can be found at
+	http://www.aps.anl.gov/asd/controls/epics/EpicsDocumentation/ExtensionsManuals/MEDM/MEDM.html#Contents.
+
+	The dm2k_cdev works with existing adl files created by existing
+	dm2k. In addition, the dm2k_cdev also allows one to use 
+	"device verb attribute" to specify how to display an attribute.
+
+4) Requirements for cdev services:
+
+	1)In order to use dm2k_cdev with a cdev service, the service has to 
+	support message "get attribute" at least. 
+
+	2)If one wants to use dm2k_cdev to monitor a set of strings as choices,
+	the service has to return a cdevData with "displayHigh", "displayLow",
+	and "value" tags in it. For Example:
+
+	char** selections;
+	int    numselections = 10;
+	cdevData result;
+	result.insert ("value", selections);
+	result.insert ("displayHigh", numselections - 1);
+	result.insert ("displayLow", 0);
+
+
+	If returned dada has no "displayHigh" and "displayLow", the dm2k_cdev
+	will not display 'selections' properly.
+
+5) Files that are changed or added:
+
+	I have only tested Makefile.Unix using my old epics distributions.
+	dm2k/Makefile.Unix (changed, add DM2K_CDEV flag)
+	dm2k/dm2kStripChart.c (changed, line 1230 add psc->timerid = 0 and
+			       DM2K_CDEV conditional compile)
+	dm2k/dm2k.c (changed, DM2K_CDEV conditional compile)
+	dm2k/dm2k.h (chnaged, DM2K_CDEV conditional compile)
+	dm2k/dm2kChoiceButton.c (changed, DM2K_CDEV conditional compile)
+	dm2k/dm2kMenu.c	(changed, DM2K_CDEV conditional compile)
+	dm2k/dm2kMessageButton.c (changed, DM2K_CDEV conditional compile)
+	dm2k/dm2kGetArchiveData.c (I have no idea what this file does, so I
+				   use DM2K_CDEV to comment out whole block,
+				   bessy people can tell me what to do with it)
+	dm2k/help.c (changed, DM2K_CDEV conditional compile)
+	dm2k/proto.h (changed, DM2K_CDEV conditional compile)
+	dm2k/resourcePalette.c (changed, DM2K_CDEV conditional compile)
+	jpt/DataHandle.c (Fix a bug with a null pointer)
+			1250d1249
+			<   if (cname) {
+			1261,1263d1259
+			<   }
+			<   else
+			<     return pp->default_color[7];
+			1275d1270
+			<   if (cname) {
+			1286,1288d1280
+			<   }
+			<   else
+			<     return pp->default_color[6];
+	

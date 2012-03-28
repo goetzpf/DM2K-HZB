@@ -1,0 +1,122 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; This file contains graphic rule sets used in MEDM.
+; You can edit it to add new sets or replace existents.
+;
+; Format of the file:
+;  - any information started by ``;'' and up to the end of a line is considered
+;    as a commentary;
+;
+;  - each graphic rule set begins with keyword ``graphicRule'' followed by
+;    the name of a graphic rule set, it MUST be one word without spaces 
+;    (set_Cryogenic, my-graphic-rule, 13891235%^&*=\);
+;
+;  - a graphic rule set finished by either a starting new rule set or by 
+;    the end of file;
+;
+; Syntax of a rule:
+;  - each line of a rule contains at least 4 elements (5th is optional)
+;	<lowerBoundary> <upperBoundary> <adl file name> <element name> <macro>
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+graphicRule mono_calibration1
+	0 0 monocfg_sw_calib1.adl  no_ID      
+	1 1 monocfg_sw_calib1.adl  simple_ID  
+	2 2 monocfg_sw_calib1.adl  adv_ID     
+
+graphicRule mono_calibration2
+	0 0 monocfg_sw_calib2.adl  no_ID      
+	1 1 monocfg_sw_calib2.adl  simple_ID  
+	2 2 monocfg_sw_calib2.adl  adv_ID     
+
+graphicRule mono_action_ref
+	0 0 monocfg_sw_action.adl  refon   
+	1 1 monocfg_sw_action.adl  refoff  
+
+graphicRule mono_action_file
+	0 0 monocfg_sw_action.adl  fileon   
+	1 1 monocfg_sw_action.adl  fileoff  
+
+graphicRule mono_grat_enc_U1251PGM1
+	0 0 monocfg_sw_spec.adl GratingEncoderOn MTYP=MCFG1OU312L
+	1 1 monocfg_sw_spec.adl GratingEncoderOff MTYP=MCFG1OU312L
+
+graphicRule mono_id_calib_U1251PGM1
+	0 0 monocfg_sw_spec.adl dipol MTYP=MCFG1OU312L
+	1 1 monocfg_sw_spec.adl idtyp_u MTYP=MCFG1OU312L
+	2 2 monocfg_sw_spec.adl idtyp_ue MTYP=MCFG1OU312L
+
+graphicRule mono_setup_err
+	 0  0 monocfg_setup_err.adl null
+	 1  1 monocfg_setup_err.adl eins
+	 2  2 monocfg_setup_err.adl zwei
+	 3  3 monocfg_setup_err.adl drei
+	 4  4 monocfg_setup_err.adl vier
+	 5  5 monocfg_setup_err.adl fuenf
+	 6  6 monocfg_setup_err.adl sechs
+	 7  7 monocfg_setup_err.adl sieben
+	 8  8 monocfg_setup_err.adl acht
+	 9  9 monocfg_setup_err.adl neun
+	10 10 monocfg_setup_err.adl zehn
+	11 11 monocfg_setup_err.adl elf
+	12 12 monocfg_setup_err.adl zwoelf
+	13 13 monocfg_setup_err.adl dreizehn
+	14 14 monocfg_setup_err.adl vierzehn
+	15 15 monocfg_setup_err.adl fuenfzehn
+
+
+graphicRule mono_init_err
+	 0  0 monocfg_init_err.adl null
+	 1  1 monocfg_init_err.adl eins
+	 2  2 monocfg_init_err.adl zwei
+	 3  3 monocfg_init_err.adl drei
+	 4  4 monocfg_init_err.adl vier
+	 5  5 monocfg_init_err.adl fuenf
+	 6  6 monocfg_init_err.adl sechs
+	 7  7 monocfg_init_err.adl sieben
+	 8  8 monocfg_init_err.adl acht
+	 9  9 monocfg_init_err.adl neun
+	10 10 monocfg_init_err.adl zehn
+	11 11 monocfg_init_err.adl elf
+	12 12 monocfg_init_err.adl zwoelf
+	13 13 monocfg_init_err.adl dreizehn
+	14 14 monocfg_init_err.adl vierzehn
+	15 15 monocfg_init_err.adl fuenfzehn
+
+graphicRule Spm_Scale
+         0  0.99 spm_scale.adl nullfuenf
+         1  1.99 spm_scale.adl eins
+         2  2.99 spm_scale.adl zwei
+         3  3.99 spm_scale.adl fuenf
+         4  4.99 spm_scale.adl zehn
+graphicRule Checkbox
+	0 0 grCheckBox.adl Cancel
+	1 1 grCheckBox.adl OK
+
+graphicRule Checkbox_invertiert
+	0 0 grCheckBox.adl OK
+	1 1 grCheckBox.adl Cancel
+
+graphicRule ErrorLed
+	0 0 grFlash.adl Error ALS=TAKTY11B001L:1s
+	1 1 grFlash.adl OK
+
+graphicRule SimpleStatus
+	0 0 grComponets.adl LedRed
+	1 1 grComponets.adl LedGreen
+
+graphicRule SimpleStatusInvers
+	0 0 grComponets.adl LedGreen
+	1 1 grComponets.adl LedRed
+
+graphicRule GpntStatus
+	0 0 grComponets.adl GpntErr
+	1 1 grComponets.adl GpntOk
+
+graphicRule SimpleSsvSensor
+	0 0 grComponets.adl Empty
+	1 1 grComponets.adl LedRed
+
+graphicRule Messroehre
+	0 0 grComponets.adl MrErr
+	1 1 grComponets.adl MrOk
+	

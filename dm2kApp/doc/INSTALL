@@ -1,0 +1,249 @@
+##############
+# dm2k 2.5.2 #
+##############
+
+Installation
+************
+
+This distribution of dm2k should install in various versions of
+epics-application-development-environments. As it is only tested with the
+current version of our development-environment (makeBaseApp.pl, using
+"Makefile.Host", not "Makefile.Unix"), minor changes may have to be applied
+to the makefiles.
+
+############################################################################
+#######################	PLEASE NOTE... #####################################
+############################################################################
+#### that the Makefile/config-file structures that use "Makefile.Unix"  ####
+#### to build the host-side applications are no longer supported!       ####
+#### Although I try to keep the "Makefile.Unix" up to date, it may not  ####
+#### do what you'd expect...                                            ####
+############################################################################
+############################################################################
+
+So you may untar the distributed archive in either
+
+   * the directory where all the EPICS-extensions are located
+     (sth. like <...>/extensions/src/)
+
+or * in a toplevel-directory populated with a config-directory,
+     a Makefile... by "makeBaseApp.pl"
+
+What the supplied configuration should do if you run 'make' in the
+top-directory (.../dm2k-2.5.2/) is the following:
+
+   a. build the utility-libraries in the following order
+
+        graphX graphX/printUtils xc libUnix jpt
+
+      jpt is only built if XRT/graph isn't available (see "Cartesian Plot")
+
+   b. then build the main application in
+
+        dm2k
+
+##### Variables to control build of dm2k
+### 
+### CDEV                if this variable is set, it should point to the
+###                     installation directory of the cdev-distribution
+###   CDEVSHLIB         setting this variable is implied by setting
+###                     CDEV. It should point to the directory where 
+###                     the cdev-library is to be found.
+### 
+### XRTGRAPH            holds the directory of the XRT/graph installation.
+###                     If this variable is set, dm2k is built with
+###                     XRT/graph support instead of JPT.
+###
+### DM2K_HELP_PATH      Is the stem of the URL that holds the
+###                     dm2k-documentation (default is
+###                     http://help.bessy.de/Dm2k).
+###
+### STATIC_BUILD        controls whether to build dm2k statically or with
+###                     shared libraries. The default setting is somewhere
+###                     in your local/global config-directory.
+###
+### XPM_INC, XPM_LIB    The existence of teh variable XPM_INC forces
+###                     compilation of dm2k with xpm-support. In this case,
+###                     XPM_INC should point to the directory where the
+###                     file xpm.h (or X11/xpm.h) is located while XPM_LIB
+###                     points to the directory of the file libXpm.(a|sl|so)
+###
+### PURIFY              To debug dm2k with purify, set this variable to the
+###                     command-name to prepend to the linker-call
+###                     (e.g. "purify"). Setting PURIFY automatically sets
+###                     STATIC_BUILD to YES!
+###
+### The name of the produced binary is constructed the following way.
+###
+###     + The stem is always "dm2k"
+###     + if dm2k is built with cdev-support, "_cdev" is appended
+###     + if dm2k is built statically, ".static" is appended
+###     + if dm2k is to be debugged with purify ".pure" is appended
+
+
+Fonts
+=====
+
+The directory .../dm2k-2.5.2/dm2k/fonts.alias/ contains some sample
+fonts.alias files for several platforms. To test, which one looks best with
+your X-Server, please rename/copy one of the files to 'fonts.alias', call
+the program 'mkfontdir' in this directory add the path to this file to the
+fontpath.
+
+    e.g.:
+
+      > cd <wherever-it-is>/dm2k-2.5.2/dm2k/fonts.alias
+      > cp fonts.alias.hp fonts.alias
+      > mkfontdir
+      > xset +fp `pwd`
+
+If you find a proper fonts.alias for your installation, you should install
+it globally for all dm2k-users. This can be done by either appending it to
+an existing fonts.alias-file in an existing and used font-path or by adding 
+the dm2k-fonts.alias-directory to the font-path permanently.
+
+Cartesian Plot
+==============
+
+If the variable XRTGRAPH is set in the global configuration, the commercial 
+XRT/graph-widget will be used for cartesian plots. This may change in the
+future, because dm2k brings its own version of a cartesian plot widget (Jpt).
+
+Jpt (Jefferson Lab Plotting Toolkit) was developed as a plug-in-replacement 
+for the XRT/graph widget by Ge Lei <leige@jlab.org> at JLab. It supports
+all features, dm2k uses of the XRT-widget.
+
+Even if you have the XRT/graph widget installed, you can build dm2k with
+the Jpt widget by giving make the extra argument XRTGRAPH=
+
+
+Xpm-support
+===========
+
+Xpm-support has been removed from the dm2k-source-code. It was only used to 
+implement a colorful startup-logo and colour-desktop-icons for the
+window-manager. Dm2k now uses a system-supplied Xpm-library if you want
+these colourful icons. The location of include-files and library-files has
+to be given on the command-line of make (make XPM_INC=... XPM_LIB=...).
+
+
+Summary of build-options
+========================
+
+The following options may be given to the make-command on the command-line.
+
+      XRTGRAPH=				builds without XRT/graph widget
+					although it is installed.
+					dm2k uses the supplied Jpt-library
+					instead.
+
+      XPM_INC=... XPM_LIB=...           builds with Xpm-library for fancy
+					logos/icons.
+
+If you set your preferred default configuration in the global
+config/CONFIG_SITE... files properly, you of course don't have to set these 
+options on the command-line.
+
+Please report any build-problems to Thomas.Birke@mail.bessy.de.
+
+
+Using dm2k
+==========
+
+Dm2k tries to behave just like medm did/does.
+
+One major difference is, that most environment-variables have the MEDM-part 
+replaced by DM2K. This enables you to have two different setups for
+testing.
+
+By renaming/sym-linking dm2k to medm you can force dm2k to use the same
+environment-variables medm does.
+
+The macros DISPLAY, HOST and USER are set by default, but can be
+overwritten.
+
+    DISPLAY  contains a modified copy of the display-variable, dots (.) and 
+             colons (:) are substituted by underscores (_). fully or
+             partially qualified or completely missing hostnames are
+             substituted by the unqualified lowercase  hostname.
+
+              :0                       -> snow_0_0   assuming localhost is snow
+              snow.acc.bessy.de:0.0    -> snow_0_0
+              SNOW:0.0                 -> snow_0_0
+
+    HOST     is the unqualified local hostname
+
+    USER     is the name of the userid dm2k runs under (taken from
+             environment) 
+
+> dm2k -?
+Usage: dm2k [-x|-e] [options...] 
+       [-displayFont <font>]
+       [-macro "<name>=<value>,<name>=<value>..."]
+       [X11 resource options...]
+       [display file names]
+
+   parameters:
+       -displayFont select alias for scalable fonts
+       -macro       apply macro substitution
+   options:
+       -readonly    run in read only mode (no CA put)
+       -local       don't participate in remote display protocol
+       -cleanup     support remote display protocol, ignore existing instances
+       -cmap        use private color map
+       -dump        dump compiled in fallback-resources to stdout and exit
+       -bigMousePointer  use big cursors
+       -silent      reduced error mesages
+       -wmPositionPolicy define the WM positionning policy : FRAME or USER
+       -verbose     display verbose error messages
+       -debug       provide debugging informations
+       -synchro     run X11 protocol in synchronous mode
+       -help        this message
+
+   X11 resource options:
+       -display
+       -displayGeometry
+
+   Environment variables:
+
+       DM2K_READ_ONLY : (default unset)
+            open panels in execute-mode but read only
+
+       DM2K_COLOR_RULE : (default: 'ColorRules')
+            to define the name of color rule file. If the env is not set,
+            then dm2k reads file ColorRules in current directory.
+            If there is no such file, it uses default.
+
+       DM2K_GRAPHIC_RULE : (default: 'GraphicRules')
+            to define the name of graphic rule file.
+            If the env is not set, then dm2k reads file
+            GraphicRules in current directory.
+
+       EPICS_DM2K_DEFAULT_MB3_DISPLAY : (default: unset)
+            A default adl-file to be called on MB3-click on various elemnts.
+            It is given the macro 'record=<PV>' of the PV of the selected
+            element.
+
+       DM2K_MAIL_CMD : (default: 'mail')
+            The mail-command to use in the Message Window
+            The program is called the following way:
+                '<mail_cmd> -s <subject> <recipient>'
+            and the message is given on stdin.
+
+       DM2K_HELP : (default: unset)
+            For mwm-compliant window-managers a command can be given to be
+            called if e.g. 'Help' is selected from the main-window-menu.
+
+       DM2K_HELP_PATH : (default in Makefiles: 'http://help.bessy.de/Dm2k/
+            This is the basic part of the URL to call via netscape for the
+            Help-system.
+
+       EPICS_DISPLAY_PATH : (default '.')
+            adl-files, mfp-files and gif-files are searched in these
+            colon-separated directories.
+
+       NETSCAPEPATH : (default 'netscape')
+            netscape-program to call for online-help.
+
+       PSPRINTER : (default: unset)
+            PostScript printer to use for printing displays

@@ -1,0 +1,93 @@
+RSYNC_DIST_DOMAINS := IOC OPI DOC
+
+RSYNC_DIST_COMMANDS := rsync-dist
+RSYNC_DIST_COMMANDS += add-names
+RSYNC_DIST_COMMANDS += activate-version
+RSYNC_DIST_COMMANDS += deprecate-version
+RSYNC_DIST_COMMANDS += list-all-versions
+RSYNC_DIST_COMMANDS += list-active-versions
+RSYNC_DIST_COMMANDS += unlock
+RSYNC_DIST_COMMANDS += force-unlock
+
+RSYNC_DIST_DOMAIN_COMMANDS := $(foreach cmd,$(RSYNC_DIST_COMMANDS),\
+ $(foreach dom,$(RSYNC_DIST_DOMAINS),$(cmd).$(dom)))
+
+$(RSYNC_DIST_COMMANDS): %: $(foreach dom,$(RSYNC_DIST_DOMAINS),%.$(dom))
+
+RS_HOSTS_IOC := $(strip $(HOSTS) $(HOSTS_IOC))
+RS_HOSTS_OPI := $(strip $(HOSTS) $(HOSTS_OPI))
+RS_HOSTS_DOC := $(strip $(HOSTS) $(HOSTS_DOC))
+
+ifneq ($(RS_HOSTS_IOC),)
+HOSTS_OPT_IOC = --host='$(RS_HOSTS_IOC)'
+endif
+ifneq ($(RS_HOSTS_OPI),)
+HOSTS_OPT_OPI = --host='$(RS_HOSTS_OPI)'
+endif
+ifneq ($(RS_HOSTS_DOC),)
+HOSTS_OPT_DOC = --host='$(RS_HOSTS_DOC)'
+endif
+
+RS_FILES_IOC := $(strip $(FILES) $(FILES_IOC))
+RS_FILES_OPI := $(strip $(FILES) $(FILES_OPI))
+RS_FILES_DOC := $(strip $(FILES) $(FILES_DOC))
+
+ifneq ($(RS_FILES_IOC),)
+FILES_OPT_IOC = --partial --localpath='$(RSYNC_DIST_VERSION_FILE) $(RS_FILES_IOC)'
+endif
+ifneq ($(RS_FILES_OPI),)
+FILES_OPT_OPI = --partial --localpath='$(RSYNC_DIST_VERSION_FILE) $(RS_FILES_OPI)'
+endif
+ifneq ($(RS_FILES_DOC),)
+FILES_OPT_DOC = --partial --localpath='$(RSYNC_DIST_VERSION_FILE) $(RS_FILES_DOC)'
+endif
+
+RS_NAMES_IOC := $(strip $(NAMES) $(NAMES_IOC))
+RS_NAMES_OPI := $(strip $(NAMES) $(NAMES_OPI))
+RS_NAMES_DOC := $(strip $(NAMES) $(NAMES_DOC))
+
+RSYNC_DIST_OPTS =
+
+RSYNC_DIST = rsync-dist.pl $(RSYNC_DIST_OPTS) --config=configure/rsync-dist.$*.config --filter-output $(HOSTS_OPT_$*)
+
+ifndef RSYNC_DIST_VERSION_FILE
+RSYNC_DIST_VERSION_FILE = iocBoot/version
+endif
+
+rsync-dist.%:
+	@darcs-save
+	@$(RSYNC_DIST) dist --version-file=$(RSYNC_DIST_VERSION_FILE) --progress --checksum -w $(FILES_OPT_$*)
+
+ifndef VERSION
+LAST_VERSION_DISTED = -L
+endif
+
+activate-version.%:
+	@$(RSYNC_DIST) change-links '$(strip $(VERSION) $(RS_NAMES_$*))' $(LAST_VERSION_DISTED)
+
+add-names.%:
+	@$(RSYNC_DIST) add-links '$(strip $(VERSION) $(RS_NAMES_$*))' $(LAST_VERSION_DISTED)
+
+ifdef VERSION
+deprecate-version.%:
+	@echo "Deprecating version $(VERSION) for domain $*:"
+	@$(RSYNC_DIST) to-attic '$(VERSION)'
+endif
+
+list-all-versions.%:
+	@echo "Existing versions for domain $*:"
+	@$(RSYNC_DIST) cat-log dist | egrep '(Host|VERSION):' | sed 's/VERSION: //'
+
+list-active-versions.%:
+	@echo "Active versions for domain $*:"
+	@$(RSYNC_DIST) ls links
+
+unlock.%:
+	@$(RSYNC_DIST) rm-lock dist
+	@$(RSYNC_DIST) rm-lock links
+
+force-unlock.%:
+	@$(RSYNC_DIST) force-rm-lock dist
+	@$(RSYNC_DIST) force-rm-lock links
+
+.PHONY: $(RSYNC_DIST_COMMANDS)

@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<TITLE>New distribution system</TITLE>
+	<META NAME="AUTHOR" CONTENT="franksen">
+	<META NAME="CREATED" CONTENT="2010-08-12 11:35:39">
+   <link rel=stylesheet type="text/css" href="http://www-csr.bessy.de/control/Docs/MLT/kuner/autoDocs/makeDocs/docStyle.css">
+</HEAD>
+<BODY>
+<H1>New distribution system</H1>
+<P class="grayText" ALIGN="RIGHT"><FONT SIZE="-1">last update: 2010-08-12 11:35:39 by franksen</FONT></P>
+<H2>Contents</H2>
+<DL><DT style="margin-left:40px"><a href="#cont_">Distribution Domains</a></DT>
+<DT style="margin-left:40px"><a href="#cont_1">Configuration Files</a></DT>
+<DT style="margin-left:40px"><a href="#cont_2">Make Variables</a></DT>
+<DT style="margin-left:60px"><a href="#cont_3">Variables for all targets</a></DT>
+<DT style="margin-left:60px"><a href="#cont_4">Variables for specific targets</a></DT>
+<DT style="margin-left:40px"><a href="#cont_5">Targets</a></DT>
+<DT style="margin-left:60px"><a href="#cont_6">rsync-dist</a></DT>
+<DT style="margin-left:60px"><a href="#cont_7">add-names</a></DT>
+<DT style="margin-left:60px"><a href="#cont_8">activate-version</a></DT>
+<DT style="margin-left:60px"><a href="#cont_9">deprecate-version</a></DT>
+<DT style="margin-left:60px"><a href="#cont_10">list-all-versions</a></DT>
+<DT style="margin-left:60px"><a href="#cont_11">list-active-versions</a></DT>
+<DT style="margin-left:60px"><a href="#cont_12">unlock</a></DT>
+<DT style="margin-left:60px"><a href="#cont_13">force-unlock</a></DT>
+<DT style="margin-left:40px"><a href="#cont_14">Source files</a></DT>
+</DL><hr>
+<P>The new distribution system is based on G&ouml;tz Pfeiffers script <A HREF="http://www-csr.bessy.de/control/Soft/bii_scripts/scripts/rsync-dist.html">rsync-dist.pl</A>.
+</P>
+
+<P>The central ideas are:
+</P>
+
+<UL>
+  <LI>each distribution is immutable</LI>
+  <LI>new distributions must be activated explicitly per user agent (e.g. IOC)
+before it can have any effect</LI>
+</UL>
+
+
+<A NAME="cont_"></A>
+<H3>Distribution Domains</H3>
+
+<P>Just as in the old distribution system (<I>make rdist</I>, etc), 
+there are three separate distribution domains:
+</P>
+
+<UL>
+  <LI>IOC: distributes <I>bin</I>, <I>db</I>, <I>dbd</I>, and <I>iocBoot</I>,</LI>
+  <LI>OPI: distributes <I>dl</I> and <I>etc</I>,</LI>
+  <LI>DOC: distributes <I>doc</I>.</LI>
+</UL>
+
+<P>The generated subdirectories <I>share</I> and <I>lib</I> will not be distributed.
+</P>
+
+
+<A NAME="cont_1"></A>
+<H3>Configuration Files</H3>
+
+<P>Each distribution domain has a configuration file named
+</P>
+
+<PRE>
+  rsync-dist.&lt;domain&gt;.config
+</PRE>
+<P>which contains the following definitions:
+</P>
+
+<UL>
+  <LI>RSYNC_DIST_HOST: a list of username@hostname</LI>
+  <LI>RSYNC_DIST_PATH: path where distributed versions are stored</LI>
+  <LI>RSYNC_DIST_LINKPATH: path where symbolic links (named versions) lie</LI>
+  <LI>RSYNC_DIST_LOCALPATH: list of (local) directories to distribute</LI>
+  <LI>RSYNC_DIST_EDITOR_NO_DEFAULTS: start editor w/o defaults (1=true or 0=false)</LI>
+  <LI>RSYNC_DIST_MESSAGE: default log message</LI>
+  <LI>RSYNC_DIST_TAG: default tag</LI>
+</UL>
+
+
+<A NAME="cont_2"></A>
+<H3>Make Variables</H3>
+
+<P>Distributing and activating versions can be controlled through make variables.
+The following variables can be set on the command line. They generally take
+precedence over (i.e. replace) corresponding options in the config file.
+</P>
+
+
+<A NAME="cont_3"></A>
+<H4>Variables for all targets</H4>
+
+<UL>
+  <LI>RSYNC_DIST_OPTS: an arbitrary list of options that will be given to the
+rsync-dist.pl command (in addition to the pre-defined options).</LI>
+  <LI>HOSTS, HOSTS_&lt;domain&gt;: a list of remote hosts in username@hostname
+notation. HOSTS_&lt;domain&gt; affects only one domain, HOSTS affects all <I>domains</I>.</LI>
+</UL>
+
+
+<A NAME="cont_4"></A>
+<H4>Variables for specific targets</H4>
+
+<UL>
+  <LI><A NAME="VERSION"></A> VERSION: A single word naming a distributed version (in date/time notation,
+see rsync-dist.pl documentation). If not defined or empty, the latest version
+distributed by the current user for the given domain is used.
+Only useful for targets <A HREF="#add-names">add-names</A>
+and <A HREF="#activate-version">activate-version</A>.</LI>
+  <LI><A NAME="NAMES"></A> NAMES: The symbolic names for which the given version should be activated.
+The symbolic names must be created using <I>add-names</I> before they can be
+activated (however, creating a symbolic name for a version also activates
+this version).
+Only useful for targets <A HREF="#add-names">add-names</A>
+and <A HREF="#activate-version">activate-version</A>.</LI>
+  <LI><A NAME="FILES"></A> FILES, FILES_&lt;domain&gt;: a list of file and/or directory names.
+As with the HOSTS* variables, FILES_&lt;domain&gt; affects only one domain,
+FILES affects all domains. The effect is that the distribution will be
+<I>partial</I>, i.e. <B>only</B> the files
+explicitly listed will be distributed, other files and directories will be
+left as in the last version.
+Only useful for target <A HREF="#rsync-dist">rsync-dist</A>.</LI>
+</UL>
+
+
+<A NAME="cont_5"></A>
+<H3>Targets</H3>
+
+<P>The make targets as listed below affect all distribution domains simultaneously.
+For each target xxx listed, there exists a corresponding target xxx.IOC,
+xxx.OPI, and xxx.DOC which affects only the distribution domain specified by the
+target's suffix.
+</P>
+
+<P>There are five new top-level make targets:
+</P>
+
+<UL>
+  <LI><A HREF="#rsync-dist">rsync-dist</A></LI>
+  <LI><A HREF="#add-names">add-names</A></LI>
+  <LI><A HREF="#activate-version">activate-version</A></LI>
+  <LI><A HREF="#deprecate-version">deprecate-version</A></LI>
+  <LI><A HREF="#list-all-versions">list-all-versions</A></LI>
+  <LI><A HREF="#list-active-versions">list-active-versions</A></LI>
+  <LI><A HREF="#unlock">unlock</A></LI>
+  <LI><A HREF="#force-unlock">force-unlock</A></LI>
+</UL>
+
+<P><A NAME="rsync-dist"></A> 
+</P>
+
+
+<A NAME="cont_6"></A>
+<H4>rsync-dist</H4>
+
+<P>Distribute files. This automatically creates a new version with a name
+consisting of date and time. Extra make
+variables affecting this target: <A HREF="#FILES">FILES, FILES_&lt;domain&gt;</A>.
+</P>
+
+
+<A NAME="cont_7"></A>
+<H4>add-names</H4>
+
+<P>Create symbolic names for a certain version. Extra make
+variables affecting this target are <A HREF="#VERSION">VERSION</A> and <A HREF="#NAMES">NAMES</A>.
+</P>
+
+<P><A NAME="activate-version"></A> 
+</P>
+
+
+<A NAME="cont_8"></A>
+<H4>activate-version</H4>
+
+<P>Activate a version for a certain number of target names. Extra make variables
+affecting this target are <A HREF="#VERSION">VERSION</A> and <A HREF="#NAMES">NAMES</A>. Symbolic names
+such as specified using the variable NAMES must be created using <I>add-names</I>
+before they can be activated (however, creating a symbolic name for a version
+also activates this version).
+</P>
+
+<P><A NAME="deprecate-version"></A> 
+</P>
+
+
+<A NAME="cont_9"></A>
+<H4>deprecate-version</H4>
+
+<P>Deprecate a version. Extra make variable affecting this target is VERSION.
+</P>
+
+<P><A NAME="list-all-versions"></A> 
+</P>
+
+
+<A NAME="cont_10"></A>
+<H4>list-all-versions</H4>
+
+<P>List all existing versions.
+</P>
+
+<P><A NAME="list-active-versions"></A> 
+</P>
+
+
+<A NAME="cont_11"></A>
+<H4>list-active-versions</H4>
+
+<P>List all active versions, together with the names (e.g. IOCs) for which the
+version is the active one.
+</P>
+
+<P><A NAME="unlock"></A> 
+</P>
+
+
+<A NAME="cont_12"></A>
+<H4>unlock</H4>
+
+<P>Remove all lock files associated with your user name; preserves lock files of
+other users.
+</P>
+
+<P><A NAME="force-unlock"></A> 
+</P>
+
+
+<A NAME="cont_13"></A>
+<H4>force-unlock</H4>
+
+<P>Remove all lock files, regardless of owner.
+</P>
+
+<P>&bull; <B>ATTENTION</B> : This will break rsync-dist actions of other users!
+</P>
+
+
+<A NAME="cont_14"></A>
+<H3>Source files</H3>
+
+<PRE>
+  rsync-dist.IOC.config
+  rsync-dist.OPI.config
+  rsync-dist.DOC.config
+  configure/RULES_RSYNC_DIST
+  configure/make-rsync-dist.txt
+</PRE>
+
+<hr class="footer">
+<P class="footer" ALIGN="CENTER"><B>New distribution system</B></P>
+</BODY>
+</HTML>
