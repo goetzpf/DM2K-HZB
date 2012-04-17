@@ -49,7 +49,7 @@ clipbdInit(Widget parent)
 										parent,
 										XtNwidth,1,
 										XtNheight,1,
-										0);
+										NULL);
 	XtAddCallback(clipboard.owner,
 			  	XtNdestroyCallback,
 			  	ownerDestroyedCB,

@@ -207,7 +207,7 @@ static void PrintExtents(char *s, Widget W)
 {
    short int x, y, w, h;
    XtVaGetValues(W,
-		 XmNx, &x, XmNy, &y, XmNwidth, &w, XmNheight, &h, 0, 0 );
+		 XmNx, &x, XmNy, &y, XmNwidth, &w, XmNheight, &h, NULL );
 
    printf("%s: %d, %d, %d, %d\n", s, x, y, w, h);
 }
