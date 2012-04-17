@@ -169,7 +169,7 @@ static XtResource plotter_resources[] = {
   {
      XtNlegendSpacing, XtCMargin,
      XtRDimension, sizeof(Dimension),
-     off(legend_spacing), XtRImmediate, (XtPointer) 3
+     off(legend_spacing), XtRImmediate, (XtPointer) 2
   },
   {  
      XtNplotLegendX, XtCPlotPosition,
@@ -234,12 +234,12 @@ static XtResource plotter_resources[] = {
   {
      XtNmarginWidth, XtCMargin,
      XtRDimension, sizeof(Dimension),
-     off(margin_width), XtRImmediate, (XtPointer) 3
+     off(margin_width), XtRImmediate, (XtPointer) 1
   },
   {
      XtNmarginHeight, XtCMargin,
      XtRDimension, sizeof(Dimension),
-     off(margin_height), XtRImmediate, (XtPointer) 3
+     off(margin_height), XtRImmediate, (XtPointer) 1
   },
   {
      XtNrankChildren, XtCRankChildren,
@@ -332,7 +332,7 @@ static XtResource plotter_resources[] = {
   {
      XmNshadowThickness, XmCShadowThickness,
      XtRDimension, sizeof(Dimension),
-     off(shadow_thickness), XtRImmediate, (XtPointer)2
+     off(shadow_thickness), XtRImmediate, (XtPointer)1
   }, 
   {
      XmNuserData, XmCUserData,
@@ -2261,10 +2261,10 @@ AtPlotterWidget pw;
      new_h = pw->core.height - pp->graph_margin_bottom;
 */
      /* The basic layout */
-     lp->x1 = pp->shadow_thickness + pp->graph_margin_left + MARGIN*2 + pp->margin_width;
-     lp->y1 = pp->shadow_thickness + pp->graph_margin_top + MARGIN + pp->margin_height;
-     lp->x2 = pw->core.width - 1 - pp->shadow_thickness - pp->graph_margin_right - MARGIN*2 - pp->margin_width;
-     lp->y2 = pw->core.height - 1 - pp->shadow_thickness - pp->graph_margin_bottom - MARGIN*2 - pp->margin_height;
+     lp->x1 = pp->shadow_thickness + pp->graph_margin_left + pp->margin_width;
+     lp->y1 = pp->shadow_thickness + pp->graph_margin_top + pp->margin_height;
+     lp->x2 = pw->core.width - 1 - pp->shadow_thickness - pp->graph_margin_right - pp->margin_width;
+     lp->y2 = pw->core.height - 1 - pp->shadow_thickness - pp->graph_margin_bottom - pp->margin_height;
 
      /* The legend at RHS or LHS of the plotting area */
      if ((pp->show_legend)&&(pp->set_labels)) {
@@ -2305,7 +2305,7 @@ AtPlotterWidget pw;
      /*if (pp->y2axis && ISDISPLAYED(pp->y2axis))*/
      if (pp->plot_data2)
 	  y2wid = AtAxisWidth(pp->y2axis);
-     else y2wid = MARGIN *8;
+     else y2wid = MARGIN *4;
 
      lp->y1 += x2wid;
      lp->y2 -= xwid;
@@ -3178,24 +3178,6 @@ AtPlotterWidget pw;
          XtNplotY2AxisMinUseDefault, True,
          NULL);
        }
-}
-
-
-int GetTitleDimension P((AtPlotterWidget w));
-int GetTitleDimension(AtPlotterWidget w)
-{
-  AtPlotterPart *pp = &w->plotter;
-  AtPlotterLayout *lp = &pp->layout;
-  int i;
-
-  if (!pp->title) return;
-  if (pp->title_width > 0) lp->title_width = pp->title_width;
-  else lp->title_width = MARGIN *8 + pp->title_text->width;
-  if (pp->title_height > 0) lp->title_height = pp->title_height;
-  else 
-    lp->title_height = AtTextHeight(pp->title_text) * pp->title_strnum +
-         MARGIN *2 * pp->title_strnum + MARGIN *6;
-
 }
 
 

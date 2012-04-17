@@ -492,7 +492,7 @@ typedef struct {
 /* The AtPlotterWidget parent of the child OBJECT cw */
 #define ParentPlotter(cw) ((AtPlotterWidget) XtParent((Widget) (cw)))
 #define AtNewString(str) str = XtNewString(str)
-#define MARGIN      4    /* Pixels between elemnts - the same as axiscore */
+#define MARGIN      2    /* Pixels between elemnts - the same as axiscore */
 #define X1Scale(pw, x) AtScalePixelToUser(pw->plotter.xaxis->axiscore.scale, x)
 #define Y1Scale(pw, y) AtScalePixelToUser(pw->plotter.yaxis->axiscore.scale, y)
 #define X2Scale(pw, x) AtScalePixelToUser(pw->plotter.x2axis->axiscore.scale, x)
