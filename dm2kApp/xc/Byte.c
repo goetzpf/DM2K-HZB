@@ -5,6 +5,7 @@
  * Modified: 7 July 94                                                   *
  * Mods    : 1.0 Original                                                *
  *************************************************************************/
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <X11/Xlib.h>

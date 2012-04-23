@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "scale.h"
 #include "math.h"
 static TickDescription tickDesc[] = { 
