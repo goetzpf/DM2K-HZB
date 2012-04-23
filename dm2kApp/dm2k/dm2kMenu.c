@@ -203,15 +203,6 @@ static UpdateTask * menuCreateRunTimeInstance
   return updateTask;
 }
 
-static void PrintExtents(char *s, Widget W) 
-{
-   short int x, y, w, h;
-   XtVaGetValues(W,
-		 XmNx, &x, XmNy, &y, XmNwidth, &w, XmNheight, &h, NULL );
-
-   printf("%s: %d, %d, %d, %d\n", s, x, y, w, h);
-}
-
 
 static void menuCreateEditInstance
    (DisplayInfo *displayInfo, 
@@ -220,10 +211,8 @@ static void menuCreateEditInstance
   Arg args[20];
   XmString buttons[1];
   XmButtonType buttonType[1];
-  int n, nargs;
-  Widget localWidget, optionButtonGadget, menu, mb;
-  WidgetList children;
-  Cardinal numChildren;
+  int nargs;
+  Widget menu, mb;
   XmFontList fontList;
   XmString xmStr;
   Dimension useableWidth, useableHeight;
@@ -281,12 +270,6 @@ static void menuCreateEditInstance
     XmCreateOptionMenu(displayInfo->drawingArea,
 		       "optionMenu",args,nargs);
 
-#if 0
-  PrintExtents("OptionMenu", dlElement->widget);
-  PrintExtents("...Button", XmOptionButtonGadget(dlElement->widget));
-  PrintExtents("...Label", XmOptionLabelGadget(dlElement->widget));
-#endif
-
   /* unmanage the option label gadget, manage the option menu 
    */
   XtUnmanageChild(XmOptionLabelGadget(dlElement->widget));
@@ -329,7 +312,7 @@ static void menuUpdateGraphicalInfoCb(XtPointer cd)
   Menu      * pm = (Menu *) pd->clientData;
   DlMenu    * dlMenu = pm->dlElement->structure.menu;
   XmFontList  fontList;
-  int         i,n, nargs;
+  int         i, nargs;
   Arg         args[50];
   Widget      buttons[db_state_dim], menu;
   WidgetUserData * userData;
@@ -447,11 +430,6 @@ static void menuUpdateGraphicalInfoCb(XtPointer cd)
     XmCreateOptionMenu(pm->updateTask->displayInfo->drawingArea,
 		       "optionMenu",args,nargs);
 
-#if 0
-  PrintExtents("OptionMenu", pm->dlElement->widget);
-  PrintExtents("...Button", XmOptionButtonGadget(pm->dlElement->widget));
-  PrintExtents("...Label", XmOptionLabelGadget(pm->dlElement->widget));
-#endif
 
   if (userData)
     XtAddCallback (pm->dlElement->widget, XmNdestroyCallback,
@@ -702,7 +680,7 @@ static void menuValueChangedCb(
 static void menuName(XtPointer cd, char **name, short *severity, int *count) {
   Menu *pm = (Menu *) cd;
   *count = 1;
-  name[0] = pm->record->name;
+  name[0] = (char*)pm->record->name;
   severity[0] = pm->record->severity;
 }
 
