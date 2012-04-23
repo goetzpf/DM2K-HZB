@@ -422,11 +422,6 @@ static void messageButtonUpdateGraphicalInfoCb(XtPointer cd)
   Boolean match;
   Boolean dynLabel;
 
-#ifdef DM2K_CDEV
-  pd->useMsgWhenWrite[0] = False;
-  pd->useMsgWhenWrite[1] = False;
-#endif
-
   /* Default value for toggle button */
   pmb->pressValue = (double) 1.0;
   pmb->releaseValue = (double) 0.0;
@@ -476,30 +471,11 @@ static void messageButtonUpdateGraphicalInfoCb(XtPointer cd)
       }
       break;
     default:
-#ifdef DM2K_CDEV
-      {
-	char* end;
-	if (dlMessageButton->press_msg && dlMessageButton->press_msg[0])
-	  pmb->pressValue = strtod(dlMessageButton->press_msg,&end);
-
-	/* If user inputs are not double, we are going to send message */
-	if (*end != '\0' || end == dlMessageButton->press_msg)
-	  pd->useMsgWhenWrite[0] = True;
-
-	if (dlMessageButton->release_msg && dlMessageButton->release_msg[0])
-	  pmb->releaseValue = strtod(dlMessageButton->release_msg, &end);
-	
-	/* If user inputs are not double, we are going to send message */
-	if (*end != '\0' || end == dlMessageButton->release_msg)
-	  pd->useMsgWhenWrite[1] = True;
-      }
-#else
       
       if (dlMessageButton->press_msg && dlMessageButton->press_msg[0])
         pmb->pressValue = (double) atof(dlMessageButton->press_msg);
       if (dlMessageButton->release_msg && dlMessageButton->release_msg[0])
         pmb->releaseValue = (double) atof(dlMessageButton->release_msg);
-#endif
       break;
   }
 }
@@ -694,27 +670,9 @@ static void messageButtonSendData (
       case DBF_STRING:
 	dm2kSendString(pmb->record, msg);
 	break;
-#ifdef DM2K_CDEV
-    case DBF_ENUM:
-      dval = (pressFlag) ? pmb->pressValue : pmb->releaseValue;
-      if (pd->stateStrings)
-	dm2kSendString(pmb->record, pd->stateStrings[(int)dval]);
-      else
-	dm2kSendDouble (pmb->record, dval);
-      break;
-#endif
       default:
 	dval = (pressFlag) ? pmb->pressValue : pmb->releaseValue;
-#ifdef DM2K_CDEV
-	if (pressFlag && pd->useMsgWhenWrite[0])
-	  dm2kSendMsg (pmb->record, msg);
-	else if (!pressFlag && pd->useMsgWhenWrite[1])
-	  dm2kSendMsg (pmb->record, msg);	  
-	else
-	  dm2kSendDouble(pmb->record, dval);
-#else
 	dm2kSendDouble(pmb->record, dval);
-#endif
 	break;
     }
   }

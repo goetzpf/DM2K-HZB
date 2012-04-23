@@ -19,7 +19,6 @@
  *             returned data array and returned element 
  *
  */
-#ifndef DM2K_CDEV
 #include <stdio.h>
 
 #if defined(SYSV) || defined(SVR4) || defined(SOLARIS)
@@ -672,5 +671,3 @@ static float makeApproximation (
   
   return  (valData[*index] + ratio * (float)(time - timeData[*index]));
 }
-#endif
-

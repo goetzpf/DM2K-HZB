@@ -1571,12 +1571,6 @@ static void stripChartUpdateGraph(XtPointer cd)
   return;
 }
 
-#ifdef DM2K_CDEV
-static void stripChartDrawArchiveData(StripChart * psc)
-{
-
-}
-#else
 static void stripChartDrawArchiveData(StripChart * psc)
 {
   Display      * display      = XtDisplay(psc->dlElement->widget);
@@ -1682,7 +1676,6 @@ static void stripChartDrawArchiveData(StripChart * psc)
 
   return;
 }
-#endif
 
 static void stripChartDraw(XtPointer cd) {
   StripChart *psc = (StripChart *) cd;

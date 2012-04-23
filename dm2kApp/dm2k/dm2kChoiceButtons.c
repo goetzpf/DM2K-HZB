@@ -227,14 +227,7 @@ static void choiceButtonSendData (
   if ( pd == NULL ) return;     /* no PV attached */
 
   if ( btnNumber >= 0 ) {
-#ifdef DM2K_CDEV
-    if (pd->stateStrings)
-      dm2kSendString(pcb->record,pd->stateStrings[btnNumber]);
-    else
-      dm2kSendDouble(pcb->record,(double)btnNumber);
-#else
     dm2kSendDouble(pcb->record,(double)btnNumber);
-#endif
   }
 }
 
@@ -336,19 +329,11 @@ static void choiceButtonUpdateGraphicalInfoCb(XtPointer cd)
   /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
   if (pd->dataType != DBF_ENUM) {
-#ifndef DM2K_CDEV
-    dm2kPrintf("choiceButtonUpdateGraphicalInfoCb :\n"
-	       "%s\n    \"%s (%s)\" %s\n\n",
-	       "Cannot create Choice Button,",
-	       pCB->control.ctrl,dbf_text[pd->dataType+1],
-	       "is not an ENUM type!");
-#else
     dm2kPrintf("choiceButtonUpdateGraphicalInfoCb :\n"
 	       "%s\n    \"%s (%s)\" %s\n\n",
 	       "Cannot create Choice Button,",
 	       pCB->control.ctrl,"DBF_ENUM",
 	       "is not an ENUM type!");
-#endif
     dm2kPostTime();
     return;
   }

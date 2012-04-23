@@ -445,11 +445,9 @@ static Widget caStudyDlg = NULL;
 static Boolean caUpdateStudyDlg = False;
 static char *caStatusDummyString =
                          "Time Interval (sec)       =         \n"
-#ifndef DM2K_CDEV
                          "CA connection(s)          =         \n"
                          "CA connected              =         \n"
                          "CA incoming event(s)      =         \n"
-#endif
                          "Active Objects            =         \n"
                          "Object(s) Updated         =         \n"
                          "Update Requests           =         \n"
@@ -614,12 +612,7 @@ static void dm2kUpdateCAStudtylDlg(XtPointer cd, XtIntervalId *id) {
                             &updateRequestQueued,
                             &updateExecuted,
                             &timeInterval); 
-#ifdef DM2K_CDEV
-    /* No channels connected or CA events for CDEV */
-    channelConnected = caEventCount = 0;
-#else    
     CATaskGetInfo(&channelCount,&channelConnected,&caEventCount);
-#endif
     totalUpdateDiscarded = updateDiscardCount+periodicUpdateDiscardCount;
     totalUpdateRequested = updateRequestCount+periodicUpdateRequestCount + totalUpdateDiscarded;
     totalTaskCount = taskCount + periodicTaskCount;
@@ -634,39 +627,31 @@ static void dm2kUpdateCAStudtylDlg(XtPointer cd, XtIntervalId *id) {
       sprintf(caStudyMsg,
                          "AVERAGE :\n"
                          "Total Time Elapsed        = %8.1f\n"
-#ifndef DM2K_CDEV
                          "CA Incoming Event(s)      = %8.1f\n"
-#endif
                          "Object(s) Updated         = %8.1f\n"
                          "Update Requests           = %8.1f\n"
                          "Update Requests Discarded = %8.1f\n",
                          totalTimeElapsed,
-#ifndef DM2K_CDEV
                          aveCAEventCount,
-#endif
                          aveUpdateExecuted,
                          aveUpdateRequested,
                          aveUpdateRequestDiscarded);
     } else { 
       sprintf(caStudyMsg,  
                          "Time Interval (sec)       = %8.2f\n"
-#ifndef DM2K_CDEV
                          "CA connection(s)          = %8d\n"
                          "CA connected              = %8d\n"
                          "CA incoming event(s)      = %8d\n"
-#endif
                          "Active Objects            = %8d\n"
                          "Object(s) Updated         = %8d\n"
                          "Update Requests           = %8d\n"
                          "Update Requests Discarded = %8d\n"
                          "Update Requests Queued    = %8d\n",
                          timeInterval,
-#ifndef DM2K_CDEV
 
                          channelCount,
                          channelConnected,
                          caEventCount,
-#endif
                          totalTaskCount,
                          updateExecuted,
                          totalUpdateRequested,

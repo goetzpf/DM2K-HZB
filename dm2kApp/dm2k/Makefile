@@ -10,12 +10,6 @@ include $(TOP)/configure/CONFIG
 
 ##### Variables to control build of dm2k
 ### 
-### CDEV		if this variable is set, it should point to the
-###			installation directory of the cdev-distribution
-###   CDEVSHLIB		setting this variable is implied by setting
-###			CDEV. It should point to the directory where 
-###			the cdev-library is to be found.
-### 
 ### XRTHOME		holds the directory of the XRT/graph installation.
 ###			If this variable is set, dm2k is built with
 ###			XRT/graph support instead of JPT.
@@ -221,16 +215,7 @@ SRCS=	actions.c \
 # PROD_LIBS_DEFAULT = mathlib
 # PROD_LIBS_WIN32   = -nil-
 
-# Compile with cdev - naaah, better not...
-ifdef CDEVVVV
-  DM2K_CDEV = YES
-endif
-
-ifdef DM2K_CDEV
-PROD = dm2k_cdev
-else
 PROD = dm2k
-endif
 
 ifeq ($(STATIC_BUILD),YES)
  PROD := $(PROD).static
@@ -265,27 +250,11 @@ ifdef Xpm_INC
   SYS_PROD_LIBS += Xpm
 endif
 
-ifdef DM2K_CDEV
-	PROD_LIBS += cdev
-	cdev_DIR = $(CDEVSHLIB)
-  ifeq ($(STATIC_BUILD),YES)
-	PROD_LIBS += caService
-	caService_DIR = $(CDEVSHLIB)
-  endif
-	PROD_LIBS += ca Com
-	ca_DIR = $(EPICS_BASE_LIB)
-	Com_DIR = $(EPICS_BASE_LIB)
-	USR_CFLAGS += -I$(CDEV)/include -DDM2K_CDEV
-	USR_CXXFLAGS += -I$(CDEV)/include -DDM2K_CDEV
-	SRCS += dm2kCdev.cc
-	SRCS += dm2kCdevUtils.c
-else
-	PROD_LIBS += ca Com
-	ca_DIR = $(EPICS_BASE_LIB)
-	Com_DIR = $(EPICS_BASE_LIB)
-#	USR_LDLIBS += -L$(EPICS_BASE_LIB) -lca -lCom
-	SRCS += dm2kCA.c
-endif
+PROD_LIBS += ca Com
+ca_DIR = $(EPICS_BASE_LIB)
+Com_DIR = $(EPICS_BASE_LIB)
+# USR_LDLIBS += -L$(EPICS_BASE_LIB) -lca -lCom
+SRCS += dm2kCA.c
 
 #	system libs needed to link PROD, TESTPROD and sharable library
 #

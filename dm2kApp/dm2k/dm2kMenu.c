@@ -588,14 +588,7 @@ static void menuSendData (
   if ( pd == NULL ) return;     /* no PV attached */
 
   if ( btnNumber >= 0 ) {
-#ifdef DM2K_CDEV
-    if (pd->stateStrings)
-      dm2kSendString(pm->record,pd->stateStrings[btnNumber]);
-    else
-      dm2kSendDouble(pm->record,(double)btnNumber);
-#else
     dm2kSendDouble(pm->record,(double)btnNumber);
-#endif  
   }
 }
 

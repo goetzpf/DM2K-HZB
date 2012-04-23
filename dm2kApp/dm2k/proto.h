@@ -241,10 +241,6 @@ void executeDlPolyline(DisplayInfo *, DlElement *);
 void executeDlPolygon(DisplayInfo *, DlElement *);
 
 /* executeMonitors.c */
-#ifndef DM2K_CDEV
-Channel *allocateChannel(
-	DisplayInfo *displayInfo);
-#endif
 void executeDlMeter(DisplayInfo *, DlElement *);
 void executeDlBar(DisplayInfo *, DlElement *);
 void executeDlByte(DisplayInfo *, DlElement *);
@@ -281,14 +277,6 @@ void mouseButtonHelp ();
 /* dm2kCA.c */
 void displayObjectInfo (char *, Widget, DisplayInfo *, 
 			DlElement *, XtPointer);
-#ifdef DM2K_CDEV
-#define dm2kCAInitialize dm2kCDEVInitialize
-#define dm2kCATerminate  dm2kCDEVTerminate
-#define dm2kChanelInfo   dm2kDeviceInfo
-int  dm2kCDEVInitialize (void);
-void dm2kCDEVTerminate  (void);
-void dm2kDeviceInfo     (char *, Record *, char *);
-#else
 int  dm2kCAInitialize(void);
 void dm2kChanelInfo (char *, Record *, char *);
 void dm2kCATerminate(void);
@@ -296,7 +284,6 @@ void updateListCreate(Channel *);
 void updateListDestroy(Channel *);
 void dm2kConnectEventCb(struct connection_handler_args);
 void dm2kDisconnectChannel(Channel *pCh);
-#endif
 Record *dm2kAllocateRecord(char*,void(*)(XtPointer),void(*)(XtPointer),XtPointer);
 void dm2kDestoryRecord(Record *);
 void dm2kSendDouble(Record *, double);
@@ -494,10 +481,6 @@ int localCvtLongToHexString(long source, char *pdest);
 FILE *dmOpenUseableFile(const char *filename);
 Boolean extractStringBetweenColons(char *input, char *output, int startPos,
 	int  *endPos);
-#ifndef DM2K_CDEV
-void dmRemoveMonitorStructureFromMonitorList(
-	Channel *monitorData);
-#endif
 void dmRemoveDisplayList(DisplayInfo *displayInfo);
 void dmCleanupDisplayInfo(DisplayInfo *displayInfo, Boolean cleanupDisplayList);
 void dmRemoveDisplayInfo(DisplayInfo *displayInfo);

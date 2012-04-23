@@ -3756,7 +3756,7 @@ int main(int argc, char *argv[])
 
   char *pname;
 
-#if (defined(DM2K_CDEV) || !((EPICS_VERSION == 3) && (EPICS_REVISION < 14))) && defined(HP_UX)
+#if (!((EPICS_VERSION == 3) && (EPICS_REVISION < 14))) && defined(HP_UX)
   /* we are being linked with a C++-linker on HP-UX, so we have to call
    *  _main() to initialize global objects
    */
@@ -3808,9 +3808,6 @@ int main(int argc, char *argv[])
    */
   dm2kWorkProcId         = 0;
   dm2kUpdateRequestCount = 0;
-#ifndef DM2K_CDEV
-  nextToServe            = NULL;
-#endif
   dm2kCAEventCount       = 0;
   dm2kScreenUpdateCount  = 0;
   dm2kUpdateMissedCount  = 0;
@@ -3818,10 +3815,6 @@ int main(int argc, char *argv[])
 
   /* initialize channel access here (to get around orphaned windows)
    */
-#ifndef DM2K_CDEV
-  SEVCHK(ca_task_initialize(),"\nmain: error in ca_task_initialize");
-#endif
-
   request = requestCreate(argc,argv);
 
   if (request->opMode == HELP) {
@@ -4240,32 +4233,12 @@ int main(int argc, char *argv[])
       }
 #endif
 
-#if 0
-    if (pixmap == None)
-      {
-	pixmap = XCreateBitmapFromData (display, 
-					RootWindow(display,screenNum),
-					(char *)dm2k_logo_bw_bits,
-					dm2k_logo_bw_width, 
-					dm2k_logo_bw_height);
-      }
-#endif
-
-#ifdef DM2K_CDEV
-    sprintf(versionString,"%s Version %s \nfor\n %s\nusing\n%s\n%s\n~\n",
-	    MAIN_NAME,
-	    dm2kvs,
-	    "CDEV Version " CDEV_VERSION_STRING,
-	    XmVERSION_STRING,
-	    XRT_DOCSTR);
-#else
     sprintf(versionString,"%s Version %s \nfor\n %s\nusing\n%s\n%s\n~\n",
 	    MAIN_NAME,
 	    dm2kvs,
 	    EPICS_VERSION_STRING,
 	    XmVERSION_STRING,
 	    XRT_DOCSTR);
-#endif
     
     productDescriptionShell = ProductDescriptionCreatePopupDialogShell
       (mainShell,

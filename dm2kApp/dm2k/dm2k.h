@@ -178,12 +178,8 @@ extern "C" {
 /*
  * DM2K includes
  */
-#ifdef DM2K_CDEV
-#include "dm2kCdev.h"
-#else
 #include "dm2kCA.h"
 #include "epicsVersion.h"
-#endif
 
 #include "dm2kWidget.h"
 #include "parse.h"
@@ -237,9 +233,6 @@ EXTERN int resourceBundleCounter;
 extern void utilPrint(Display *, Window, char *);
 
 EXTERN XtWorkProcId dm2kWorkProcId;
-#ifndef DM2K_CDEV
-EXTERN Channel *nextToServe;
-#endif
 EXTERN long dm2kUpdateRequestCount;
 EXTERN long dm2kCAEventCount, dm2kScreenUpdateCount, dm2kUpdateMissedCount;
 EXTERN Widget caStudyLabel;

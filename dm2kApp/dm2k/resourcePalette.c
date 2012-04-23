@@ -71,9 +71,6 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
 #include <ctype.h>
 #include "dm2k.h"
 #include <Xm/MwmUtil.h>
-#ifndef DM2K_CDEV
-#include "dbDefs.h"
-#endif
 #include "dm2kCartesianPlot.h"
 
 #ifdef __cplusplus
@@ -87,6 +84,10 @@ extern "C" {
 #ifndef FLDNAME_SZ
 # define FLDNAME_SZ   4
 #endif
+#ifndef PVNAME_STRINGSZ
+# define PVNAME_STRINGSZ   29
+#endif
+
 
 #define N_MAX_MENU_ELES 5
 #define N_MAIN_MENU_ELES 2
