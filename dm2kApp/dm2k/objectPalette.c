@@ -72,15 +72,8 @@ extern "C" {
 }
 #endif
 
-#ifdef EXTENDED_INTERFACE
-# define N_MAIN_MENU_ELES 3
-# define N_OPTIONS_MENU_ELES 1
-# define OPTIONS_BTN_POSN 1
-# define HELP_BTN_POSN 2
-#else
-# define N_MAIN_MENU_ELES 2
-# define HELP_BTN_POSN 1
-#endif
+#define N_MAIN_MENU_ELES 2
+#define HELP_BTN_POSN 1
 
 #define N_FILE_MENU_ELES 1
 #define FILE_BTN_POSN 0
@@ -787,22 +780,6 @@ static void fileMenuSimpleCallback(
 
 
 
-
-#ifdef EXTENDED_INTERFACE
-#define OPTION_USER_PALETTE_BTN 42
-static XtCallbackProc optionsMenuSimpleCallback(
-  Widget w,
-  int buttonNumber,
-  XmAnyCallbackStruct *call_data)
-{
-    switch(buttonNumber) {
-	    case OPTION_USER_PALETTE_BTN:
-		break;
-    }
-}
-#endif
-
-
 /*ARGSUSED*/
 static void 
 #ifdef __cplusplus
@@ -983,14 +960,6 @@ static menuEntry_t fileMenu[] = {
   {NULL}
 };
 
-#ifdef EXTENDED_INTERFACE
-static menuEntry_t optionMenu[] = {
-  { "User Palette...",  &xmPushButtonGadgetClass, 'U', NULL, NULL, NULL,
-    fileMenuSimpleCallback, (XtPointer) OPTION_USER_PALETTE_BTN,  NULL},
-  {NULL}
-};
-#endif
-
 static menuEntry_t helpMenu[] = {
   { "On Object Palette...",  &xmPushButtonGadgetClass, 'O', NULL, NULL, NULL,
     NULL, NULL, NULL},
@@ -1044,15 +1013,6 @@ void createObject()
  */
   objectFilePDM = buildMenu(objectMB,XmMENU_PULLDOWN,
 		    "File", 'F', True, fileMenu);
-
-
-#ifdef EXTENDED_INTERFACE
-/*
- * create the options pulldown menu pane
- */
-  objectOptionPDM = buildMenu(objectMB,XmMENU_PULLDOWN,
-		    "Option", 'O', True, optionMenu);
-#endif
 
 
 /*

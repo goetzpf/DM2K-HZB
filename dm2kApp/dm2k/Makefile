@@ -20,10 +20,6 @@ include $(TOP)/configure/CONFIG
 ###			If this variable is set, dm2k is built with
 ###			XRT/graph support instead of JPT.
 ###
-### DM2K_HELP_PATH	Is the stem of the URL that holds the
-###			dm2k-documentation (default is
-###			http://help.bessy.de/Dm2k).
-###
 ### STATIC_BUILD	controls whether to build dm2k statically or with
 ### 			shared libraries. The default setting is somewhere
 ### 			in your local/global config-directory.
@@ -60,20 +56,8 @@ USR_CFLAGS	  += -DCONFIG_NO_TEAR_OFF
 # USR_CFLAGS	  += -DPROMPT_TO_EXIT=1
 # instead of
 USR_CFLAGS	  += -DPROMPT_TO_EXIT=0
-# USR_CFLAGS	  += -DEXTENDED_INTERFACE
-
-ifdef EDGE_DEVELOPMENT
-USR_CFLAGS += -DEDGE_DEVELOPMENT
-endif
 
 USR_CFLAGS += -DBUILT_AT="\"$(shell date)\"" -DBUILT_BY="\"$(USER)\""
-
-# for the help with a WWW-server
-ifdef DM2K_HELP_PATH
-  USR_CFLAGS += -DDM2K_HELP_PATH="\"$(DM2K_HELP_PATH)\""
-else
-  USR_CFLAGS += -DDM2K_HELP_PATH="\"http://help.bessy.de/Dm2k\""
-endif
 
 USR_CXXFLAGS := $(USR_CFLAGS)
 
@@ -169,7 +153,6 @@ SHARED_LIBRARIES = NO
 #	if SRCS is undefined, it defaults to $(PROD).c 
 SRCS=	actions.c \
 	amDialog.c \
-	browserHelp.c \
 	callbacks.c \
 	channelPalette.c \
 	colorPalette.c \
@@ -182,7 +165,6 @@ SRCS=	actions.c \
 	faceplateDm2k.c \
 	getArchiveData.c \
 	help.c \
-	help_protocol.c \
 	dm2k.c \
 	dm2kArc.c \
 	dm2kBar.c \
@@ -221,10 +203,6 @@ SRCS=	actions.c \
 	utils.c \
 	xgif.c \
 	clipbd.c
-ifdef EDGE_DEVELOPMENT
-SRCS +=	dm2kVariables.c variablePalette.c
-endif
-
 
 #	SRCS that are only used for PROD a_file
 #
@@ -254,10 +232,6 @@ else
 PROD = dm2k
 endif
 
-ifdef PURIFY
- DEBUGCMD=$(PURIFY)
- STATIC_BUILD = YES
-endif
 ifeq ($(STATIC_BUILD),YES)
  PROD := $(PROD).static
  ifneq ($(T_A),solaris)
@@ -388,7 +362,7 @@ enums.h: ../enums
 
 $(PRODNAME): $(PRODNAME_OBJS) $(PRODNAME_RESS) $(PROD_DEPLIBS)
 	@$(RM) $@
-	$(DEBUGCMD) $(LINK.cpp)
+	$(LINK.cpp)
 ifdef XRTHOME 
 	@echo Patching for XRT-License...
 	@scp -q $(PRODNAME) $(XRT_HOST):/tmp/dm2k

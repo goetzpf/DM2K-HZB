@@ -707,9 +707,6 @@ void destroyDynamicAttribute(DlDynamicAttribute * dynAttr);
 Widget fillFileSelBox(Widget openFSD) ;
 void fileMenuDialogCallback( Widget w, XtPointer clientData, XtPointer callbackStruct );
 
-/* help_protocol.c */
-void help_protocol (Widget);
-
 /* dm2kRelatedDisplay.cc */
 void relatedDisplayCreateNewDisplay(DisplayInfo *displayInfo,
                                     DlRelatedDisplayEntry *pEntry);
@@ -741,20 +738,12 @@ void writeDlOverride(FILE *stream, DlOverrideFields *dlOverride, int level);
 DlElement *createDlDynSymbol(DlElement * p);
 DlElement *parseDynSymbol(DisplayInfo *displayInfo);
 
-#ifdef EDGE_DEVELOPMENT
-/* dm2kVariables.c */
-void parseVariables(DisplayInfo *displayInfo);
-#endif
-
 /* amDialog.c */
 AssociatedMenuItem * copyAMIList (AssociatedMenuItem *head);
 
 /* faceplateDm2k.c */
 void buildDisplayFromFaceplateGroup(FaceplateGroup * fpg);
 Boolean writeFaceplateGroupToFile(Widget, FaceplateGroup *, char *, Boolean);
-
-/* browserHelp.c */
-int callBrowser(char *url);
 
 #ifdef __cplusplus
 }

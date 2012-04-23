@@ -145,39 +145,18 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
 #define N_VERT_ALIGN_MENU_ELES 3
 #define VERT_ALIGN_BTN_POSN 1
 
-#ifdef EXTENDED_INTERFACE
-#define N_PALETTES_MENU_ELES 4
-#else
 #define N_PALETTES_MENU_ELES 3
-#endif
 #define PALETTES_BTN_POSN 3
 
 #define PALETTES_OBJECT_BTN 0
 #define PALETTES_RESOURCE_BTN 1
 #define PALETTES_COLOR_BTN 2
-#ifdef EXTENDED_INTERFACE
-#define PALETTES_CHANNEL_BTN 3
-# ifdef EDGE_DEVELOPMENT
-#  define PALETTES_VARIABLES_BTN 4
-# endif
-#else
-# ifdef EDGE_DEVELOPMENT
-#  define PALETTES_VARIABLES_BTN 3
-# endif
-#endif
 
 #define TOOLS_FACEPLATE_BTN 0
 #define TOOLS_DUMPDISPLAYINFO_BTN 1
 
 typedef enum
 {
-  HELP_OVERVIEW_BTN,
-  HELP_CONTENTS_BTN,
-  HELP_OBJECTS_BTN,
-  HELP_EDIT_BTN,
-  HELP_NEW_BTN,
-  HELP_TECH_SUPPORT_BTN,
-  HELP_ON_HELP_BTN,
   HELP_ON_VERSION_BTN
 } HelpButton_t;
 
@@ -485,14 +464,6 @@ static menuEntry_t palettesMenu[] = {
     palettesMenuSimpleCallback, (XtPointer) PALETTES_RESOURCE_BTN, NULL},
   { "Color",    &xmPushButtonGadgetClass, 'C', NULL, NULL, NULL,
     palettesMenuSimpleCallback, (XtPointer) PALETTES_COLOR_BTN, NULL},
-#ifdef EXTENDED_INTERFACE
-  { "Channel",  &xmPushButtonGadgetClass, 'h', NULL, NULL, NULL,
-    palettesMenuSimpleCallback, (XtPointer) PALETTES_CHANNEL_BTN, NULL},
-#endif
-#ifdef EDGE_DEVELOPMENT
-  { "Variables",  &xmPushButtonGadgetClass, 'v', NULL, NULL, NULL,
-    palettesMenuSimpleCallback, (XtPointer) PALETTES_VARIABLES_BTN, NULL},
-#endif
   { NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -506,20 +477,6 @@ static menuEntry_t toolsMenu[] = {
 
 static menuEntry_t helpMenu[] =
 {
-  {"Overview", &xmPushButtonGadgetClass, 'O', "Ctrl<key>H", NULL, NULL,
-   helpMenuSimpleCallback, (XtPointer) HELP_OVERVIEW_BTN, NULL},
-  {"Contents", &xmPushButtonGadgetClass, 'C', NULL, NULL, NULL,
-   helpMenuSimpleCallback, (XtPointer) HELP_CONTENTS_BTN, NULL},
-  {"Object Index", &xmPushButtonGadgetClass, 'I', NULL, NULL, NULL,
-   helpMenuSimpleCallback, (XtPointer) HELP_OBJECTS_BTN, NULL},
-  {"Editing", &xmPushButtonGadgetClass, 'E', NULL, NULL, NULL,
-   helpMenuSimpleCallback, (XtPointer) HELP_EDIT_BTN, NULL},
-  {"New Features", &xmPushButtonGadgetClass, 'N', NULL, NULL, NULL,
-   helpMenuSimpleCallback, (XtPointer) HELP_NEW_BTN, NULL},
-  {"Technical Support", &xmPushButtonGadgetClass, 'T', NULL, NULL, NULL,
-   helpMenuSimpleCallback, (XtPointer) HELP_TECH_SUPPORT_BTN, NULL},
-  {"On Help", &xmPushButtonGadgetClass, 'H', NULL, NULL, NULL,
-   helpMenuSimpleCallback, (XtPointer) HELP_ON_HELP_BTN, NULL},
   {"On Version", &xmPushButtonGadgetClass, 'V', NULL, NULL, NULL,
    helpMenuSimpleCallback, (XtPointer) HELP_ON_VERSION_BTN, NULL},
   { NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -695,16 +652,6 @@ static String fallbackResources[] = {
 				-*-charter-bold-r-normal-*-14-*-*-*-*-*-*-*",
 "*resourceMW*resourceFrame.resourceFrameLabel.fontList:\
 				-*-courier-medium-r-normal-*-12-*-*-*-*-*-*-*",
-"",
-"! ======================================================================== ",
-"!  Channel palette  ",
-"!  This dialog window belongs to Dm2k's dialect with EXTENDED_INTERFACE ",
-"!  definition (cc -DEXTENDED_INTERFACE ..). ",
-"",
-"*channelMW.width: 					140",
-"*channelMW*XmLabel.marginWidth:			0",
-"*channelMW.channelMB*fontList:			\
-				-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*",
 "",
 "! ======================================================================== ",
 "!  Warning dialog ",
@@ -1996,20 +1943,6 @@ static void palettesMenuSimpleCallback(Widget w, XtPointer cd, XtPointer cbs)
 		XtPopup(colorS,XtGrabNone);
 		break;
 
-#ifdef EXTENDED_INTERFACE
-	case PALETTES_CHANNEL_BTN:
-		/* fills in global channelMW */
-		if (channelMW == NULL) createChannel();
-		XtPopup(channelS,XtGrabNone);
-		break;
-#endif
-#ifdef EDGE_DEVELOPMENT
-	case PALETTES_VARIABLES_BTN:
-		/* fills in global channelMW */
-		if (variableMW == NULL) createVariable();
-		XtPopup(variableS,XtGrabNone);
-		break;
-#endif
     }
 
 }
@@ -2037,61 +1970,12 @@ static void helpMenuSimpleCallback (Widget w, XtPointer cd, XtPointer cbs)
 {
   int buttonNumber = (int) cd;
 
-  char url[1024];
-  char *dm2khp = getenv(DM2K_HELP_PATH_ENV);
-  if (dm2khp) 
-     strcpy( url, dm2khp );
-  else
-     strcpy( url, DM2K_HELP_PATH );
-
   switch (buttonNumber)
     {
-    case HELP_OVERVIEW_BTN:
-      callBrowser (strcat(url,"/DM2K.html#Overview"));
-      break;
-    case HELP_CONTENTS_BTN:
-      callBrowser(strcat(url,"/DM2K.html#Contents"));
-      break;
-    case HELP_OBJECTS_BTN:
-      callBrowser(strcat(url,"/DM2K.html#ObjectIndex"));
-      break;
-    case HELP_EDIT_BTN:
-      callBrowser(strcat(url,"/DM2K.html#Editing"));
-      break;
-    case HELP_NEW_BTN:
-      callBrowser(strcat(url,"/DM2K.html#NewFeatures"));
-      break;
-    case HELP_TECH_SUPPORT_BTN:
-      callBrowser(strcat(url,"/DM2K.html#TechSupport"));
-      break;
-    case HELP_ON_HELP_BTN:
-      {
-	XmString xmString =
-	  XmStringCreateLocalized
-	  ("     Help in this version of DM2K is implemented using Netscape.  If\n"
-	   "the environmental variable NETSCAPEPATH containing the full pathname\n"
-	   "of the Netscape executable exists, then that path is used to call\n"
-	   "Netscape.  Otherwise, it is called using just the command, netscape.\n"
-	   "If Netscape is not available, then most of the DM2K help is not\n"
-	   "available.\n\n"
-	   "     If Netscape is running when DM2K first calls it, then the\n"
-	   "response should be fairly quick.  Otherwise, the first call to help\n"
-	   "must wait until Netscape comes up, which will take somewhat longer.\n"
-	   );
-	Arg args[20];
-	int nargs;
-	  
-	nargs=0;
-	XtSetArg (args[nargs], XmNmessageString, xmString); nargs++;
-	XtSetValues (helpMessageBox, args, nargs);
-	XmStringFree (xmString);
-	XtPopup (helpS, XtGrabNone);
-	break;
       case HELP_ON_VERSION_BTN:
 	XtManageChild (productDescriptionShell);
 	XtPopup (XtParent (productDescriptionShell), XtGrabNone);
 	break;
-      }
     }
 }
 
@@ -2927,18 +2811,11 @@ static void usage (char *pname, FILE *stream)
             The mail-command to use in the Message Window\n\
             The program is called the following way:\n\
                 '<mail_cmd> -s <subject> <recipient>'\n\
-            and the message is given on stdin.\n\n\
-       %s : (default: unset)\n\
-            For mwm-compliant window-managers a command can be given to be\n\
-            called if e.g. 'Help' is selected from the main-window-menu.\n\n\
-       %s : (default: '%s')\n\
-            This is the basic part of the URL to call via netscape for the\n\
-            Help-system.\n\n\
+            and the message is given on stdin.\n\
+\n\
        EPICS_DISPLAY_PATH : (default '.')\n\
             adl-files, mfp-files and gif-files are searched in these\n\
             colon-separated directories.\n\n\
-       NETSCAPEPATH : (default 'netscape')\n\
-            netscape-program to call for online-help.\n\n\
        PSPRINTER : (default: unset)\n\
             PostScript printer to use for printing displays\n\n\
        EPICS_PS_PRINT_CMD : (default: unset)\n\
@@ -2948,8 +2825,7 @@ static void usage (char *pname, FILE *stream)
   fprintf(stream, "\nUsage: %s [-x|-e] [options...] ", pname);
   fprintf(stream, usageText, READ_ONLY_ENV, DM2K_WM_POSITION_POLICY_ENV,
 	  DM2K_COLOR_RULE_ENV, DM2K_GRAPHIC_RULE_ENV,
-	  EPICS_DM2K_DEFAULT_MB3_DISPLAY_ENV, DM2K_MAIL_CMD_ENV,
-	  DM2K_HELP_ENV, DM2K_HELP_PATH_ENV, DM2K_HELP_PATH );
+	  EPICS_DM2K_DEFAULT_MB3_DISPLAY_ENV, DM2K_MAIL_CMD_ENV);
 }
 
 /*------------------------------------------------------------------------*/

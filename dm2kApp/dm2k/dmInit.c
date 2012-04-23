@@ -178,7 +178,6 @@ displayShellPopupCallback(Widget shell, XtPointer cd, XtPointer cbs)
 {
   positionDisplayRead ((DisplayInfo *) cd);
 /*  keepAspectRatio((DisplayInfo *) cd);*/
-  help_protocol (shell);
 }
 
 /***
@@ -345,10 +344,6 @@ DisplayInfo * createInitializedDisplayInfo()
 
   displayInfo->shell = NULL;
   displayInfo->dialog = NULL;
-
-#ifdef EDGE_DEVELOPMENT
-  displayInfo->dlVars = NULL;
-#endif
 
   displayInfo->displayType   = (DisplayType)-1;
   displayInfo->xPosition     = displayInfo->yPosition = 1;
@@ -634,22 +629,6 @@ void dmDisplayListParse(
      }
   }
 
-#ifdef EDGE_DEVELOPMENT
-  tokenType = getToken(displayInfo,token);
-  if (tokenType == T_WORD && (STREQL(token, "variables"))) {
-     parseVariables(displayInfo);
-  }
-  {
-     DlVariable *tmp = displayInfo->dlVars;
-     double d;
-     while (tmp) {
-	d = atof(tmp->value);
-	tmp=tmp->next;
-     }
-  }
-
-#endif
-
   /*
    * proceed with parsing
    */
@@ -771,12 +750,6 @@ DisplayInfo * dmDisplayListParse2
     if (displayInfo->dlColormap == NULL) 
       return NULL;
   }
-#ifdef EDGE_DEVELOPMENT
-  tokenType = getToken(displayInfo,token);
-  if (tokenType == T_WORD && (STREQL(token, "variables"))) {
-     parseVariables(displayInfo);
-  }
-#endif
   /* proceed with parsing
    */
   while (parseAndAppendDisplayList(displayInfo, displayInfo->dlElementList)

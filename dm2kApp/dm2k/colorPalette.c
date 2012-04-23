@@ -65,21 +65,9 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
 #define N_MAX_MENU_ELES 10
 #define N_MAIN_MENU_ELES 2
 /* create the file pulldown menu pane */
-#ifdef EXTENDED_INTERFACE
-# define N_FILE_MENU_ELES 5
-#  undef FILE_OPEN_BTN
-# define FILE_OPEN_BTN	 0
-#  undef FILE_SAVE_BTN
-# define FILE_SAVE_BTN	 1
-#  undef FILE_SAVE_AS_BTN
-# define FILE_SAVE_AS_BTN 2
-#  undef FILE_CLOSE_BTN
-# define FILE_CLOSE_BTN	 3
-#else
-# define N_FILE_MENU_ELES 1
-# undef FILE_CLOSE_BTN
-# define FILE_CLOSE_BTN	 0
-#endif
+#define N_FILE_MENU_ELES 1
+#undef FILE_CLOSE_BTN
+#define FILE_CLOSE_BTN	 0
 #define FILE_BTN_POSN 0
 
 /* create the help pulldown menu pane */
@@ -96,11 +84,6 @@ static Widget globalColorPalettePB[DL_MAX_COLORS];
  */
 static int elementTypeWhoseColorIsBeingEditted = -1;
 static int elementTypeWhoseColorIsBeingEdittedIndex = 0;
-
-#ifdef EXTENDED_INTERFACE
-static Widget openFSD = NULL;
-static Widget colorFilePDM = NULL;
-#endif
 
 #if 1
 #ifdef __cplusplus
@@ -128,44 +111,8 @@ static void fileMenuSimpleCallback(Widget w, XtPointer cd, XtPointer cbs)
 #endif
 {
   int buttonNumber = (int) cd;
-#ifdef EXTENDED_INTERFACE
-  int n;
-  Arg args[10];
-  Widget textField, label;
-#endif
-
 
     switch(buttonNumber) {
-#ifdef EXTENDED_INTERFACE
-	    case FILE_OPEN_BTN:
-		if (openFSD == NULL) {
-		    n = 0;
-		    label = XmStringCreateSimple(COLOR_DIALOG_MASK);
-		    XtSetArg(args[n],XmNdirMask,label); n++;
-		    XtSetArg(args[n],XmNdialogStyle,
-				XmDIALOG_PRIMARY_APPLICATION_MODAL); n++;
-		    openFSD = XmCreateFileSelectionDialog(colorFilePDM,
-				"openFSD",args,n);
-/* make Filter text field insensitive to prevent user hand-editing dirMask */
-		    textField = XmFileSelectionBoxGetChild(openFSD,
-				XmDIALOG_FILTER_TEXT);
-		    XtSetSensitive(textField,FALSE);
-		    XtAddCallback(openFSD,XmNokCallback,
-				fileOpenCallback,
-				FILE_OPEN_BTN);
-		    XtAddCallback(openFSD,XmNcancelCallback,
-				(XtCallbackProc)fileOpenCallback,FILE_OPEN_BTN);
-		    XmStringFree(label);
-		    XtManageChild(openFSD);
-		} else {
-		    XtManageChild(openFSD);
-		}
-		break;
-	    case FILE_SAVE_BTN:
-		break;
-	    case FILE_SAVE_AS_BTN:
-		break;
-#endif
 	    case FILE_CLOSE_BTN:
 		XtPopdown(colorS);
 		break;
@@ -317,10 +264,6 @@ void createColor()
  Arg args[10];
 
 
-#ifdef EXTENDED_INTERFACE
- openFSD = NULL;
-#endif
-
 /*
  * create a main window in a dialog, and then the palette radio box
  */
@@ -377,27 +320,9 @@ void createColor()
 /*
  * create the file pulldown menu pane
  */
-#ifdef EXTENDED_INTERFACE
-  buttons[0] = XmStringCreateSimple("Open...");
-  buttons[1] = XmStringCreateSimple("Save");
-  buttons[2] = XmStringCreateSimple("Save As...");
-  buttons[3] = XmStringCreateSimple("Separator");
-  buttons[4] = XmStringCreateSimple("Close");
-  keySyms[0] = 'O';
-  keySyms[1] = 'S';
-  keySyms[2] = 'A';
-  keySyms[3] = ' ';
-  keySyms[4] = 'C';
-  buttonType[0] = XmPUSHBUTTON;
-  buttonType[1] = XmPUSHBUTTON;
-  buttonType[2] = XmPUSHBUTTON;
-  buttonType[3] = XmSEPARATOR;
-  buttonType[4] = XmPUSHBUTTON;
-#else
   buttons[0] = XmStringCreateSimple("Close");
   keySyms[0] = 'C';
   buttonType[0] = XmPUSHBUTTON;
-#endif
   n = 0;
   XtSetArg(args[n],XmNbuttonCount,N_FILE_MENU_ELES); n++;
   XtSetArg(args[n],XmNbuttons,buttons); n++;
@@ -406,13 +331,8 @@ void createColor()
   XtSetArg(args[n],XmNpostFromButton,FILE_BTN_POSN); n++;
   XtSetArg(args[n],XmNsimpleCallback,fileMenuSimpleCallback);
 	n++;
-#ifdef EXTENDED_INTERFACE
-  colorFilePDM = XmCreateSimplePulldownMenu(colorMB,"colorFilePDM",
-	args,n);
-#else
   XmCreateSimplePulldownMenu(colorMB,"colorFilePDM",
 	args,n);
-#endif
   for (i = 0; i < N_FILE_MENU_ELES; i++) XmStringFree(buttons[i]);
 
 

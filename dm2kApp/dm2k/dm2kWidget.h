@@ -87,15 +87,6 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
 
 #include "displayList.h"
 
-#ifdef EDGE_DEVELOPMENT
-# include "dm2kVariables.h"
-#endif
-
-/* this is ugly, but we need it for the action table */
-#if 0
-extern void popupValuatorKeyboardEntry(Widget, XEvent*, String *, Cardinal *);
-#endif
-
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif
@@ -415,12 +406,6 @@ typedef struct _DisplayInfo
    */
   Cursor                currentCursor;
 
-#ifdef EDGE_DEVELOPMENT
-  /*  variables to use in elements
-   */
-  DlVariable		*dlVars;
-#endif
-
   /*  linked list of displayInfo's
    */
   struct _DisplayInfo *next;
@@ -698,11 +683,7 @@ typedef struct _ResourceBundle {
 #else
   char *resourceEntryStringTable[MAX_RESOURCE_ENTRY] = {
     "X Position", "Y Position", "Width", "Height",
-#ifdef EDGE_DEVELOPMENT
-    "Readback Channel/Expression", 
-#else
     "Readback Channel", 
-#endif
     "Control Channel",
     "Title", "X Label", "Y Label",
     "Foreground", "Background",

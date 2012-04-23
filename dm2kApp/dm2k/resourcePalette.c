@@ -89,40 +89,14 @@ extern "C" {
 #endif
 
 #define N_MAX_MENU_ELES 5
-#ifdef EXTENDED_INTERFACE
-# define N_MAIN_MENU_ELES 3
-# define N_FILE_MENU_ELES 5
-# define FILE_BTN_POSN 0
-#  undef FILE_OPEN_BTN
-#  undef FILE_SAVE_BTN
-#  undef FILE_SAVE_AS_BTN
-#  undef FILE_CLOSE_BTN
-# define FILE_OPEN_BTN	 0
-# define FILE_SAVE_BTN	 1
-# define FILE_SAVE_AS_BTN 2
-# define FILE_CLOSE_BTN	 3
-#else
-# define N_MAIN_MENU_ELES 2
-# define N_FILE_MENU_ELES 1
-# define FILE_BTN_POSN 0
-# undef FILE_CLOSE_BTN
-# define FILE_CLOSE_BTN	 0
-#endif
-
-#ifdef EXTENDED_INTERFACE
-# define N_BUNDLE_MENU_ELES 3
-# define BUNDLE_BTN_POSN 1
-# define BUNDLE_CREATE_BTN	0
-# define BUNDLE_DELETE_BTN	1
-# define BUNDLE_RENAME_BTN	2
-#endif
+#define N_MAIN_MENU_ELES 2
+#define N_FILE_MENU_ELES 1
+#define FILE_BTN_POSN 0
+#undef FILE_CLOSE_BTN
+#define FILE_CLOSE_BTN	 0
 
 #define N_HELP_MENU_ELES 1
-#ifdef EXTENDED_INTERFACE
-# define HELP_BTN_POSN 2
-#else
-# define HELP_BTN_POSN 1
-#endif
+#define HELP_BTN_POSN 1
 
 #define CMD_APPLY_BTN	0
 #define CMD_CLOSE_BTN	1
@@ -134,10 +108,6 @@ extern "C" {
 #define SC_APPLY_BTN	0
 #define SC_CLOSE_BTN	1
 
-#ifdef EXTENDED_INTERFACE
-static Widget resourceFilePDM;
-static Widget resourceBundlePDM, openFSD;
-#endif
 static Dimension maxLabelWidth = 0;
 static Dimension maxLabelHeight = 0;
 
@@ -708,22 +678,6 @@ static void colorSelectCallback(Widget w, XtPointer cd, XtPointer cbs) {
     }
 }
 
-#ifdef EXTENDED_INTERFACE
-static void fileOpenCallback(
-  Widget w,
-  int btn,
-  XmAnyCallbackStruct *call_data) {
-    switch(call_data->reason){
-      case XmCR_CANCEL:
-	XtUnmanageChild(w);
-	break;
-      case XmCR_OK:
-	XtUnmanageChild(w);
-	break;
-    }
-}
-#endif
-
 #ifdef __cplusplus
 static void fileMenuSimpleCallback(Widget, XtPointer cd, XtPointer) {
 #else
@@ -732,59 +686,11 @@ static void fileMenuSimpleCallback(Widget w, XtPointer cd, XtPointer cbs) {
     int buttonNumber = (int) cd;
 
     switch(buttonNumber) {
-#ifdef EXTENDED_INTERFACE
-	    case FILE_OPEN_BTN:
-		if (openFSD == NULL) {
-		    Arg args[25];
-		    int n = 0;
-		    Widget textField, label;
-		    label = XmStringCreateSimple(RESOURCE_DIALOG_MASK);
-		    XtSetArg(args[n],XmNdirMask,label); n++;
-		    XtSetArg(args[n],XmNdialogStyle,
-				XmDIALOG_PRIMARY_APPLICATION_MODAL); n++;
-		    openFSD = XmCreateFileSelectionDialog(resourceFilePDM,
-				"openFSD",args,n);
-/* make Filter text field insensitive to prevent user hand-editing dirMask */
-		    textField = XmFileSelectionBoxGetChild(openFSD,
-				XmDIALOG_FILTER_TEXT);
-		    XtSetSensitive(textField,FALSE);
-		    XtAddCallback(openFSD,XmNokCallback,
-				fileOpenCallback,
-				(XtPointer)FILE_OPEN_BTN);
-		    XtAddCallback(openFSD,XmNcancelCallback,
-				fileOpenCallback,
-				(XtPointer)FILE_OPEN_BTN);
-		    XmStringFree(label);
-		    XtManageChild(openFSD);
-		} else {
-		    XtManageChild(openFSD);
-		}
-		break;
-	    case FILE_SAVE_BTN:
-		break;
-	    case FILE_SAVE_AS_BTN:
-		break;
-#endif
 	    case FILE_CLOSE_BTN:
 		XtPopdown(resourceS);
 		break;
     }
 }
-
-#ifdef EXTENDED_INTERFACE
-static void bundleMenuSimpleCallback(
-  Widget w,
-  int buttonNumber,
-  XmAnyCallbackStruct *call_data) {
-    XmString label;
-    int n;
-    Arg args[10];
-    Widget textField;
-
-    switch(buttonNumber) {
-    }
-}
-#endif
 
 /****** Text field verify callback  (verify numeric input) */
 void textFieldNumericVerifyCallback(
@@ -1483,24 +1389,6 @@ void cpAxisTextFieldLosingFocusCallback(Widget w, XtPointer cd, XtPointer cbs) {
 #endif
 }
 
-#ifdef EXTENDED_INTERFACE
-static void bundleCallback(
-/****************************************************************************
- * Bundle Call-back                                                         *
- ****************************************************************************/
-  Widget w,
-  int bundleId,
-  XmToggleButtonCallbackStruct *call_data) {
-
-/** Since both on & off will invoke this callback, only care about transition
- * of one to ON
- */
-
-  if (call_data->set == False) return;
-
-}
-#endif
-
 /*
  * initialize globalResourceBundle with (semi-arbitrary) values
  */
@@ -1692,10 +1580,6 @@ void createResource()
   initializeXmStringValueTables();
   xmstringSelect = XmStringCreateSimple("Select...");
   
-#ifdef EXTENDED_INTERFACE
-  openFSD = NULL;
-#endif
-
   /* Create a main window in a dialog 
    */
   n = 0;
@@ -1720,15 +1604,8 @@ void createResource()
    */
   buttons[0] = XmStringCreateSimple("File");
   
-#ifdef EXTENDED_INTERFACE
-  buttons[1] = XmStringCreateSimple("Bundle");
-  buttons[2] = XmStringCreateSimple("Help");
-  keySyms[1] = 'B';
-  keySyms[2] = 'H';
-#else
   buttons[1] = XmStringCreateSimple("Help");
   keySyms[1] = 'H';
-#endif
 
   keySyms[0] = 'F';
   n = 0;
@@ -1754,11 +1631,7 @@ void createResource()
   
   /* set the Help cascade button in the menu bar 
    */
-#ifdef EXTENDED_INTERFACE
-  menuHelpWidget = XtNameToWidget(resourceMB,"*button_2");
-#else
   menuHelpWidget = XtNameToWidget(resourceMB,"*button_1");
-#endif
   
   XtVaSetValues(resourceMB,XmNmenuHelpWidget,menuHelpWidget, NULL);
   for (i = 0; i < N_MAIN_MENU_ELES; i++) 
@@ -1766,27 +1639,9 @@ void createResource()
   
   /* create the file pulldown menu pane 
    */
-#ifdef EXTENDED_INTERFACE
-  buttons[0] = XmStringCreateSimple("Open...");
-  buttons[1] = XmStringCreateSimple("Save");
-  buttons[2] = XmStringCreateSimple("Save As...");
-  buttons[3] = XmStringCreateSimple("Separator");
-  buttons[4] = XmStringCreateSimple("Close");
-  keySyms[0] = 'O';
-  keySyms[1] = 'S';
-  keySyms[2] = 'A';
-  keySyms[3] = ' ';
-  keySyms[4] = 'C';
-  buttonType[0] = XmPUSHBUTTON;
-  buttonType[1] = XmPUSHBUTTON;
-  buttonType[2] = XmPUSHBUTTON;
-  buttonType[3] = XmSEPARATOR;
-  buttonType[4] = XmPUSHBUTTON;
-#else
   buttons[0] = XmStringCreateSimple("Close");
   keySyms[0] = 'C';
   buttonType[0] = XmPUSHBUTTON;
-#endif
 
   n = 0;
   XtSetArg(args[n],XmNbuttonCount,     N_FILE_MENU_ELES); n++;
@@ -1796,43 +1651,10 @@ void createResource()
   XtSetArg(args[n],XmNpostFromButton,  FILE_BTN_POSN); n++;
   XtSetArg(args[n],XmNsimpleCallback,  fileMenuSimpleCallback); n++;
 
-#ifdef EXTENDED_INTERFACE
-  resourceFilePDM = XmCreateSimplePulldownMenu(resourceMB,"resourceFilePDM",
-					       args,n);
-#else
   XmCreateSimplePulldownMenu(resourceMB,"resourceFilePDM", args,n);
-#endif
 
   for (i = 0; i < N_FILE_MENU_ELES; i++) 
     XmStringFree(buttons[i]);
-
-  /* create the bundle pulldown menu pane 
-   */
-#ifdef EXTENDED_INTERFACE
-  buttons[0] = XmStringCreateSimple("Create...");
-  buttons[1] = XmStringCreateSimple("Delete");
-  buttons[2] = XmStringCreateSimple("Rename...");
-  keySyms[0] = 'C';
-  keySyms[1] = 'D';
-  keySyms[2] = 'R';
-  buttonType[0] = XmPUSHBUTTON;
-  buttonType[1] = XmPUSHBUTTON;
-  buttonType[2] = XmPUSHBUTTON;
-  n = 0;
-  XtSetArg(args[n],XmNbuttonCount,N_BUNDLE_MENU_ELES); n++;
-  XtSetArg(args[n],XmNbuttons,buttons); n++;
-  XtSetArg(args[n],XmNbuttonType,buttonType); n++;
-  XtSetArg(args[n],XmNbuttonMnemonics,keySyms); n++;
-  XtSetArg(args[n],XmNpostFromButton,BUNDLE_BTN_POSN); n++;
-  XtSetArg(args[n],XmNsimpleCallback, bundleMenuSimpleCallback); n++;
-  resourceBundlePDM = XmCreateSimplePulldownMenu(resourceMB,
-						 "resourceBundlePDM",
-						 args,n);
-
-  for (i = 0; i < N_BUNDLE_MENU_ELES; i++)
-    XmStringFree(buttons[i]);
-
-#endif
 
   /* create the help pulldown menu pane 
    */

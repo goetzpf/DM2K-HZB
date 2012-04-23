@@ -196,9 +196,6 @@ extern "C" {
  *** and on with the rest of Dm2k
  ***/
 
-#ifdef EDGE_DEVELOPMENT
-# include "dm2kVariables.h"
-#endif
 /*
  * define the help layers
  */

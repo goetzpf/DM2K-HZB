@@ -712,9 +712,6 @@ void dmWriteDisplayList(DisplayInfo *displayInfo, FILE *stream)
 
 /*  if ( element && ! element->structure.display->cmap )*/
   writeDlColormap(stream,displayInfo->dlColormap,0);
-#ifdef EDGE_DEVELOPMENT
-  writeVariables(stream,displayInfo);
-#endif
   element = element->next;
 
   /* traverse the display list 
