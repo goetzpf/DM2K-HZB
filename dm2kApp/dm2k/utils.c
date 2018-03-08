@@ -87,7 +87,7 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
 # define UNGETC(c)     (--sp)
 # define RETURN(c)     return ((char*)c);
 # define ERROR(c)      exit(c)
-# include <regexp.h>
+# include <regex.h>
 #else
 # include <regexpr.h>
 #endif
@@ -3530,15 +3530,16 @@ int getAllMacros(const char * fileName, char *** result)
 {
   FILE  * stream;
   char    buffer[MAX_TOKEN_LENGTH];
-  char  * expbuf; 
+  char  * expbuf;
+  regex_t preg;
   int     n = 0;
 
-  if (result == NULL) 
+  if (result == NULL)
     return 0;
 
   *result = NULL;
 
-  if (fileName == NULL) 
+  if (fileName == NULL)
     return 0;
 
   stream = dmOpenUseableFile(fileName);
@@ -3549,62 +3550,78 @@ int getAllMacros(const char * fileName, char *** result)
 
 #define EXPBUF_SIZE 1024
   if ( !(expbuf = malloc( EXPBUF_SIZE ))) return 0;
-  /* $(...) is checked for 
+  /* $(...) is checked for
    */
-  compile ("\\$([^)]*", expbuf, expbuf+EXPBUF_SIZE
 #if defined(__hpux) || defined(__linux__)
-	   , '\0'
+  sprintf(expbuf, "%s%c","\\$([^)]*",'\0');
+#else
+  sprintf(expbuf, "%s","\\$([^)]*");
 #endif
-); 
+
+#define ERRBUFSIZE 1024
+  char* errbuf = calloc(ERRBUFSIZE, 1);
+  int ret = regcomp(&preg, expbuf, 0);
+  if(ret) {
+    memset(errbuf, 0, ERRBUFSIZE);
+    regerror(ret, &preg, errbuf, ERRBUFSIZE);
+    fprintf(stderr, "Regcomp: %s\n",errbuf);
+    fclose(stream);
+    DM2KFREE(errbuf);
+    DM2KFREE(expbuf);
+    regfree(&preg);
+    return 0;
+  }
 
   while (fgets(buffer, MAX_TOKEN_LENGTH, stream)) {
-    char * iterator = buffer;
+    char *iterator = buffer;
+    regmatch_t pmatch[1];
+    while(!regexec(&preg, iterator, 1, pmatch, 0)) {
+      size_t loc1, loc2;
+      loc1 = pmatch[0].rm_so;
+      loc2 = pmatch[0].rm_eo;
 
-#ifdef __linux__
-	/* T. Straumann: 'locs' is not implemented in gnu libc5
-	 *				 (and not POSIX -- folks, please stick to the standard)
-	 *				 I hope we may silently ignore 'locs' feature.
-	 */
-	char *locs;
-#endif
-    locs = 0;
-    while(step(iterator, expbuf)) {
       char tmp[MAX_TOKEN_LENGTH+1];
       int len = MIN(loc2-loc1, MAX_TOKEN_LENGTH);
 
-      strncpy(tmp, loc1, len);
+      strncpy(tmp, (char*)(iterator+loc1), len);
       tmp[len] = '\0';
 
       if (isUniqueMacro(&tmp[2], (const char **)*result, n)) {
-	char  * newMacro;
+        char  * newMacro;
 
-	newMacro = STRDUP(&tmp[2]); /* skip "$(" */
-	if (newMacro == NULL) {
-	  freeMacros(*result, n);
-	  *result = NULL;
-	  
-	  fclose(stream);
-	  DM2KFREE(expbuf);
-	  return 0;
-	}
+        newMacro = STRDUP(&tmp[2]); /* skip "$(" */
+        if (newMacro == NULL) {
+          freeMacros(*result, n);
+          *result = NULL;
 
-	n++;
-	REALLOC(char*, (*result), n);
-	if (*result == NULL) {
-	  fclose(stream);
-	  DM2KFREE(expbuf);
-	  return 0;
-	}
+          fclose(stream);
+          DM2KFREE(errbuf);
+          DM2KFREE(expbuf);
+          regfree(&preg);
+          return 0;
+        }
 
-	(*result)[n-1] = newMacro;
+        n++;
+        REALLOC(char*, (*result), n);
+        if (*result == NULL) {
+          fclose(stream);
+          DM2KFREE(errbuf);
+          DM2KFREE(expbuf);
+          regfree(&preg);
+          return 0;
+        }
+
+        (*result)[n-1] = newMacro;
       }
 
-      locs = iterator = loc2; 
+      iterator += loc2;
     }
   }
 
   fclose(stream);
+  DM2KFREE(errbuf);
   DM2KFREE(expbuf);
+  regfree(&preg);
 
   return n;
 }
