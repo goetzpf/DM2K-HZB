@@ -110,7 +110,8 @@ LIBSRCS         = BarGraph.o \
 #	
 LIBRARY=ANLwidgets
 
-ANLwidgets_LIBS += $(EPICS_BASE_HOST_LIBS)
+#ANLwidgets_LIBS += $(EPICS_BASE_HOST_LIBS)
+ANLwidgets_LIBS += Com
 
 # if SHARED_LIBRARIES is YES then shared and archive libraries will
 #	both be built 
@@ -161,6 +162,8 @@ SHARED_LIBRARIES = NO
 #Xm_DIR = $(MOTIF_LIB)
 #Xt_DIR = $(X11_LIB)
 #X11_DIR = $(X11_LIB)
+
+LIB_SYS_LIBS += Xm Xt X11
 
 # for most systems:
 #USR_LIBS_DEFAULT = foolib

@@ -35,6 +35,8 @@ LIBRARY=Jpt
 
 SHARED_LIBRARIES = NO
 
+LIB_SYS_LIBS += Xm Xt X11
+
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 

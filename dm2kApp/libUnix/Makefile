@@ -149,6 +149,8 @@ LIBRARY=Unix
 #Xt_DIR = $(X11_LIB)
 #X11_DIR = $(X11_LIB)
 
+LIB_SYS_LIBS += Xm Xt X11
+
 # for most systems:
 #USR_LIBS_DEFAULT = foolib
 #USR_LIBS_WIN32   = -nil-
