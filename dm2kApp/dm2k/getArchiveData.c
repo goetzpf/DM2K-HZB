@@ -30,7 +30,7 @@
 #include <cadef.h>
 #include <caerr.h>
 #include <db_access.h>
-#include <tsDefs.h>
+/*#include <tsDefs.h>*/
 
 #include <sys/types.h>
 #include <sys/stat.h>
