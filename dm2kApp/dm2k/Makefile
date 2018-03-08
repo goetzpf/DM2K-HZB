@@ -274,7 +274,7 @@ PROD_LIBS += Unix ANLwidgets PrintUtils GraphX
 
 Xmu_INC = /usr/contrib/X11R6/include
 
-SYS_PROD_LIBS += Xm Xt X11 Xext Xmu Xp SM ICE
+SYS_PROD_LIBS += Xm Xt X11 Xext Xmu SM ICE
 USR_CFLAGS += -I$(X11_INC) -I$(Xmu_INC) # -I$(Xm_INC)
 USR_LDFLAGS += -L$(MOTIF_LIB) -L/usr/lib -L/usr/contrib/X11R6/lib
 USR_LDFLAGS_hpux = -L/usr/lib/X11R6
