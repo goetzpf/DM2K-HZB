@@ -3733,7 +3733,7 @@ int main(int argc, char *argv[])
   FILE          * filePtr;
   XColor          color;
   XEvent          event;
-  char            versionString[60];
+  char            versionString[128];
   char            rscVersion[60];
 
   Boolean         dm2kAlreadyRunning;
@@ -3750,9 +3750,9 @@ int main(int argc, char *argv[])
   msgClass_t      msgClass;
   Window          dm2kHostWindow = (Window)0;
   char buf[40];
-  char dm2kvs[10];
+  char dm2kvs[40];
 
-  char fbr0[32];
+  char fbr0[60];
 
   char *pname;
 
