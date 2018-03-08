@@ -232,16 +232,19 @@ AtXYAxisWidget req, new;
      }*/
 
      if (ac->min > ac->max) {
-	  XtAppWarning(XtWidgetToApplicationContext(XtParent((Widget) new)),
-		       "Min is >= Max in AtXYAxis");
-	  ac->max_dft = False;
-	  ac->min_dft = False;
-	  ax->auto_scale = False;
+         XtAppWarning(XtWidgetToApplicationContext(XtParent((Widget) new)),
+                      "Min is >= Max in AtXYAxis");
+         ac->max_dft = False;
+         ac->min_dft = False;
+         ax->auto_scale = False;
      }
-     if (ac->min == ac->max) /*be careful*/
-       if (ac->max < PLOTTER_HUGE_VAL-100) ac->max++;
-       else ac->min--;
-
+     if (ac->min == ac->max) { /*be careful*/
+         if (ac->max < PLOTTER_HUGE_VAL-100) {
+             ac->max++;
+         } else {
+             ac->min--;
+         }
+     }
      if (ax->axis_transform == AtTransformLOGARITHMIC) {
 	  /*if ( !ax->auto_scale) {
 	       ax->min = ac->min;
