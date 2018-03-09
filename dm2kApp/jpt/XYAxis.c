@@ -561,7 +561,7 @@ int *nwp;
      AtXYAxisWidget  aw = (AtXYAxisWidget)acw;
      AtAxisCorePart *ac = &aw->axiscore;
      AtXYAxisPart   *ax = &aw->axis;
-     float nti, ti, min, max, mn, mx, sti, f;
+     double nti, ti, min, max, mn, mx, sti, f;
      int c;
 
 #if 0
@@ -644,8 +644,8 @@ AtAxisCoreWidget acw;
   AtXYAxisWidget  aw = (AtXYAxisWidget)acw;
   AtAxisCorePart *ac = &aw->axiscore;
   AtXYAxisPart   *ax = &aw->axis;
-  float min, max, tmin, tmax, sti;
-  float l, h, f, sh, sf;
+  double min, max, tmin, tmax, sti;
+  double l, h, f, sh, sf;
   int nti, nsti;
   char lbl[256];
 
@@ -839,8 +839,8 @@ int *nwp;
      AtAxisCorePart *ac = &aw->axiscore;
      AtXYAxisPart   *ax = &aw->axis;
      int len = ac->vertical ? ac->y1 - ac->y2 : ac->x2 - ac->x1;
-     float lmin, lmax, min, max;
-     float ls, lx, lm, lv;
+     double lmin, lmax, min, max;
+     double ls, lx, lm, lv;
      int nl, nst;
 
      /* Axis min/max boundaries on full decades */
@@ -923,7 +923,7 @@ AtAxisCoreWidget acw;
      AtAxisCorePart *ac = &aw->axiscore;
      AtXYAxisPart   *ax = &aw->axis;
      int nst = ax->subtics_per_tic;
-     float lmin, lmax, min, max, lf, ld, lc, ls, lx;
+     double lmin, lmax, min, max, lf, ld, lc, ls, lx;
      int nti, nsti, i;
      char lbl[256];
 
