@@ -725,7 +725,7 @@ AtAxisCoreWidget acw;
 	default : unit = 1;
 	}
       first = next = pp->time_base;
-      xtm = gmtime(&next);
+      xtm = localtime(&next);
       inc = (int)(ac->tic_values[0] - pp->raw_bounding_box.xmin);
       if (inc==0) {
 	strftime(str, TMSTR_MAXLEN, pp->time_format, xtm);
@@ -746,7 +746,7 @@ AtAxisCoreWidget acw;
                      break;
           default:
                      first = pp->time_base + unit * inc;
-	             xtm = gmtime(&(first));
+	             xtm = localtime(&(first));
           }
         strftime(str, TMSTR_MAXLEN, pp->time_format, xtm);
         ac->tic_label_string[0] = XtNewString(str);
@@ -775,7 +775,7 @@ AtAxisCoreWidget acw;
                    default:
                      next = first + unit * 
 		     ((int) (ac->tic_values[nti] - ac->tic_values[0]));
-	             xtm = gmtime(&(next));
+	             xtm = localtime(&(next));
                      }
                  strftime(str, TMSTR_MAXLEN, pp->time_format, xtm);
 	         ac->tic_label_string[nti] = XtNewString(str);
@@ -807,7 +807,7 @@ AtAxisCoreWidget acw;
            default:
              next = first + unit *
 		     ((int) (ac->tic_values[nti] - ac->tic_values[0]));
-	     xtm = gmtime(&(next));
+	     xtm = localtime(&(next));
          }
      strftime(str, TMSTR_MAXLEN, pp->time_format, xtm);
      ac->tic_label_string[nti] = XtNewString(str);
