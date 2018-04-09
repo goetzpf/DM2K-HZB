@@ -441,6 +441,9 @@ static float CalcLinTicInterval(AtXYAxisWidget aw, float min, float max)
      float ret;
      AtPlotterPart *pp = & (((AtPlotterWidget)XtParent(aw))->plotter);
 
+     ac->min = min;
+     ac->max = max;
+
      if (ax->subtics_per_tic < 0) ax->subtics_per_tic = 0;
      if (ax->subtics_per_tic > 9) ax->subtics_per_tic = 9;
 /*     if (min >= max) {
@@ -497,6 +500,7 @@ static float CalcLinTicInterval(AtXYAxisWidget aw, float min, float max)
 
      mag = log10(fabs(max - min));
      flr = floor(mag);
+     // printf("min = %f, max = %f, mag = %f, flr = %f, nt = %d\n", min, max, mag, flr, nt);
      sizeticratio = pow(10.0, mag - flr) / nt;
 
      /*
@@ -505,19 +509,20 @@ static float CalcLinTicInterval(AtXYAxisWidget aw, float min, float max)
       */
      d = 1.0;
      while(1){
-	  if (sizeticratio > 2.857*d){
-	       mult = 5;
-	       break;
-	  }
-	  if (sizeticratio > 1.333*d){
-	       mult = 2;
-	       break;
-	  }
-	  if (sizeticratio > 0.6666*d){
-	       mult = 1;
-	       break;
-	  }
-	  d /= 10.0;
+       // printf("  d = %f\n", d);
+       if (sizeticratio > 2.857*d){
+         mult = 5;
+         break;
+       }
+       if (sizeticratio > 1.333*d){
+         mult = 2;
+         break;
+       }
+       if (sizeticratio > 0.6666*d){
+         mult = 1;
+         break;
+       }
+       d /= 10.0;
      }
      ret = ax->auto_tics ? mult * d * pow(10.0, flr) : ax->tic_interval;
 
@@ -561,7 +566,7 @@ int *nwp;
      AtXYAxisWidget  aw = (AtXYAxisWidget)acw;
      AtAxisCorePart *ac = &aw->axiscore;
      AtXYAxisPart   *ax = &aw->axis;
-     double nti, ti, min, max, mn, mx, sti, f;
+     double nti, ti, min, max, mn, mx, sti, f, tmpmn, tmpmx;
      int c;
 
 #if 0
@@ -575,10 +580,21 @@ int *nwp;
      }
 #endif
 
-     if (ac->max_dft) max = mx = *maxp;
-     else max = mx = *maxp = ax->max;
-     if (ac->min_dft) min = mn = *minp;
-     else min = mn = *minp = ax->min;
+     
+     if (ac->max_dft) tmpmx = *maxp;
+     else tmpmx = ax->max;
+     if (ac->min_dft) tmpmn = *minp;
+     else tmpmn = ax->min;
+
+     if (isnan(tmpmx) || isinf(fabs(tmpmx)) ||
+         isnan(tmpmn) || isinf(fabs(tmpmn))) {
+       // if any given limit is nan or inf, fall back to range [0,1]
+       tmpmx = 1;
+       tmpmn = 0;
+     }
+
+     max = mx = *maxp = ax->max = tmpmx;
+     min = mn = *minp = ax->min = tmpmn;
      /*ac->max_bak = max; ac->min_bak = min;*/    
 
      /* Calculate tic interval */
@@ -661,6 +677,7 @@ AtAxisCoreWidget acw;
   h = max - 0.5 * sti;
 
   /* Count tics and subtics between the endpoints */
+  // printf(" Subticks: tmin= %f, tmax=%f\n", tmin, tmax);
   for(nti = nsti = 2, f = tmin; f < tmax; f += ac->tic_interval) {
     if(f > l && f < h) {
        ++nti;
@@ -931,7 +948,7 @@ AtAxisCoreWidget acw;
      lmax = ax->tmax;
 
   if ((lmax-lmin)<1) {
-     printf("LogAxisCalc - lmax-lmin<1\n");
+    // printf("LogAxisCalc - lmax-lmin<1\n");
      ac->num_tics    = 2;
      ac->num_subtics = nst;
      }
@@ -998,7 +1015,7 @@ AtAxisCoreWidget acw;
      }
 
      if (ac->num_tics != nti) {
-	  printf("LogAxisCalc: ac->num_tics %d != nti %d\n", ac->num_tics,nti);
+       // printf("LogAxisCalc: ac->num_tics %d != nti %d\n", ac->num_tics,nti);
 	  ac->tic_values =
 	       (float *) XtRealloc((char *) ac->tic_values,
 				    sizeof(float) * nti);
@@ -1008,7 +1025,7 @@ AtAxisCoreWidget acw;
 	  ac->num_tics = nti;
      }
      if (ac->num_subtics != nsti) {
-  printf("LogAxisCalc: ac->num_subtics %d != nsti %d\n", ac->num_subtics,nsti);
+       // printf("LogAxisCalc: ac->num_subtics %d != nsti %d\n", ac->num_subtics,nsti);
 	  ac->subtic_values =
 	       (float *) XtRealloc((char *) ac->subtic_values,
 				    sizeof(float) * nsti);
