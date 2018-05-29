@@ -606,9 +606,10 @@ static Boolean getPvstate (MessageButton *pmb)
   /* evaluated the record on / off state */
   dlMessageButton = pmb->dlElement->structure.messageButton;
   pvstate = (pd->dataType == DBF_STRING)
-		/* T. Straumann: protect against null pointer */
-	    ? ( strcmp ((char *)pd->array, dlMessageButton->release_msg ? dlMessageButton->release_msg : "") )
-	    : ( (int)pd->value != (int)pmb->releaseValue );
+          /* T. Straumann: protect against null pointer */
+          /* Ch. Schröder: protect (char *)pd->array against null pointer */
+          ? ( strcmp ((char *)pd->array ? (char *)pd->array : "", dlMessageButton->release_msg ? dlMessageButton->release_msg : "") )
+          : ( (int)pd->value != (int)pmb->releaseValue );
   return (pvstate);
 }
 
