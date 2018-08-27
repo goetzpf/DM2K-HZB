@@ -3,7 +3,7 @@
 #
 TOP = ..
 include $(TOP)/configure/CONFIG
-DIRS = graphX graphX/printUtils xc libUnix
+DIRS = graphX/printUtils graphX xc libUnix
 ifndef XRTHOME
 DIRS += jpt
 endif
