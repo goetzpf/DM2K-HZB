@@ -1584,6 +1584,7 @@ void create_adlSelectDlg (Widget parent)
   char * adlDir =  getenv(DISPLAY_LIST_ENV);
 
 
+  char dirMask[FULLPATHNAME_SIZE+1];
   if (fGUI->wAdlSelectDlg != NULL) {
     XtManageChild(fGUI->wAdlSelectDlg);
     return;
@@ -1596,8 +1597,6 @@ void create_adlSelectDlg (Widget parent)
 
   ac = 0;
   if (adlDir != NULL) {
-    char dirMask[FULLPATHNAME_SIZE+1];
-
     sprintf(dirMask, "%s%s", adlDir, DISPLAY_DIALOG_MASK);
     xmstrings[0] = XmStringCreateLtoR ( dirMask, (XmStringCharSet)XmFONTLIST_DEFAULT_TAG );
     XtSetArg(al[ac], XmNdirMask, xmstrings[0]); ac++;
@@ -1616,10 +1615,12 @@ void create_adlSelectDlg (Widget parent)
   fillFileSelBox(fGUI->wAdlSelectDlg);
  
   ac = 0;
-  XmStringFree ( xmstrings [ 0 ] );
-  XmStringFree ( xmstrings [ 1 ] );
-  XmStringFree ( xmstrings [ 2 ] );
-  XmStringFree ( xmstrings [ 3 ] );
+  if (adlDir != NULL) {
+      XmStringFree ( xmstrings [ 0 ] );
+      XmStringFree ( xmstrings [ 1 ] );
+      XmStringFree ( xmstrings [ 2 ] );
+      XmStringFree ( xmstrings [ 3 ] );
+  }
   button29 = XmSelectionBoxGetChild ( fGUI->wAdlSelectDlg, XmDIALOG_CANCEL_BUTTON );
   XtDestroyWidget(XmSelectionBoxGetChild ( fGUI->wAdlSelectDlg, XmDIALOG_HELP_BUTTON ));
   button31 = XmSelectionBoxGetChild ( fGUI->wAdlSelectDlg, XmDIALOG_OK_BUTTON );
