@@ -281,7 +281,7 @@ static Widget createFaceplateToggleButton(FaceplateGUI * fGUI, int num)
   to_value.addr = NULL;
   XtConvertAndStore ( fGUI->wGroupRowColumn, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr ) {
-    XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+    XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
   }
     
   toggle = XmCreateToggleButtonGadget ( fGUI->wGroupRowColumn, buffer,

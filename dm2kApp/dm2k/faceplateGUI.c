@@ -329,7 +329,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menuBar3, XmRString, &from_value, XmRKeySym, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNmnemonic, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNmnemonic, *(KeySym *)to_value.addr); ac++;
     }
   cascade13 = XmCreateCascadeButton ( menuBar3, "cascade13", al, ac );
   ac = 0;
@@ -343,7 +343,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
     }
   from_value.addr = "N";
   from_value.size = strlen( from_value.addr ) + 1;
@@ -351,7 +351,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRKeySym, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNmnemonic, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNmnemonic, *(KeySym *)to_value.addr); ac++;
     }
   fGUI->wFileNew = XmCreateCascadeButton ( menu3, "wFileNew", al, ac );
   ac = 0;
@@ -364,7 +364,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
     }
   from_value.addr = "O";
   from_value.size = strlen( from_value.addr ) + 1;
@@ -372,7 +372,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRKeySym, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNmnemonic, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNmnemonic, *(KeySym *)to_value.addr); ac++;
     }
   fGUI->wFileOpen = XmCreateCascadeButton ( menu3, "wFileOpen", al, ac );
   ac = 0;
@@ -386,7 +386,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
     }
   from_value.addr = "S";
   from_value.size = strlen( from_value.addr ) + 1;
@@ -394,7 +394,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRKeySym, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNmnemonic, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNmnemonic, *(KeySym *)to_value.addr); ac++;
     }
   fGUI->wFileSave = XmCreateCascadeButton ( menu3, "wFileSave", al, ac );
   ac = 0;
@@ -407,7 +407,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
     }
   from_value.addr = "A";
   from_value.size = strlen( from_value.addr ) + 1;
@@ -415,7 +415,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRKeySym, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNmnemonic, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNmnemonic, *(KeySym *)to_value.addr); ac++;
     }
   fGUI->wFileSaveAs = XmCreateCascadeButton ( menu3, "wFileSaveAs", al, ac );
   ac = 0;
@@ -429,7 +429,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
     }
   from_value.addr = "C";
   from_value.size = strlen( from_value.addr ) + 1;
@@ -437,7 +437,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (menu3, XmRString, &from_value, XmRKeySym, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNmnemonic, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNmnemonic, *(KeySym *)to_value.addr); ac++;
     }
   fGUI->wFileClose = XmCreateCascadeButton ( menu3, "wFileClose", al, ac );
   ac = 0;
@@ -528,7 +528,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (radioBox3, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
     }
   XtSetArg(al[ac], XmNset, TRUE); ac++;
   fGUI->wInPixelTGL = XmCreateToggleButtonGadget ( radioBox3, "wInPixelTGL", al, ac );
@@ -545,7 +545,7 @@ void create_shell5 (Widget parent)
   XtConvertAndStore (radioBox3, XmRString, &from_value, XmRFontList, &to_value);
   if ( to_value.addr )
     {
-      XtSetArg(al[ac], XmNfontList, *(unsigned int *)to_value.addr); ac++;
+      XtSetArg(al[ac], XmNfontList, *(XmFontList *)to_value.addr); ac++;
     }
   fGUI->wFractionBaseTGL = XmCreateToggleButtonGadget ( radioBox3, "wFractionBaseTGL", al, ac );
   ac = 0;
