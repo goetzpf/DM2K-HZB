@@ -788,9 +788,9 @@ void cbFaceplateSubmit(Widget w, XtPointer client_data, XtPointer xt_call_data)
     break;
 
     case FP_FACEPLATE_APPLY:
-      getFaceplateFromWidgets(fGUI, fGUI->fpg->entries[fGUI->current]);
+      if(fGUI != NULL && fGUI->current >= 0)
+        getFaceplateFromWidgets(fGUI, fGUI->fpg->entries[fGUI->current]);
       break;
-
     case FP_FACEPLATE_DELETE: {
       WidgetList wList;
       int        numWidgets;

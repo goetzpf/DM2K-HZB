@@ -348,7 +348,8 @@ void destroyFaceplate(FaceplateGroup * fpg, int num)
   if (fpg == NULL
       || fpg->entries == NULL 
       || num >= fpg->entriesNum
-      || fpg->entries[num] == NULL)
+      || fpg->entries[num] == NULL
+      || num < 0 )
     return;
   
   freeFaceplate(fpg->entries[num]);
