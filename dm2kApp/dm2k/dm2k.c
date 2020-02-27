@@ -3853,10 +3853,10 @@ int main(int argc, char *argv[])
      for (nv = 0; nv < defaultNameValueTableSize; nv++ ) {
 
 	char *p = getenv(defaultNameValueTable[nv].name);
+        if (!p) p="";
+
 	if (!strcmp( defaultNameValueTable[nv].name, "DISPLAY" )) {
 	   int i = 0, skip = 0, colon = 0;
-
-           if (!p) p="";
 
 	   int useNodename= ! ( p[0] != ':') ;
 
