@@ -116,6 +116,13 @@ static XmString xmstringSelect = NULL;
 
 extern void createAmDialog(Widget);
 
+/* Instead of defining xmStringValueTable in file
+ * dm2k/displayList.h, which is faulty and bad style, we
+ * define it here.
+ * Goetz Pfeiffer <Goetz.Pfeiffer@helmholtz-berlin.de> 2020
+ */
+XmString xmStringValueTable[NUMBER_STRING_VALUES];
+
 /*********************************************************************
  * STRIP CHART DATA
  *********************************************************************/

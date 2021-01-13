@@ -115,7 +115,12 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
 
 #include "enums.h"
 
-XmString xmStringValueTable[NUMBER_STRING_VALUES];
+/* Instead of defining xmStringValueTable here
+ * which is faulty and bad style, we define it in
+ * dm2k/resourcePalette.c.
+ * Goetz Pfeiffer <Goetz.Pfeiffer@helmholtz-berlin.de> 2020
+ */
+extern XmString xmStringValueTable[NUMBER_STRING_VALUES];
 
 /* addition for sensitivity */
 /* ------------------------ */
