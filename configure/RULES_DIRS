@@ -1,1 +1,2 @@
-include $(RULES)/configure/RULES_DIRS
+#RULES_DIRS
+include $(CONFIG)/RULES_DIRS

@@ -1,29 +1,43 @@
-#RELEASE Location of external products
-# Run "gnumake clean uninstall install" in the application
-# top directory each time this file is changed.
+# RELEASE - Location of external support modules
 #
-# NOTE: The build does not check dependancies on files
-# external to this application. Thus you should run
-# "gnumake clean uninstall install" in the top directory
-# each time EPICS_BASE, SNCSEQ, or any other external
-# module defined in the RELEASE file is rebuilt.
+# IF YOU MAKE ANY CHANGES to this file you must subsequently
+# do a "gnumake rebuild" in this application's top level
+# directory.
+#
+# The build process does not check dependencies against files
+# that are outside this application, thus you should do a
+# "gnumake rebuild" in the top level directory after EPICS_BASE
+# or any other external module pointed to below is rebuilt.
+#
+# Host- or target-specific settings can be given in files named
+#  RELEASE.$(EPICS_HOST_ARCH).Common
+#  RELEASE.Common.$(T_A)
+#  RELEASE.$(EPICS_HOST_ARCH).$(T_A)
+#
+# This file is parsed by both GNUmake and an EPICS Perl script,
+# so it can ONLY contain definititions of paths to other support
+# modules, variable definitions that are used in module paths,
+# and include statements that pull in other RELEASE files.
+# Variables may be used before their values have been set.
+# Build variables that are NOT used in paths should be set in
+# the CONFIG_SITE file.
 
-TEMPLATE_TOP=/opt/Epics/R3.14.8/support/mba-templates/1-1
+# Variables and paths to dependent modules:
+#MODULES = /path/to/modules
+#MYMODULE = $(MODULES)/my-module
 
-# If you don't want to install into $(TOP) then
-# define INSTALL_LOCATION_APP here
-#INSTALL_LOCATION_APP=<fullpathname>
+# If using the sequencer, point SNCSEQ at its top directory:
+#SNCSEQ = $(MODULES)/seq-ver
 
-#If using the sequencer, point SNCSEQ at its top directory:
-#SNCSEQ=$(EPICS_BASE)/../modules/soft/seq
+# EPICS_BASE should appear last so earlier modules can override stuff:
+EPICS_BASE = /usr/lib/epics
 
-# EPICS_BASE usually appears last so other apps can override stuff:
-ifeq ($(HOST),jalon)
-EPICS_BASE=/opt/Epics/R3.14.12/base/3-14-12-2-2
-else
-EPICS_BASE=/opt/Epics/R3.14.12/base/3-14-12-0-0
-endif
+# Set RULES here if you want to use build rules from somewhere
+# other than EPICS_BASE:
+#RULES = $(MODULES)/build-rules
 
-#Capfast users may need the following definitions
-#CAPFAST_TEMPLATES=
-#SCH2EDIF_PATH=
+# These allow developers to override the RELEASE variable settings
+# without having to modify the configure/RELEASE file itself.
+-include $(TOP)/../RELEASE.local
+-include $(TOP)/configure/RELEASE.local
+
