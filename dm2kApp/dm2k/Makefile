@@ -8,6 +8,9 @@
 TOP = ../..
 include $(TOP)/configure/CONFIG
 
+# use mkmf for dependency generation
+HDEPENDS_METHOD = MKMF
+
 ##### Variables to control build of dm2k
 ### 
 ### XRTHOME		holds the directory of the XRT/graph installation.
