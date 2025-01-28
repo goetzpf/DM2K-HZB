@@ -444,7 +444,7 @@ void parseArgs(int argc, char **argv, Options *option, Image *image, Page *page)
 	  flag.error++;
       }
       if ( image->gamma < 0.0 || image->gamma > 1.0 ) {
-	fprintf (stderr, "%s: gamma value out of range: %d\n", progname, image->gamma);
+	fprintf (stderr, "%s: gamma value out of range: %lf\n", progname, image->gamma);
 	flag.error++;
       }
       break;

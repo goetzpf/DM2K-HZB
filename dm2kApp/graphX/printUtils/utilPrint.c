@@ -58,7 +58,7 @@ void utilPrint(display, window, fileName)
    */
   if (strlen(fileName) + 25 >= COMBUFSIZE) {
     fprintf(stderr,"\nutilPrint: internal error ");
-    fprintf(stderr,"file name is too long %d char's\n", strlen(fileName));
+    fprintf(stderr,"file name is too long %ld char's\n", strlen(fileName));
     return;
   }
 
