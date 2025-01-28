@@ -28,6 +28,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #include <stdio.h>
+#include <time.h>
 
 #include "xwd2ps.h"
 #include "my_logo.h"

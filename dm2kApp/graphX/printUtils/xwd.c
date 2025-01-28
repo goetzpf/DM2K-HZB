@@ -68,6 +68,7 @@ static char *rcsid_xwd_c = "$XConsortium: xwd.c,v 1.51 89/12/10 16:49:07 rws Exp
 %*/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <X11/Xos.h>
 #include <X11/Xlib.h>

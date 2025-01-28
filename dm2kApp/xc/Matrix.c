@@ -31,6 +31,7 @@
 #include <ctype.h>
 #include <X11/Xos.h>
 #include <X11/StringDefs.h>
+#include <Xm/DrawP.h>
 #include <Xm/XmP.h>
 #include <Xm/AtomMgr.h>
 #include <Xm/ScrollBar.h>

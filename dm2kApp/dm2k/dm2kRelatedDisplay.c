@@ -64,6 +64,7 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
  *****************************************************************************
 */
 
+#include <ctype.h>
 #include "dm2k.h"
 #include <X11/IntrinsicP.h>
 #include <Xm/MwmUtil.h>

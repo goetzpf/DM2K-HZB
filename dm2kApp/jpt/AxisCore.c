@@ -56,6 +56,7 @@ SOFTWARE.
  *   Should not be instansiated, but will sort-of work if required.
  */
 
+#include <time.h>
 #include "AxisCoreP.h"
 #include "AtConverters.h"
 #include "PlotterP.h"
