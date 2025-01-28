@@ -17,3 +17,4 @@ source files. The copyright lies at the UNIVERSITY OF CHICAGO.
 Note that this is legacy code. It is not recommended that
 you use this display manager for new developments.
 
+Note that building instructions are in file 'BUILD.rst'.
