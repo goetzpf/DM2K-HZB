@@ -2751,7 +2751,7 @@ Region region;
      if ( !pp->auto_redisplay && ev->send_event) {
 	  if (!pp->auto_redisplay)
 	  pp->redisplay_required = True;
-	  return;
+	  return 0;
      }
      win = XtWindow(pw);
 
@@ -2761,7 +2761,7 @@ Region region;
 	 if (pp->pixmap && pp->pixmap_gc) 
 	   XCopyArea(XtDisplay(pw), pp->pixmap, win, pp->pixmap_gc, 0, 0,
 		    pp->pixmap_width, pp->pixmap_height, 0, 0);
-	 return;
+	 return 0;
 	 }
 
      /* Set the busy cursor */
@@ -2962,6 +2962,7 @@ recalc_again:
 	    PlotTextGetPosition((Widget)pw, next->th);
       next=next->next;
     }while (next);
+    return 0;
   }
 
 
@@ -3048,6 +3049,7 @@ recalc_again:
 	  XDefineCursor(XtDisplay(pw), XtWindow(pw), pp->current_cursor);
 
   pp->displayed = True; /* for PlotText */
+  return 0;
 
 } /* end of Redisplay */
 
