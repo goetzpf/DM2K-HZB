@@ -185,7 +185,7 @@ void outputLogo(FILE *fo, Image the_image)
 {
   float xpos, ypos;
 
-  printPS(my_logo);  /* print out the logo */
+  printPS(fo, my_logo);  /* print out the logo */
 
   /*
    * set up the scaling factors
