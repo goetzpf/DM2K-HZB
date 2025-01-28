@@ -1810,18 +1810,24 @@ int row, column;
 			  COLUMN_WIDTH(mw, column) -
 				2 * mw->matrix.cell_highlight_thickness,
 			  ROW_HEIGHT(mw) -
-				2 * mw->matrix.cell_highlight_thickness);
+				2 * mw->matrix.cell_highlight_thickness,
+
+			  mw->matrix.cell_shadow_thickness,
+			  XmSHADOW_IN);
 	else
-	    _XmDrawShadow(XtDisplay(mw), win,
+	    _XmDrawShadows(XtDisplay(mw), win,
 			  mw->manager.bottom_shadow_GC,
 			  mw->manager.top_shadow_GC,
-			  mw->matrix.cell_shadow_thickness,
+
 			  x + (int)mw->matrix.cell_highlight_thickness,
 			  y + (int)mw->matrix.cell_highlight_thickness,
 			  COLUMN_WIDTH(mw, column) -
 				2 * mw->matrix.cell_highlight_thickness,
 			  ROW_HEIGHT(mw) -
-				2 * mw->matrix.cell_highlight_thickness);
+				2 * mw->matrix.cell_highlight_thickness,
+
+			  mw->matrix.cell_shadow_thickness,
+			  XmSHADOW_IN);
     }
 }
 
@@ -2073,7 +2079,7 @@ Rectangle *expose;
      * truncated to nearest row.  We use cell_visible_height instead.
      */
     if (mw->manager.shadow_thickness)
-	_XmDrawShadow(XtDisplay(mw), XtWindow(mw),
+	_XmDrawShadows(XtDisplay(mw), XtWindow(mw),
 		      mw->manager.bottom_shadow_GC,
 		      mw->manager.top_shadow_GC,
 		      ROW_LABEL_WIDTH(mw),
