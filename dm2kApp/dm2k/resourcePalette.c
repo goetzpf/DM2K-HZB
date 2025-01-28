@@ -1471,7 +1471,7 @@ void initializeGlobalResourceBundle()
  globalResourceBundle.release_msg = NULL;
  globalResourceBundle.imageName = NULL;
  globalResourceBundle.compositeName = NULL;
- globalResourceBundle.relDisplay = NULL; 
+ globalResourceBundle.relDisplay = 0;
  globalResourceBundle.ami = NULL; 
  globalResourceBundle.data = NULL;
  globalResourceBundle.cmap = NULL;

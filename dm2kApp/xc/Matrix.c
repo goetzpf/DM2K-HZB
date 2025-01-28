@@ -1803,7 +1803,7 @@ int row, column;
 	    _XmDrawShadows(XtDisplay(mw), win,
 			  mw->matrix.cell_bottom_shadow_clip_gc,
 			  mw->matrix.cell_top_shadow_clip_gc,
-			  mw->matrix.cell_shadow_thickness,
+
 			  x + (int)mw->matrix.cell_highlight_thickness,
 			  y + (int)mw->matrix.cell_highlight_thickness,
 			  COLUMN_WIDTH(mw, column) -

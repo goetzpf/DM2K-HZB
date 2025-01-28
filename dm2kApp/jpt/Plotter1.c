@@ -1207,7 +1207,7 @@ AtPlotterWidget pw;
 	  XFreePixmap(XtDisplay(pw), pp->pixmap);
      if (pp->pixmap_gc)
 	  XtReleaseGC((Widget) pw, pp->pixmap_gc);
-     pp->pixmap = NULL;
+     pp->pixmap = 0;
      pp->pixmap_gc = NULL;
      pp->pixmap_width = pp->pixmap_height = 0;
      pp->pixmap_required = False;
