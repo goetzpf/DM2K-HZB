@@ -289,7 +289,6 @@ main(int argc, char **argv)
 
   topLevel = XtAppInitialize(&appContext, "TEST", NULL, 0, &argc, argv,
                 fallbackResources, NULL, 0);
-  XmRegisterConverters();
   shell = createAndPopupProductDescriptionShell(appContext,topLevel,
   	"DM2K", NULL,(Pixmap)NULL,
   	"Motif-based Editor & Display Manager", NULL,

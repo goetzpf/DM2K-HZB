@@ -216,8 +216,6 @@ void dm2kInit(char *displayFont)
   char *sizePosition;
 
 
-  XmRegisterConverters();
-
 /*
  * register action table
  */

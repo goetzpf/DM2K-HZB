@@ -1078,7 +1078,6 @@ static void ClassInitialize()
      atPlotterClassRec.composite_class.extension = (XtPointer) &ext;
      AtRegisterFloatConverter();
      AtRegisterDoubleConverter();
-     XmRegisterConverters() ;
      
      *SCCSid = *SCCSid;       /* Keep gcc quiet */
 }

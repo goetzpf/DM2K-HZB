@@ -128,7 +128,6 @@ void libDm2kInit(
 
 
 /* add necessary Motif resource converters */
-  XmRegisterConverters();
   XmRepTypeInstallTearOffModelConverter();
 
   appContext = passedInAppContext;

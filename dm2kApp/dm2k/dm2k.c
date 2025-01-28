@@ -4055,7 +4055,6 @@ int main(int argc, char *argv[])
 
   /* add necessary Motif resource converters 
    */
-  XmRegisterConverters();
   XmRepTypeInstallTearOffModelConverter();
   
   if ( synchroFlag ) {
