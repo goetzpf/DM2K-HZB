@@ -68,6 +68,7 @@ unsigned long Resolve_Color();
 Pixmap Bitmap_To_Pixmap();
 Window Select_Window();
 void out();
+void outl();
 void blip();
 Window Window_With_Name();
 #else
@@ -76,6 +77,7 @@ Pixmap Bitmap_To_Pixmap(Display *, Drawable, GC, Pixmap, int, int);
 Window Select_Window(Display *);
 void out();
 void blip();
+void outl(char *msg, ...);
 Window Window_With_Name(Display *, Window, char *);
 #endif
 

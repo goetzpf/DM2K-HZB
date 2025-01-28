@@ -5,6 +5,7 @@
 #include <X11/cursorfont.h>
 #include <stdio.h>
 #include <stdlib.h> /* realloc() */
+#include <stdarg.h> /* va_list ... */
 
 /*
  * Other_stuff.h: Definitions of routines in other_stuff.
@@ -392,14 +393,6 @@ Pixmap Bitmap_To_Pixmap(dpy, d, gc, bitmap, width, height)
 }
 
 
-/*
- * blip: a debugging routine.  Prints Blip! on stderr with flushing. 
- */
-void blip()
-{
-  outl("blip!");
-}
-
 
 /*
  * Routine to let user select a window using the mouse
@@ -488,14 +481,24 @@ Window Window_With_Name(dpy, top, name)
  *       in code so we can tell where we are.  Outl may be invoked like
  *       printf with up to 7 arguments.
  */
-outl(msg, arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-     char *msg;
-     char *arg0, *arg1, *arg2, *arg3, *arg4, *arg5, *arg6;
+void outl(char *msg, ...)
 {
+        va_list ap;
+	va_start(ap, msg);
+
 	fflush(stdout);
-	fprintf(stderr, msg, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	vfprintf(stderr, msg, ap);
 	fprintf(stderr, "\n");
 	fflush(stderr);
+	va_end(ap);
+}
+
+/*
+ * blip: a debugging routine.  Prints Blip! on stderr with flushing. 
+ */
+void blip()
+{
+  outl("blip!", "", "", "", "", "", "", "");
 }
 
 
