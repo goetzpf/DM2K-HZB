@@ -58,10 +58,6 @@ without express or implied warranty.
  *	interest...
  */
 
-#ifndef lint
-static char *rcsid_xwd_c = "$XConsortium: xwd.c,v 1.51 89/12/10 16:49:07 rws Exp $";
-#endif
-
 /*%
  *%    This is the format for commenting out color-related code until
  *%  color can be supported.

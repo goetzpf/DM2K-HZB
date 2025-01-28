@@ -1,6 +1,3 @@
-#ifndef LINT
-static char rcsid[] = "$Header: /opt/csr/CVS/dm2k/graphX/printUtils/ps_utils.c,v 1.2 2006-03-28 15:32:11 birke Exp $";
-#endif
 /*
  *** ps_utils.c - dump various PostScript structures to stdout
 

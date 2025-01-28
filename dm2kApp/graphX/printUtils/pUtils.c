@@ -1,6 +1,3 @@
-#ifndef LINT
-static char rcsid[] = "$Header: /opt/csr/CVS/dm2k/graphX/printUtils/pUtils.c,v 1.3 2006-10-11 12:25:47 sheim Exp $";
-#endif
 /*
  *** utils.c - general system utility functions
 

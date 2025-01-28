@@ -1,7 +1,3 @@
-#ifndef LINT
-static char rcsid[] = "$Header: /opt/csr/CVS/dm2k/graphX/printUtils/xwd2ps.c,v 1.5 2006-03-28 15:32:11 birke Exp $";
-#endif
-
 /*
  *** xwd2ps.c - convert X11 window dumps to PostScript
  *
