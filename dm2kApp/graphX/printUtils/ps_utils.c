@@ -36,6 +36,9 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 extern char progname[];
 
+/* defined in graphX/printUtils/ps_utils.c: */
+extern void get_time_and_date(char mytime[], char mydate[]);
+
 /*
  ** outputBorder() - put a border around the image
  */
@@ -161,6 +164,9 @@ void outputTime(FILE *fo, Image the_image)
   fprintf(fo,"stroke\n");
   fprintf(fo,"setmatrix\n\n");
 }
+
+/* forward declaration */
+void printPS(FILE *fo, char **p);
 
 /*
  ** outputColorImage() - output the code to support color

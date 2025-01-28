@@ -45,6 +45,7 @@ SOFTWARE.
 # define XtRDouble       "Double"
 #endif
 
+extern void AtRegisterFloatConverter P((void));
 extern void AtRegisterDoubleConverter P((void));
 
 /**************************************************/

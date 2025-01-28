@@ -16,6 +16,12 @@
  * routine through which all graphic print requests are channeled
  */
 
+/* xwd() is defined in dm2kApp/graphX/printUtils/xwd.c : */
+extern void xwd(Display *display,Window window,char *file);
+
+/* xwd2ps() is defined in dm2kApp/graphX/printUtils/xwd2ps.c : */
+extern void xwd2ps(int argc, char **argv, FILE *fo);
+
 #define MY_FREE(pointer) if (pointer) {free ((char*)pointer); pointer = NULL;}
 #define COMBUFSIZE 256
 

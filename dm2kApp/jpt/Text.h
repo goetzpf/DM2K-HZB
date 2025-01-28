@@ -82,7 +82,9 @@ extern void AtTextPSDraw P((FILE *, AtText *, int, int));
 extern void AtTextWritePostscriptProlog P((FILE *));
 
 extern AtText* At2TextCreate P((Widget, char *, Font));
+extern void At2TextDraw P((Display *, Window, Drawable, GC, AtText *, int x, int y));
+
 extern void AtTextDestroy P((AtText *));
-extern At2TextRenew P((AtText *, char *, XFontStruct *));
+extern int At2TextRenew P((AtText *, char *, XFontStruct *));
 extern int AtTextRenewFont P((Widget, AtText *, Font));
 #endif /* _AtText_h */

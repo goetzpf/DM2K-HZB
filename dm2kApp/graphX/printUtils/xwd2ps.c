@@ -137,6 +137,21 @@ Flag flag = { FALSE, FALSE, FALSE, FALSE, FALSE,
 	      FALSE, FALSE, FALSE, FALSE, FALSE, 
 	      FALSE, FALSE, FALSE, FALSE, FALSE };
 
+/* usage() is defined in printUtils/xwd.c: */
+extern void usage(void);
+
+/* defined in graphX/printUtils/pUtils.c : */
+extern void fullread (int file, void *data, int nbytes);
+extern void xwd2ps_swaplong (register char *bp, register long n);
+
+/* defined in graphX/printUtils/ps_utils.c : */
+extern void printEPSF(FILE *fo, Image image, Page  page, char  *file_name);
+extern void outputColorImage(FILE *fo);
+extern void outputBorder(FILE *fo, Image the_image);
+extern void outputDate(FILE *fo, Image the_image);
+extern void outputTitle(FILE *fo, Image the_image, Options the_options);
+extern void outputTime(FILE *fo, Image the_image);
+extern void outputLogo(FILE *fo, Image the_image);
 
 /*
  ** getDumpType() - returns an int describing the type of dump we have

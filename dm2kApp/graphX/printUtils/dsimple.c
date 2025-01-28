@@ -7,6 +7,9 @@
 #include <stdlib.h> /* realloc() */
 #include <stdarg.h> /* va_list ... */
 
+/* usage() is defined in printUtils/xwd.c: */
+extern void usage(void);
+
 /*
  * Other_stuff.h: Definitions of routines in other_stuff.
  *

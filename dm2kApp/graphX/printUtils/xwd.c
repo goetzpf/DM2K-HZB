@@ -148,6 +148,10 @@ void _swaplong (register char *bp, register unsigned n)
     }
 }
 
+/* forward declaration: */
+int Image_Size(XImage *image);
+int Get_XColors(XWindowAttributes *win_info, XColor **colors);
+
 /*
  * Window_Dump: dump a window to a file which must already be open for
  *              writting.

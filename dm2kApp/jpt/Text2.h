@@ -137,6 +137,7 @@ typedef struct {
 
 extern int PlotTextCalc P((Widget, TextHandle *));
 extern int PlotTextDraw P((Widget, TextHandle *));
+extern int PlotTextGetGC P((Widget, TextHandle *));
 extern int PlotTextGetPosition P((Widget, TextHandle *));
 
 
