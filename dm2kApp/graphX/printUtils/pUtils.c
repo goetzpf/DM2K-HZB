@@ -246,14 +246,3 @@ void _swapbits (b, n)
 }
 
 
-/*
- *** fmax() - return the larger of two floating point numbers
- */
-float fmax(a, b)
-float a, b;
-{
-  if(a >= b)
-    return(a);
-  else
-    return(b);
-}
