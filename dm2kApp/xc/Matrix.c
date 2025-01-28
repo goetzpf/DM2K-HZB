@@ -3338,7 +3338,7 @@ XmScrollBarCallbackStruct *call_data;
      */
     VERT_ORIGIN(mw) = call_data->value;
 
-    if (!XtIsRealized(mw))
+    if (!XtIsRealized((Widget)mw))
 	return;
 
     /*
@@ -3517,7 +3517,7 @@ XmScrollBarCallbackStruct *call_data;
      */
     HORIZ_ORIGIN(mw) = call_data->value;
 
-    if (!XtIsRealized(mw))
+    if (!XtIsRealized((Widget)mw))
 	return;
 
     /*
@@ -6012,7 +6012,7 @@ int num_rows;
     (*((XbaeMatrixWidgetClass) XtClass(mw))->matrix_class.cancel_edit)
 	((Widget)mw, True);
 
-    if (XtIsRealized(mw)) {
+    if (XtIsRealized((Widget)mw)) {
 	/*
 	 * Generate expose events on Matrix and Clip to force the
 	 * new rows to be drawn.
@@ -6103,7 +6103,7 @@ int num_rows;
     (*((XbaeMatrixWidgetClass) XtClass(mw))->matrix_class.cancel_edit)
 	((Widget)mw, True);
 
-    if (XtIsRealized(mw)) {
+    if (XtIsRealized((Widget)mw)) {
 	/*
 	 * Generate expose events on Matrix and Clip to force the
 	 * rows to be redrawn.
@@ -6198,7 +6198,7 @@ int num_columns;
     (*((XbaeMatrixWidgetClass) XtClass(mw))->matrix_class.cancel_edit)
 	((Widget)mw, True);
 
-    if (XtIsRealized(mw)) {
+    if (XtIsRealized((Widget)mw)) {
 	/*
 	 * Generate expose events on Matrix and Clip to force the
 	 * new columns to be drawn.
@@ -6294,7 +6294,7 @@ int num_columns;
     (*((XbaeMatrixWidgetClass) XtClass(mw))->matrix_class.cancel_edit)
 	((Widget)mw, True);
 
-    if (XtIsRealized(mw)) {
+    if (XtIsRealized((Widget)mw)) {
 	/*
 	 * Generate expose events on Matrix and Clip to force the
 	 * columns to be redrawn.
@@ -6375,7 +6375,7 @@ int num_colors;
 	for (j = 0; j < mw->matrix.columns; j++)
 	    mw->matrix.colors[i + position][j] = colors[i];
 
-    if (XtIsRealized(mw)) {
+    if (XtIsRealized((Widget)mw)) {
 	/*
 	 * Redraw all the visible non-fixed cells. We don't need to clear first
 	 * since only the color changed.
@@ -6465,7 +6465,7 @@ int num_colors;
 	for (j = 0; j < num_colors; j++)
 	    mw->matrix.colors[i][j + position] = colors[j];
 
-    if (XtIsRealized(mw)) {
+    if (XtIsRealized((Widget)mw)) {
 	/*
 	 * Redraw all the visible non-fixed cells. We don't need to clear first
 	 * since only the color changed.
@@ -6547,7 +6547,7 @@ Pixel color;
      */
     mw->matrix.colors[row][column] = color;
 
-    if (XtIsRealized(mw)) {
+    if (XtIsRealized((Widget)mw)) {
 	/*
 	 * Redraw the cell if it is visible
 	 */

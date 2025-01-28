@@ -175,7 +175,7 @@ XbaeClipWidget cw;
      * XXX It might be more efficient to fake up an Expose event
      * and call Redisplay directly
      */
-    if (XtIsRealized(cw))
+    if (XtIsRealized((Widget)cw))
 	XClearArea(XtDisplay(cw), XtWindow(cw),
 		   0, 0,
 		   0 /*Full Width*/, 0 /*Full Height*/,

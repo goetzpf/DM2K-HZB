@@ -228,7 +228,7 @@ Cardinal *num_args;
      * it will use our name as it's label.
      */
     (void)
-	XtVaCreateManagedWidget(XtName(new),
+	XtVaCreateManagedWidget(XtName((Widget)new),
 				xmLabelWidgetClass, (Widget)new,
 				XmNbackground,	new->core.background_pixel,
 				XmNforeground,	new->manager.foreground,
