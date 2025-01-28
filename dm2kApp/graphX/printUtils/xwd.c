@@ -346,7 +346,7 @@ void Window_Dump(Window window, FILE *out)
 /*
  * Report the syntax for calling xwd.
  */
-usage()
+void usage(void)
 {
     fprintf (stderr,
 "usage: %s [-display host:dpy] [-debug] [-help] %s [-nobdrs] [-out <file>]",
@@ -360,8 +360,8 @@ usage()
  * Error - Fatal xwd error.
  */
 
-Error(string)
-	char *string;	/* Error description string. */
+void Error(char *string)
+	/* string: Error description string. */
 {
 	outl("\nxwd: Error => %s\n", string);
 	if (errno != 0) {

@@ -177,8 +177,7 @@ getDumpType(header)
  *  Last Modification 2-1-89 by RCT.
  */
 
-get_page_info(the_page)
-     Page *the_page;
+int get_page_info(Page *the_page)
 {
   /* letter paper size 8.5 x 11 */
   if ( (strcmp(the_page->type, "A") == 0) || (strcmp(the_page->type, "letter") == 0) ) {
@@ -224,9 +223,7 @@ get_page_info(the_page)
  ** get_raster_header() - read in the xwd header, including the colormap 
  **                       and the window title
  */
-get_raster_header(win, w_name)
-     XWDFileHeader *win;
-     char *w_name;
+void get_raster_header(XWDFileHeader *win, char *w_name)
 {
   unsigned long swaptest = 1;
   int i, zflg, idifsize;
@@ -292,9 +289,9 @@ get_raster_header(win, w_name)
  ** get_next_raster_line() -  returns the next raster line in the image.
  * written 2-12-89 by R.C.Tatar
  */
-get_next_raster_line(win, linec, buffer)
-     XWDFileHeader *win;
-     unsigned char *linec, *buffer;
+void get_next_raster_line(XWDFileHeader *win,
+		          unsigned char *linec,
+		          unsigned char *buffer)
 {
   unsigned char *bufptr, *bufptr1;
   int iwbytes =  win->bytes_per_line;
@@ -378,10 +375,7 @@ get_next_raster_line(win, linec, buffer)
 /* 
  ** skipLines() - skip over unprinted parts of the image 
  */
-skipLines(winP, line, buffer, line_skip)
-     XWDFileHeader *winP;
-     char line[], buffer[];
-     int line_skip;
+void skipLines(XWDFileHeader *winP, char line[], char buffer[], int line_skip)
 {
   int i;
 
@@ -392,12 +386,7 @@ skipLines(winP, line, buffer, line_skip)
 /*
  *** parseArgs() - figure out which command line options were set
  */
-parseArgs(argc, argv, option, image, page)
-int argc;
-char **argv;
-Options *option;
-Image *image;
-Page *page;
+void parseArgs(int argc, char **argv, Options *option, Image *image, Page *page)
 {
   char c;
   extern char *optarg;
@@ -500,9 +489,7 @@ Page *page;
 /*
  *** getOrientation() - get the orientation of the image
  */
-getOrientation(pg, im)
-Page pg;
-Image im;
+int getOrientation(Page pg, Image im)
 {
   float k1, k2, k;
 
@@ -520,10 +507,7 @@ Image im;
     return(LANDSCAPE);
 }
 
-xwd2ps(argc, argv,fo)
-     int argc;
-     char **argv;
-     FILE *fo;
+void xwd2ps(int argc, char **argv, FILE *fo)
 {
   struct passwd *pswd;     /* variables for userid, date and time */
 

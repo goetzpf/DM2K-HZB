@@ -1800,7 +1800,7 @@ int row, column;
      */
     if (mw->matrix.cell_shadow_thickness) {
 	if (clipped)
-	    _XmDrawShadow(XtDisplay(mw), win,
+	    _XmDrawShadows(XtDisplay(mw), win,
 			  mw->matrix.cell_bottom_shadow_clip_gc,
 			  mw->matrix.cell_top_shadow_clip_gc,
 			  mw->matrix.cell_shadow_thickness,
@@ -2075,13 +2075,14 @@ Rectangle *expose;
 	_XmDrawShadow(XtDisplay(mw), XtWindow(mw),
 		      mw->manager.bottom_shadow_GC,
 		      mw->manager.top_shadow_GC,
-		      mw->manager.shadow_thickness,
 		      ROW_LABEL_WIDTH(mw),
 		      COLUMN_LABEL_HEIGHT(mw),
 		      ClipChild(mw)->core.width + FIXED_COLUMN_WIDTH(mw) +
 			  2 * mw->manager.shadow_thickness,
 		      mw->matrix.cell_visible_height + FIXED_ROW_HEIGHT(mw) +
-			  2 * mw->manager.shadow_thickness);
+			  2 * mw->manager.shadow_thickness,
+		      mw->manager.shadow_thickness,
+		      XmSHADOW_IN);
 }
 
 /*

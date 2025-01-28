@@ -66,8 +66,7 @@ extern char progname[];
  *          mydate = "Jan 31, 1989"  (day mon dt, year)
  */
 
-void get_time_and_date(mytime, mydate)
-     char mytime[], mydate[];
+void get_time_and_date(char mytime[], char mydate[])
 {
   time_t clock;
   char *ap;
@@ -85,10 +84,7 @@ void get_time_and_date(mytime, mydate)
 /*
  ** fullread() - read nbytes from a file and deal with errors
  */
-void fullread (file, data, nbytes)
-     int file;
-     char *data;
-     int nbytes;
+void fullread (int file, void *data, int nbytes)
 {
   int bytes_read;
   int tmp_cnt=0; /* for patial read */
@@ -139,9 +135,7 @@ void xwd2ps_swapshort (bp, n)
 /*
  ** xwd2ps_swaplong() - swap the bytes in the shorts, then swap the shorts
  */
-void xwd2ps_swaplong (bp, n)
-     register char *bp;
-     register long n;
+void xwd2ps_swaplong (register char *bp, register long n)
 {
   register char c;
   register char *ep = bp + n;
