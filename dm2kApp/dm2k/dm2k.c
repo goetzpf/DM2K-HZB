@@ -3733,7 +3733,7 @@ int main(int argc, char *argv[])
   FILE          * filePtr;
   XColor          color;
   XEvent          event;
-  char            versionString[128];
+  char            versionString[256];
   char            rscVersion[60];
 
   Boolean         dm2kAlreadyRunning;
@@ -4231,13 +4231,14 @@ int main(int argc, char *argv[])
 				 NULL);
       }
 #endif
-
-    sprintf(versionString,"%s Version %s \nfor\n %s\nusing\n%s\n%s\n~\n",
-	    MAIN_NAME,
-	    dm2kvs,
-	    EPICS_VERSION_STRING,
-	    XmVERSION_STRING,
-	    XRT_DOCSTR);
+ 
+    snprintf(versionString, sizeof(versionString),
+        "%s Version %s \nfor\n %s\nusing\n%s\n%s\n~\n",
+         MAIN_NAME,
+         dm2kvs,
+         EPICS_VERSION_STRING,
+         XmVERSION_STRING,
+         XRT_DOCSTR);
     
     productDescriptionShell = ProductDescriptionCreatePopupDialogShell
       (mainShell,
