@@ -720,7 +720,7 @@ static String fallbackResources[] = {
 				-*-helvetica-bold-r-normal-*-12-*-*-*-*-*-*-*",
 "",
 "! ======================================================================== ",
-"!  Product decsription shell pops up in the very begining of Dm2k's session ",
+"!  Product decsription shell pops up in the very beginning of Dm2k's session ",
 "",
 "*productDescriptionShell*XmLabel.fontList:		\
 		-*-helvetica-bold-r-*-*-34-*-*-*-*-*-*-*=PRODUCT_NAME_TAG,\
@@ -2780,14 +2780,14 @@ static void usage (char *pname, FILE *stream)
 #if PROMPT_TO_EXIT==1
 " (default)"
 #endif
-"\n       -dontPromptExit   dont!"
+"\n       -dontPromptExit   don't!"
 #if PROMPT_TO_EXIT==0
 " (default)"
 #endif
-"\n       -silent           reduced error mesages\n\
+"\n       -silent           reduced error messages\n\
        -wmPositionPolicy define the WM positioning policy : FRAME or USER\n\
        -verbose          display verbose error messages\n\
-       -debug            provide debugging informations\n\
+       -debug            provide debugging information\n\
        -synchro          run X11 protocol in synchronous mode\n\
        -help             this message\n\n\
    Environment variables:\n\n\

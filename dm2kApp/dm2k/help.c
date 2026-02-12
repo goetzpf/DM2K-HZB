@@ -260,7 +260,7 @@ void errMsgSendDlgSendButtonCb(Widget w, XtPointer dummy1, XtPointer dummy2) {
     if (text) XtFree(text);
 	*/
   } else {
-	/* T. Straumann: added else clause (dont write to
+	/* T. Straumann: added else clause (don't write to
 	 *				 NULL pipe 
 	 */
   fputs(text, pp);

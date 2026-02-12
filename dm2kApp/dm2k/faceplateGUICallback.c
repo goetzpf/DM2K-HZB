@@ -404,7 +404,7 @@ static void getFaceplateFromWidgets(FaceplateGUI * fGUI, Faceplate * entry)
   /* adl file
    */
 
-  /* T. Straumann: dont make no copy -- read the docs !!!
+  /* T. Straumann: don't make no copy -- read the docs !!!
    *			   XmTextFieldGetString() already returns a copy.
    */
 
@@ -471,7 +471,7 @@ static void transferFromWidgetsIntoData(FaceplateGUI * fGUI)
 
   /* group attributes 
    */
-  /* T. Straumann: dont make no copy -- read the docs !!!
+  /* T. Straumann: don't make no copy -- read the docs !!!
    *			   XmTextFieldGetString() already returns a copy.
    */
 

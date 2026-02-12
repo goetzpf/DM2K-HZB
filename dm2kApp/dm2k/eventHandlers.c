@@ -1247,7 +1247,7 @@ static char editSelectMB1Msg[] =
 "      objects on the screen (including those objects\n"
 "      wholly bounded by the selection rectangle).\n"
 "Ctrl-MB1\n"
-"      The same as above, but it allows to select a children\n"
+"      The same as above, but it allows one to select a children\n"
 "      object within a group instead of Composite element.\n" 
 "Shift-MB1\n"
 "      Multiple-select.  A set of objects are selected \n"
@@ -1678,7 +1678,7 @@ void toggleSelectedElementHighlight(DlElement *dlElement)
   DlObject *po = &(dlElement->structure.display->object);
 
   if ( debugFlag ) {
-    printf ("  toggle Higlight for %x in %x (da %x pixmap %x)\n",
+    printf ("  toggle Highlight for %x in %x (da %x pixmap %x)\n",
 	    (int)dlElement, (int)cdi, (int)cdi->drawingArea, (int)cdi->drawingAreaPixmap);
   }
 

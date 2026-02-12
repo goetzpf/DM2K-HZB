@@ -193,10 +193,10 @@ Usage: dm2k [-x|-e] [options...]
        -cmap        use private color map
        -dump        dump compiled in fallback-resources to stdout and exit
        -bigMousePointer  use big cursors
-       -silent      reduced error mesages
+       -silent      reduced error messages
        -wmPositionPolicy define the WM positionning policy : FRAME or USER
        -verbose     display verbose error messages
-       -debug       provide debugging informations
+       -debug       provide debugging information
        -synchro     run X11 protocol in synchronous mode
        -help        this message
 

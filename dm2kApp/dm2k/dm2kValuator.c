@@ -1077,7 +1077,7 @@ static void sendKeyboardValue(
     send_flag = True;
     if ( (value < pd->lopr ) || (value > pd->hopr ) ) {
       dmSetAndPopupQuestionDialog (currentDisplayInfo,
-	    "Value ouside boundary !\nDo you want to force this value",
+	    "Value outside boundary !\nDo you want to force this value",
 	    "No", "Yes", NULL);
       switch (currentDisplayInfo->questionDialogAnswer) {
 	case 2 :
