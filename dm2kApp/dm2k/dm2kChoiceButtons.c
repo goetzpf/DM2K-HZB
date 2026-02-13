@@ -64,6 +64,7 @@ DEVELOPMENT CENTER AT ARGONNE NATIONAL LABORATORY (708-252-2000).
  *****************************************************************************
 */
 
+#include <stddef.h>
 #include "dm2k.h"
 
 typedef struct _ChoiceButtons {
@@ -479,6 +480,16 @@ static void choiceButtonDraw(XtPointer cd)
   Record *pd = pcb->record;
   Widget widget = pcb->dlElement->widget;
   DlChoiceButton *dlChoiceButton = pcb->dlElement->structure.choiceButton;
+
+  if (pd == NULL)
+    {
+      /* For some panels pd may be a NULL pointer. It is not clear why, but
+       * be avoid a segmentation fault by simply returning in this case.
+       * Goetz Pfeiffer Feb. 2026 <goetz.pfeiffer@helmholtz-berlin.de>
+       */
+      INFORM_INTERNAL_ERROR();
+      return;
+    }
 
   if (pd->connected) {
     if (pd->readAccess) {
